@@ -1,0 +1,1 @@
+export const serverURL = "https://healthkard-server-git-main-skshoheb33s-projects.vercel.app"
