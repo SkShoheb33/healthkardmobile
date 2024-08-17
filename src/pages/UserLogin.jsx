@@ -6,6 +6,7 @@ import loginlogo from '../assets/mobile/loginlogo.png'
 import Input from '../components/ui/Input'
 import Button from '../components/ui/Button'
 import { useNavigation } from '@react-navigation/native'
+import OTPFiled from '../components/ui/OTPFiled'
 
 function UserLogin() {
 
@@ -23,7 +24,7 @@ function UserLogin() {
       </View>
       <KeyboardAvoidingView className='absolute bottom-32 left-0 z-10 flex items-center justify-center flex-col w-screen'>
         <Input placeholder='Contact Number'  width='w-10/12'/>
-        <Input placeholder='Password'  width='w-10/12'/>
+        <OTPFiled/>
         <Button transparent={true} label='Forgottem password ?' style='w-10/12'/>
         <Button style='w-10/12 py-4 mx-auto' color='blue' label='Login' onPress={()=>navigation.navigate('user')}/>
       </KeyboardAvoidingView>

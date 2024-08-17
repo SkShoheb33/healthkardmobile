@@ -5,7 +5,7 @@ import Hospitals from './src/pages/Hospitals';
 import Hospital from './src/pages/Hospital';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
-import { enableScreens } from 'react-native-screens';
+import { enableScreens } from 'react-native-screens'; 
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { faHome, faHospital, faIdCard, faUser } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
