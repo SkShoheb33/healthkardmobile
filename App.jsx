@@ -1,29 +1,29 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
-import Home from './src/pages/Home';
-import Hospitals from './src/pages/Hospitals';
-import Hospital from './src/pages/Hospital';
+import Home from './src/pages/users/home/Home';
+import Hospitals from './src/pages/users/hospitals/Hospitals';
+import Hospital from './src/pages/users/hospitals/Hospital';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { enableScreens } from 'react-native-screens'; 
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { faHome, faHospital, faIdCard, faUser } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import Healthkards from './src/pages/Healthkards';
+import Healthkards from './src/pages/users/healthkards/Healthkards';
 import { createStackNavigator } from '@react-navigation/stack';
 import 'react-native-gesture-handler';
-import NewKard from './src/components/healthkards/NewKard';
-import Healthkard from './src/components/healthkards/Healthkard';
-import Profile from './src/pages/Profile';
-import First from './src/pages/First';
-import UserRegister from './src/pages/UserRegister';
-import UserLogin from './src/pages/UserLogin';
-import AgentHome from './src/pages/agents/screens/home/Home'
-import AgentUserRegistration from './src/pages/agents/screens/home/UserRegistration'
-import AgentHospitalRegistration from './src/pages/agents/screens/home/HospitalRegistration';
-import AgentHospitals from './src/pages/agents/screens/hospitals/Hospitals';
-import AgentUsers from './src/pages/agents/screens/users/Users';
-import AgentProfile from './src/pages/agents/screens/profile/Profile';
+import NewKard from './src/pages/users/healthkards/components/NewKard';
+import Healthkard from './src/pages/users/healthkards/components/Healthkard';
+import Profile from './src/pages/users/profile/Profile';
+import First from './src/pages/main/First';
+import UserRegister from './src/pages/main/UserRegister';
+import UserLogin from './src/pages/main/UserLogin';
+import AgentHome from './src/pages/agents/home/Home'
+import AgentUserRegistration from './src/pages/agents/home/UserRegistration'
+import AgentHospitalRegistration from './src/pages/agents/home/HospitalRegistration';
+import AgentHospitals from './src/pages/agents/hospitals/Hospitals';
+import AgentUsers from './src/pages/agents/users/Users';
+import AgentProfile from './src/pages/agents/profile/Profile';
 
 enableScreens();
 
