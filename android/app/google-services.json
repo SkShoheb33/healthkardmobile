@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "934584946178",
+    "project_id": "healthkard-mobile-9599d",
+    "storage_bucket": "healthkard-mobile-9599d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:934584946178:android:058c99b6efa9c8d3cba11b",
+        "android_client_info": {
+          "package_name": "com.healthkard"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCCZCDCcmaIiDZOhvKyO_AZl0fwXDD1rhA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
