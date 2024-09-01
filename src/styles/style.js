@@ -12,6 +12,9 @@ export const styles = StyleSheet.create({
         backgroundColor: '#E5F7EF',
         color: '#303486'
     },
+    blueBorder: {
+        borderColor: '#303486',
+    },
     greenText: {
         color: '#00BFA8',
     },

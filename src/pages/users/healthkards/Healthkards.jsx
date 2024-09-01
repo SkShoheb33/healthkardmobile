@@ -6,7 +6,7 @@ import { faAdd, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { useNavigation } from '@react-navigation/native';
 import httpService from '../../../httpService';
 import HealthkardList from './components/HealthkardList';
-import Navbar from '../../../components/Navbar';
+import Navbar from '@components/Navbar';
 
 function Healthkards() {
     const [kards, setKards] = useState([]);
@@ -29,18 +29,18 @@ function Healthkards() {
     }, []);
 
     return (
-        <View style={{ flex: 1 }}>
+        <View style={ { flex: 1 } } className='bg-white'>
             <Navbar />
 
-            <View style={{ flex: 1 }} className='p-2 bg-white'>
+            <View style={ { flex: 1 } } className='p-2 bg-white'>
                 <Image
-                    source={Ad1}
+                    source={ Ad1 }
                     className='mx-auto'
                 />
 
                 <View className='border my-4 rounded-md flex flex-row items-center'>
                     <View className='p-2'>
-                        <FontAwesomeIcon icon={faSearch} />
+                        <FontAwesomeIcon icon={ faSearch } />
                     </View>
                     <TextInput
                         className='p-2'
@@ -49,17 +49,17 @@ function Healthkards() {
                 </View>
 
                 <View className='shadow-xl absolute bottom-10 right-10 bg-[#303486] py-2 px-4 rounded-md z-10 flex flex-row items-center'>
-                    <FontAwesomeIcon icon={faAdd} color='white' />
-                    <Pressable onPress={() => navigation.navigate("NewKard")}>
+                    <FontAwesomeIcon icon={ faAdd } color='white' />
+                    <Pressable onPress={ () => navigation.navigate("NewKard") }>
                         <Text className='text-white mx-2'>Add</Text>
                     </Pressable>
                 </View>
 
-                {loading ? (
+                { loading ? (
                     <Text>Loading...</Text>
                 ) : (
-                    <HealthkardList kards={kards} />
-                )}
+                    <HealthkardList kards={ kards } />
+                ) }
             </View>
         </View>
     );

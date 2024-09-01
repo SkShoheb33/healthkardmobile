@@ -1,0 +1,5 @@
+export const HEALTHKARDS = 'Healthkards'
+export const HEALTHKARD = 'Healthkard'
+export const HOSPITALS = 'Hospitals'
+export const HOSPITAL = 'Hospital'
+export const CURRENCY = '₹'

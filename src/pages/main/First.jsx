@@ -1,19 +1,19 @@
 import React from 'react';
 import { View, Image, Text, TouchableOpacity } from 'react-native';
-import login from '../../assets/mobile/login.png';
-import { styles } from '../../styles/style';
-import Button from '../../components/Button';
+import login from 'src/assets/mobile/login.png';
+import { styles } from 'src/styles/style';
+import Button from '@components/Button';
 import { useNavigation } from '@react-navigation/native';
 
 function First() {
   const navigation = useNavigation();
 
   return (
-    <View style={{ flex: 1 }} className='relative'>
-      <Image source={login} />
+    <View style={ { flex: 1 } } className='relative'>
+      <Image source={ login } className='w-full' />
 
-      <Text style={styles.greenText} className='text-3xl p-6 text-center'>
-        Start your journey now with{' '}
+      <Text style={ styles.greenText } className='text-3xl p-6 text-center'>
+        Start your journey now with{ ' ' }
         <Text className='font-bold text-4xl'>HEALTHKARD</Text>
       </Text>
 
@@ -22,19 +22,19 @@ function First() {
           label='Login'
           color='green'
           style='w-10/12 p-4 mx-auto'
-          onPress={() => navigation.navigate('UserLogin')}
+          onPress={ () => navigation.navigate('UserLogin') }
         />
         <Button
           label='Register'
           color='blue'
           style='w-10/12 p-4 mx-auto'
-          onPress={() => navigation.navigate('UserRegister')}
+          onPress={ () => navigation.navigate('UserRegister') }
         />
       </View>
 
       <TouchableOpacity
-        onPress={() => navigation.navigate('agent')}
-        style={styles.green}
+        onPress={ () => navigation.navigate('AgentLogin') }
+        style={ styles.green }
         className='absolute bottom-4 right-4 p-2 w-20 h-20 justify-center items-center rounded-full text-white font-semibold'
       >
         <Text className='text-xs'>Login Agent</Text>

@@ -1,68 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import Navbar from '../../../components/Navbar';
+import Navbar from 'src/components/Navbar';
 import { ScrollView, View } from 'react-native';
-import Button from '../../../components/Button';
-import {
-  faArrowLeftLong,
-  faArrowRightLong,
-  faBookmark,
-} from '@fortawesome/free-solid-svg-icons';
+import Button from 'src/components/Button';
+import { faArrowLeftLong, faArrowRightLong, faBookmark, } from '@fortawesome/free-solid-svg-icons';
 import HospitalDetails from './HospitalRegistrationForms/HospitalDetails';
 import DoctorsDetails from './HospitalRegistrationForms/DoctorsDetails';
 import MediaDetails from './HospitalRegistrationForms/MediaDetails';
+import { initialHospitals } from './constants';
 
 function HospitalRegistration() {
-  const [hospital, setHospital] = useState({
-    hospitalId: '',
-    email: '',
-    isverified: '0',
-    agentID: 'Agent id',
-    hospitalDetails: {
-      daysAvailabilty: [false, true, true, true, true, true, true],
-      from: '',
-      gstNumber: '',
-      hospitalGSTFile: '',
-      hospitalLegalName: '',
-      hospitalLicense: '',
-      hospitalNumber: '',
-      hospitalOwnerContactNumber: '',
-      hospitalOwnerEmail: '',
-      hospitalOwnerFullName: '',
-      hospitalTradeName: '',
-      licenseNumber: '',
-      address: {
-        lat: '',
-        lng: '',
-        city: '',
-        code: '',
-        country: '',
-        landmark: '',
-        state: '',
-        street: '',
-      },
-      typeOfHospital: '',
-      servicesOffered: [],
-      to: '',
-    },
-    doctorList: [
-      {
-        doctorLicenseURL: '',
-        email: '',
-        lisenceNumber: '',
-        name: '',
-        number: '',
-        qualification: '',
-      },
-    ],
-    mediaDetails: {
-      achivements: [],
-      desc: '',
-      doctorImageURL: '',
-      hospitalImageURL: '',
-      logoURL: '',
-    },
-    users: [],
-  });
+  const [hospital, setHospital] = useState(initialHospitals);
   const [currentForm, setCurrentForm] = useState('HospitalDetails');
   const [leftButtonDisabled, setLeftButtonDisabled] = useState(true);
   const [rightButtonDisabled, setRightButtonDisabled] = useState(false);
@@ -104,39 +51,43 @@ function HospitalRegistration() {
       setCurrentForm('DoctorsDetails');
     }
   };
+
+  const save = () => {
+    console.log(hospital);
+  }
   return (
-    <View style={{ flex: 1 }}>
+    <View style={ { flex: 1 } } className='bg-white'>
       <Navbar />
-      <ScrollView style={{ flex: 1 }}>
-        {currentForm === 'HospitalDetails' && <HospitalDetails hospital={hospital} setHospital={setHospital} />}
-        {currentForm === 'DoctorsDetails' && <DoctorsDetails hospital={hospital} setHospital={setHospital} />}
-        {currentForm === 'MediaDetails' && <MediaDetails hospital={hospital} setHospital={setHospital} />}
+      <ScrollView style={ { flex: 1 } }>
+        { currentForm === 'HospitalDetails' && <HospitalDetails hospital={ hospital } setHospital={ setHospital } /> }
+        { currentForm === 'DoctorsDetails' && <DoctorsDetails hospital={ hospital } setHospital={ setHospital } /> }
+        { currentForm === 'MediaDetails' && <MediaDetails hospital={ hospital } setHospital={ setHospital } /> }
         <View className="flex-row justify-between p-2">
           <Button
             label="Prev"
             color="blue"
-            icon={faArrowLeftLong}
+            icon={ faArrowLeftLong }
             style="w-1/3 p-4"
-            onPress={prev}
-            disabled={leftButtonDisabled}
+            onPress={ prev }
+            disabled={ leftButtonDisabled }
           />
-          {!rightButtonDisabled && <Button
+          { !rightButtonDisabled && <Button
             label="Next"
             color="blue"
-            reverse={true}
-            icon={faArrowRightLong}
+            reverse={ true }
+            icon={ faArrowRightLong }
             style="w-1/3 p-4"
-            onPress={next}
-            disabled={rightButtonDisabled}
-          />}
-          {rightButtonDisabled && <Button
+            onPress={ next }
+            disabled={ rightButtonDisabled }
+          /> }
+          { rightButtonDisabled && <Button
             label="Save"
             color="green"
-            reverse={false}
-            icon={faBookmark}
+            reverse={ false }
+            icon={ faBookmark }
             style="w-1/3 p-4"
-            onPress={next}
-          />}
+            onPress={ save }
+          /> }
         </View>
       </ScrollView>
     </View>

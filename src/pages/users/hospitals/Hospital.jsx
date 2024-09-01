@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Image, ScrollView, Text, View } from 'react-native';
-import Service from '../../../components/Service';
+import Service from '@components/Service';
 import Doctor from './components/Doctor';
-import Heading from '../../../components/Heading';
+import Heading from '@components/Heading';
 import ContactBox from './components/ContactBox';
 import HospitalCard from './components/HospitalCard';
-import httpService from '../../../httpService';
-import Loading from '../../../components/Loading';
-import Navbar from '../../../components/Navbar';
+import httpService from 'src/httpService';
+import Loading from '@components/Loading';
+import Navbar from '@components/Navbar';
 
 function Hospital({ route }) {
     const { hospitalId } = route.params;
@@ -34,24 +34,24 @@ function Hospital({ route }) {
     }, [hospitalId]);
 
     return (
-        <View style={{ flex: 1 }}>
+        <View style={ { flex: 1 } }>
             <Navbar />
             <ScrollView>
-                {!isLoading && hospital.mediaDetails ? (
+                { !isLoading && hospital.mediaDetails ? (
                     <View>
-                        <Image
-                            source={{ uri: hospital.mediaDetails.hospitalImageURL }}
-                            style={{ height: 200 }}
+                        { hospital.mediaDetails.hospitalImageURL && <Image
+                            source={ { uri: hospital.mediaDetails.hospitalImageURL } }
+                            style={ { height: 200 } }
                             className='w-full'
-                        />
+                        /> }
                         <View className='p-4'>
                             <Heading
                                 color='blue'
-                                label={hospital.hospitalDetails.hospitalLegalName}
+                                label={ hospital.hospitalDetails.hospitalLegalName }
                                 size='text-xl'
                             />
                             <Heading
-                                label={hospital.mediaDetails.desc}
+                                label={ hospital.mediaDetails.desc }
                             />
                             <Heading
                                 label='Specialized In'
@@ -59,28 +59,28 @@ function Hospital({ route }) {
                                 style='mt-5 mb-4'
                             />
                             <View className='flex flex-row flex-wrap mb-4'>
-                                {hospital.hospitalDetails.servicesOffered.map((service, index) => (
-                                    <Service key={index} service={service} />
-                                ))}
+                                { hospital.hospitalDetails.servicesOffered.map((service, index) => (
+                                    <Service key={ index } service={ service } />
+                                )) }
                             </View>
                             <Text className='text-xl'>Meet our chief doctor</Text>
                             <ScrollView horizontal>
-                                {hospital.doctorList.map((doctor, index) => (
+                                { hospital.doctorList.map((doctor, index) => (
                                     <Doctor
-                                        key={index}
-                                        doctor={doctor}
-                                        image={hospital.mediaDetails.doctorImageURL}
+                                        key={ index }
+                                        doctor={ doctor }
+                                        image={ hospital.mediaDetails.doctorImageURL }
                                     />
-                                ))}
+                                )) }
                             </ScrollView>
                             <Heading
                                 label='Contact Information'
                                 size='text-xl'
                             />
                             <ContactBox
-                                address={hospital.hospitalDetails.address}
-                                number={hospital.hospitalDetails.hospitalNumber}
-                                email={hospital.email}
+                                address={ hospital.hospitalDetails.address }
+                                number={ hospital.hospitalDetails.hospitalNumber }
+                                email={ hospital.email }
                             />
                             <Heading
                                 label='24x7 available Terms and conditions apply'
@@ -92,19 +92,20 @@ function Hospital({ route }) {
                                 size='text-xl'
                                 style='my-4'
                             />
-                            <ScrollView horizontal>
-                                {similarHospitals.map((hospital, index) => (
+                            <ScrollView horizontal className='w-full p-2' >
+                                { similarHospitals.map((hospital, index) => (
                                     <HospitalCard
-                                        key={index}
-                                        hospital={hospital}
+                                        key={ index }
+                                        hospital={ hospital }
+                                        horizontal={ true }
                                     />
-                                ))}
+                                )) }
                             </ScrollView>
                         </View>
                     </View>
                 ) : (
-                    <Loading isLoading={isLoading} />
-                )}
+                    <Loading isLoading={ isLoading } />
+                ) }
             </ScrollView>
         </View>
     );

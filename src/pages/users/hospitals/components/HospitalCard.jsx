@@ -1,46 +1,37 @@
 import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { Image, Pressable, Text, View } from 'react-native';
-import Service from '../../../../components/Service';
+import Button from '@components/Button';
+import { faLocationDot, faPhone } from '@fortawesome/free-solid-svg-icons';
 
-function HospitalCard({ hospital }) {
+function HospitalCard({ hospital, horizontal = false }) {
     const navigation = useNavigation();
 
     return (
         <Pressable
-            style={{ width: 250 }}
-            onPress={() => navigation.navigate('Hospital', { hospitalId: hospital.hospitalId })}
-            className='border border-gray-300 p-1 rounded-md shadow-xl bg-white'
+            onPress={ () => navigation.navigate('Hospital', { hospitalId: hospital.hospitalId }) }
+            className={ `border-1 ${horizontal ? 'w-[220] mx-1' : 'my-1 w-[49%]'} items-start border border-gray-300 p-1 my-1 rounded-md shadow-xl bg-white` }
         >
             <Image
-                source={{ uri: hospital.mediaDetails.hospitalImageURL }}
-                style={{ height: 120 }}
+                source={ { uri: hospital.mediaDetails.hospitalImageURL } }
+                style={ { height: 120 } }
                 className='w-full'
             />
-            <Text className='font-semibold text-lg my-1'>
-                {hospital.hospitalDetails.hospitalTradeName}
+            <Text className='font-semibold text-lg my-1 text-black'>
+                { hospital.hospitalDetails.hospitalTradeName.length > 18 ? hospital.hospitalDetails.hospitalTradeName.slice(0, 15) + '...' : hospital.hospitalDetails.hospitalTradeName }
             </Text>
-            <Text className='my-1'>
-                <Text>
-                    {hospital.hospitalDetails.address.street}, {hospital.hospitalDetails.address.city}, {hospital.hospitalDetails.address.landmark}, {hospital.hospitalDetails.address.code}, {hospital.hospitalDetails.address.state}, {hospital.hospitalDetails.address.country}
+            <View style={ { flex: 1 } } className='justify-between'>
+
+                <Text className='my-1 text-black text-justify'>
+                    { hospital.mediaDetails.desc.length > 120 ?
+                        <Text>{ hospital.mediaDetails.desc.slice(0, 120) }<Text className='text-[#808080]'>...Read more</Text></Text>
+                        : hospital.mediaDetails.desc
+                    }
                 </Text>
-            </Text>
-            <Text className='font-semibold text-md'>
-                Specialized in
-            </Text>
-            <View className='flex-row flex-wrap'>
-                {hospital.hospitalDetails.servicesOffered.length > 1 ? (
-                    <View>
-                        {hospital.hospitalDetails.servicesOffered.slice(0, 1).map((service, index) => (
-                            <Service key={index} service={service} />
-                        ))}
-                        <Service service={`${hospital.hospitalDetails.servicesOffered.length - 1}+ more`} />
-                    </View>
-                ) : (
-                    hospital.hospitalDetails.servicesOffered.map((service, index) => (
-                        <Service key={index} service={service} />
-                    ))
-                )}
+                <View className='w-full flex-row justify-between'>
+                    <Button label='Locate' style='px-1 py-2 w-[45%]' color='blue' icon={ faLocationDot } />
+                    <Button label='Call' style='px-1 py-2 w-[45%]' icon={ faPhone } />
+                </View>
             </View>
         </Pressable>
     );

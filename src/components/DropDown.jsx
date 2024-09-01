@@ -1,30 +1,29 @@
 import React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import Heading from './Heading';
 
-const DropdownComponent = ({healthIds, healthId, setHealthId}) => {
+const Dropdown = ({ list = [], value, setValue, label = 'Choose Healthkard.' }) => {
 
   return (
-    <View style={styles.container} className='flex-row'>
-        <Heading label={"Choose Healthkard."} size={'text-md'}/>
-        <Picker
-            selectedValue={healthId}
-            style={styles.picker}
-            onValueChange={(itemValue) => setHealthId(itemValue)}
-        >
-            {
-                healthIds.map(healthId=><Picker.Item key={healthId} label={healthId.name} value={healthId.healthId} />)
-            }
+    <View style={ styles.container } className='flex-row w-full justify-center items-center h-9'>
+      <Heading label={ label } size={ 'text-md' } />
+      <Picker
+        selectedValue={ value }
+        style={ styles.picker }
+        onValueChange={ (itemValue) => setValue(itemValue) }
+      >
+        {
+          list.map(value => <Picker.Item key={ value } label={ value.name } value={ value.value } />)
+        }
 
-        </Picker>
+      </Picker>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -38,4 +37,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DropdownComponent;
+export default Dropdown;

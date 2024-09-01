@@ -38,7 +38,7 @@ export const pickFile = async() => {
         });
 
         const filePath = await resolveFilePath(res[0].uri);
-        upload(filePath, res[0].name);
+        return upload(filePath, res[0].name);
     } catch (err) {
         if (DocumentPicker.isCancel(err)) {
             console.log('User cancelled the picker');
@@ -76,8 +76,9 @@ const upload = async(filePath, fileName) => {
             const fileRef = storage().ref(fileName);
 
             await fileRef.putFile(filePath);
+            console.log(fileName);
             const fileURL = await fileRef.getDownloadURL();
-            return fileURL;
+            return { fileURL, fileName };
         } catch (error) {
             console.error('Error uploading file:', error);
         }

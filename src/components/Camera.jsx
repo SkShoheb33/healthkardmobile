@@ -1,10 +1,11 @@
 import React from 'react'
-import { Text, View } from 'react-native'
+import { Text, TouchableOpacity, View } from 'react-native'
 import ImagePicker from 'react-native-image-crop-picker';
 import Button from './Button';
 import RNFS from 'react-native-fs';
+import { styles } from 'src/styles/style';
 
-function Camera({label, getImage, width}) {
+function Camera({ label, getImage, width }) {
 
   async function convertImageToBase64(image) {
     try {
@@ -14,7 +15,7 @@ function Camera({label, getImage, width}) {
       return null;
     }
   }
-  const openCamera = ()=>{
+  const openCamera = () => {
     ImagePicker.openPicker({
       width: 300,
       height: 400,
@@ -26,7 +27,9 @@ function Camera({label, getImage, width}) {
     });
   }
   return (
-    <Button label={label} onPress={openCamera} style={`${width} p-4`}/>
+    <TouchableOpacity onPress={ openCamera }>
+      <Text style={ styles.blueText }>Change Picture</Text>
+    </TouchableOpacity>
   )
 }
 

@@ -11,33 +11,33 @@ import Button from '../../../../components/Button';
 const ContactBox = ({ address, number, email }) => {
     return (
         <View className='border border-gray-200 w-11/12 p-2 rounded-md shadow-xl'>
-            {/* Address Section */}
+            {/* Address Section */ }
             <View className='w-full my-2 flex flex-row items-center'>
-                <FontAwesomeIcon icon={faLocationDot} color='#303486' />
+                <FontAwesomeIcon icon={ faLocationDot } color='#303486' />
                 <Address
-                    address={address}
+                    address={ address }
                     styles='mx-2'
-                    color={styles.blueText}
+                    color={ styles.blueText }
                 />
             </View>
             <Button
                 color='blue'
                 label='View in maps'
             />
-            {/* Phone Number Section */}
+            {/* Phone Number Section */ }
             <View className='w-full my-2 flex flex-row items-center'>
-                <FontAwesomeIcon icon={faPhone} color='#303486' />
+                <FontAwesomeIcon icon={ faPhone } color='#303486' />
                 <PhoneNumber
-                    number={number}
+                    number={ number }
                     style='w-10/12 mx-2'
                     color='blue'
                 />
             </View>
-            {/* Email Section */}
+            {/* Email Section */ }
             <View className='w-full my-2 flex flex-row items-center'>
-                <FontAwesomeIcon icon={faEnvelope} color='#303486' />
+                <FontAwesomeIcon icon={ faEnvelope } color='#303486' />
                 <Heading
-                    label={email}
+                    label={ email }
                     color='blue'
                     style='mx-2'
                 />

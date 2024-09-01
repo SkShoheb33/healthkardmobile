@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { View, ScrollView } from 'react-native';
-import Heading from '../../../components/Heading';
-import Navbar from '../../../components/Navbar';
+import { View, ScrollView, TouchableOpacity } from 'react-native';
+import Heading from '@components/Heading';
+import Navbar from '@components/Navbar';
 import { faChevronRight, faCalendar, faScroll, faComments } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { useNavigation } from '@react-navigation/native'
 import Header from './components/Header';
-import httpService from '../../../httpService';
-import DropDown from '../../../components/DropDown';
+import httpService from 'src/httpService';
+import DropDown from '@components/DropDown';
 
 function Profile() {
     const [healthId, setHealthId] = useState('');
@@ -19,7 +20,9 @@ function Profile() {
             setLoadingStatus(true);
             try {
                 const result = await httpService.get('users', `?number=917842722245`);
-                setHealthIds(result);
+                const healthIds = result.map(item => ({ name: item.name, value: item.healthId }));
+                setHealthId(healthIds[0].value)
+                setHealthIds(healthIds);
             } catch (error) {
                 console.log(error);
             } finally {
@@ -49,24 +52,25 @@ function Profile() {
     }, [healthId]);
 
     return (
-        <ScrollView style={{ flex: 1 }}>
+        <ScrollView style={ { flex: 1 } } className='bg-white'>
             <Navbar />
             <View>
-                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 8 }}>
+                <View style={ { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 8 } }>
                     <DropDown
-                        healthIds={healthIds}
-                        setHealthId={setHealthId}
-                        healthId={healthId}
+                        list={ healthIds }
+                        setValue={ setHealthId }
+                        value={ healthId }
                     />
                 </View>
-                {!isLoading && profile && (
+                { !isLoading && profile && (
                     <Header
-                        image={profile.image}
-                        name={profile.name}
-                        gender={profile.gender}
-                        age={profile.age}
+                        healthId={ healthId }
+                        image={ profile.image }
+                        name={ profile.name }
+                        gender={ profile.gender }
+                        age={ profile.age }
                     />
-                )}
+                ) }
                 <Heading label="Others" />
                 <Services />
             </View>
@@ -76,32 +80,36 @@ function Profile() {
 
 function Services() {
     return (
-        <View style={{ width: '91%', marginHorizontal: 'auto' }}>
+        <View style={ { width: '91%', marginHorizontal: 'auto' } }>
             <ServiceItem
-                icon={faCalendar}
+                icon={ faCalendar }
                 label="Renewal history"
+                navigateTo='RenewalHistory'
             />
             <ServiceItem
-                icon={faComments}
+                icon={ faComments }
                 label="Help and Feedback"
+                navigateTo='RenewalHistory'
             />
             <ServiceItem
-                icon={faScroll}
+                icon={ faScroll }
                 label="Terms and conditions"
+                navigateTo='RenewalHistory'
             />
         </View>
     );
 }
 
-function ServiceItem({ icon, label }) {
+function ServiceItem({ icon, label, navigateTo }) {
+    const navigation = useNavigation()
     return (
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderWidth: 1, borderColor: '#ccc', paddingVertical: 8, paddingHorizontal: 16, borderRadius: 8, marginVertical: 4 }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <FontAwesomeIcon icon={icon} size={24} />
-                <Heading label={label} size='text-xl' style={{ marginLeft: 8 }} />
+        <TouchableOpacity onPress={ () => navigation.navigate(navigateTo) } style={ { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderWidth: 1, borderColor: '#ccc', paddingVertical: 8, paddingHorizontal: 16, borderRadius: 8, marginVertical: 4 } }>
+            <View style={ { flexDirection: 'row', alignItems: 'center' } }>
+                <FontAwesomeIcon icon={ icon } size={ 24 } />
+                <Heading label={ label } size='text-xl' style={ { marginLeft: 8 } } />
             </View>
-            <FontAwesomeIcon icon={faChevronRight} size={24} />
-        </View>
+            <FontAwesomeIcon icon={ faChevronRight } size={ 24 } />
+        </TouchableOpacity>
     );
 }
 

@@ -1,54 +1,58 @@
-import React, {useState} from 'react'
-import { SafeAreaView, ScrollView, Text, View } from 'react-native'
-import Heading from '../../../../components/Heading'
-import Input from '../../../../components/Input'
-import Button from '../../../../components/Button'
-import { styles } from '../../../../styles/style'
-import { faTrashCan } from '@fortawesome/free-solid-svg-icons'
+import React, { useEffect, useState } from 'react';
+import { SafeAreaView, ScrollView, View } from 'react-native';
+import Heading from '../../../../components/Heading';
+import Button from '../../../../components/Button';
+import { doctorDetails } from '../constants';
+import DoctorForm from './DoctorForm';
+import uuid from 'react-native-uuid';
 
-function DoctorsDetails() {
-    const [doctorList, setDoctorList] = useState([{}]);
-    const addOneMoreDoctor = ()=>{
-        setDoctorList(prev=>[...prev,{}])
-    }
-    const deleteDoctor = (indexOfDoctor)=>{
-        let temp = doctorList.filter((doctor,index)=>index!==indexOfDoctor);
-        setDoctorList(temp);
-    }
-  return (
-    <View style={{flex:1}}>
-        <Heading label='Doctors Details' size='text-2xl font-semibold'/>
-        <ScrollView style={{flex:1}} className='w-full px-4'>
-            <SafeAreaView  style={{flex:1}} className='w-full'>
-                {
-                    doctorList.map((doctor, index)=><DoctorForm key={index} doctor={doctor} index={index} deleteDoctor={deleteDoctor}/>)
-                }
-            </SafeAreaView>
-            <View className='flex-row items-center justify-between'>
-                <Button label='Add one more doctor' onPress={addOneMoreDoctor}/>
-            </View>
-        </ScrollView>
-    </View>
-  )
-}
+function DoctorsDetails({ hospital, setHospital }) {
+    const [doctorList, setDoctorList] = useState(hospital.doctorList);
 
-export default DoctorsDetails
+    useEffect(() => {
+        setHospital(prev => ({
+            ...prev,
+            doctorList: doctorList
+        }));
+    }, [doctorList]);
 
-function DoctorForm({doctor, index, deleteDoctor}) {
-    return(
-        <View>
-            <View className='flex-row items-center justify-between'>
-                <Heading label={`Doctor ${index+1}`} size='text-lg'/> 
-                {index!==0 && <Button icon={faTrashCan} transparent={true} iconColor='#f00' style='w-fit' onPress={()=>deleteDoctor(index)}/>  }
-            </View>
-            <View style={styles.lightGreen} className='p-2 rounded-md'>
-                <Input placeholder='Full name'/>
-                <Input placeholder='Qualification'/>
-                <Input placeholder='Phone number'/>
-                <Input placeholder='Email address'/>
-                <Input placeholder='License number'/>
-                <Button label='Upload license' color='blue'/>
-            </View>
+    const addOneMoreDoctor = () => {
+        setDoctorList(prev => [...prev, {...doctorDetails, id: uuid.v4()}]);
+    };
+
+    const deleteDoctor = (id) => {
+        setDoctorList(prev => prev.filter(doctor => doctor.id !== id));
+    };
+
+    const onChangeHandler = (id, key, value) => {
+        setDoctorList(prev => 
+            prev.map(doctor => 
+                doctor.id === id ? { ...doctor, [key]: value } : doctor
+            )
+        );
+    };
+
+    return (
+        <View style={{ flex: 1 }}>
+            <Heading label='Doctors Details' size='text-2xl font-semibold' />
+            <ScrollView style={{ flex: 1 }} className='w-full px-4'>
+                <SafeAreaView style={{ flex: 1 }} className='w-full'>
+                    {doctorList.map((doctor, index) => (
+                        <DoctorForm
+                            key={doctor.id} 
+                            doctor={doctor} 
+                            index={index} 
+                            deleteDoctor={deleteDoctor} 
+                            onChangeHandler={onChangeHandler} 
+                        />
+                    ))}
+                </SafeAreaView>
+                <View className='flex-row items-center justify-between'>
+                    <Button label='Add one more doctor' onPress={addOneMoreDoctor} />
+                </View>
+            </ScrollView>
         </View>
-    )
+    );
 }
+
+export default DoctorsDetails;
