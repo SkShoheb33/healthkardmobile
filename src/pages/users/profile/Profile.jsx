@@ -94,7 +94,7 @@ function Services() {
             <ServiceItem
                 icon={ faScroll }
                 label="Terms and conditions"
-                navigateTo='RenewalHistory'
+                navigateTo='TermsAndCondition'
             />
         </View>
     );

@@ -12,6 +12,7 @@ import { faHome, faHospital, faIdCard, faUser } from '@fortawesome/free-solid-sv
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import Renewal from 'src/pages/users/healthkards/components/Renewal';
 import { Pay } from './Pay';
+import TermsAndCondition from 'src/pages/users/profile/components/TermsAndConditions';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -88,6 +89,7 @@ export const ProfileNavigation = () => {
         <Stack.Navigator screenOptions={ { headerShown: false } } initialRouteName="Profile">
             <Stack.Screen name="Profile" component={ Profile } />
             <Stack.Screen name="RenewalHistory" component={ RenewalHistory } />
+            <Stack.Screen name="TermsAndCondition" component={ TermsAndCondition } />
         </Stack.Navigator>
     )
 }

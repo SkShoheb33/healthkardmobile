@@ -36,7 +36,7 @@ function Hospitals() {
     }, []);
 
     return (
-        <View style={ { flex: 1 } }>
+        <View style={ { flex: 1 } } className='bg-white'>
             <Navbar />
             <Header location={ location } setLocation={ setLocation } onSearch={ onSearch } />
             <ScrollView style={ { flex: 1 } } contentContainerStyle={ { padding: 8 } }>

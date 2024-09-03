@@ -16,7 +16,7 @@ const Doctor = ({ doctor, image }) => {
             >
                 { doctor.name }
             </Text>
-            <Text>
+            <Text className='text-black'>
                 { doctor.qualification }
             </Text>
         </View>

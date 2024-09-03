@@ -28,6 +28,48 @@ export const payments = [
         "paymentStatus": true
     },
     {
+        "healthId": "HID000004",
+        "amount": "300.00",
+        "transactionId": "TXN000004",
+        "issueDate": "2024-08-28T16:00:00Z",
+        "paymentStatus": true
+    },
+    {
+        "healthId": "HID000004",
+        "amount": "300.00",
+        "transactionId": "TXN000004",
+        "issueDate": "2024-08-28T16:00:00Z",
+        "paymentStatus": true
+    },
+    {
+        "healthId": "HID000004",
+        "amount": "300.00",
+        "transactionId": "TXN000004",
+        "issueDate": "2024-08-28T16:00:00Z",
+        "paymentStatus": true
+    },
+    {
+        "healthId": "HID000004",
+        "amount": "300.00",
+        "transactionId": "TXN000004",
+        "issueDate": "2024-08-28T16:00:00Z",
+        "paymentStatus": true
+    },
+    {
+        "healthId": "HID000004",
+        "amount": "300.00",
+        "transactionId": "TXN000004",
+        "issueDate": "2024-08-28T16:00:00Z",
+        "paymentStatus": true
+    },
+    {
+        "healthId": "HID000004",
+        "amount": "300.00",
+        "transactionId": "TXN000004",
+        "issueDate": "2024-08-28T16:00:00Z",
+        "paymentStatus": true
+    },
+    {
         "healthId": "HID000005",
         "amount": "120.00",
         "transactionId": "TXN000005",

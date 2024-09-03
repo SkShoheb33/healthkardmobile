@@ -54,7 +54,7 @@ function Home() {
                             />
                         )) }
                     </ScrollView>
-                    <Button label='Explore All' color={ styles.blue } style='w-10/12 p-2 mx-auto' onPress={ () => navigation.navigate('HospitalsNavigation') } />
+                    <Button label='Explore All' color={ styles.blue } style='w-11/12 p-4 mx-auto' onPress={ () => navigation.navigate('HospitalsNavigation') } />
                 </View>
             </ScrollView>
         </View>

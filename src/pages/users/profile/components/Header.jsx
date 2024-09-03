@@ -9,7 +9,7 @@ function Header({ healthId, image, name, gender, age, healthCoins }) {
             <View className='p-2'>
                 <Text className='text-xl text-black font-semibold' >{ name }</Text>
                 <Text style={ styles.greenText } className=''>{ healthId }</Text>
-                <Text className=''>{ gender }, { age }</Text>
+                <Text className='text-black'>{ gender }, { age }</Text>
                 {/* <View className='mx-2 flex-row my-2 p-1 rounded-md items-center'>
                     <FontAwesomeIcon icon={ faCoins } color='#00BFA8' />
                     <Heading color='green' label={ healthCoins } />

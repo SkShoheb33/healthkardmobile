@@ -34,25 +34,26 @@ function Hospital({ route }) {
     }, [hospitalId]);
 
     return (
-        <View style={ { flex: 1 } }>
+        <View style={ { flex: 1 } } className='bg-white'>
             <Navbar />
             <ScrollView>
                 { !isLoading && hospital.mediaDetails ? (
                     <View>
-                        { hospital.mediaDetails.hospitalImageURL && <Image
-                            source={ { uri: hospital.mediaDetails.hospitalImageURL } }
-                            style={ { height: 200 } }
-                            className='w-full'
-                        /> }
+                        { hospital.mediaDetails.hospitalImageURL &&
+                            <Image
+                                source={ { uri: hospital.mediaDetails.hospitalImageURL } }
+                                style={ { height: 200 } }
+                                className='w-full'
+                            /> }
                         <View className='p-4'>
                             <Heading
                                 color='blue'
                                 label={ hospital.hospitalDetails.hospitalLegalName }
                                 size='text-xl'
                             />
-                            <Heading
-                                label={ hospital.mediaDetails.desc }
-                            />
+                            <Text className='text-black px-2'>
+                                { hospital.mediaDetails.desc }
+                            </Text>
                             <Heading
                                 label='Specialized In'
                                 size='text-xl'
@@ -63,7 +64,7 @@ function Hospital({ route }) {
                                     <Service key={ index } service={ service } />
                                 )) }
                             </View>
-                            <Text className='text-xl'>Meet our chief doctor</Text>
+                            <Heading size='text-xl' label='Meet our chief doctor' />
                             <ScrollView horizontal>
                                 { hospital.doctorList.map((doctor, index) => (
                                     <Doctor

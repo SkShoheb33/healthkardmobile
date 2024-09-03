@@ -6,7 +6,7 @@ function Loading({ isLoading }) {
   if (!isLoading) return null;
 
   return (
-    <View style={ styles.container } className='h-screen'>
+    <View style={ styles.container } className=''>
       <Spinner
         isVisible={ true }
         size={ 50 }
