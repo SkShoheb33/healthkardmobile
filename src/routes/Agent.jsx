@@ -1,6 +1,7 @@
 import AgentHome from 'src/pages/agents/home/Home'
 import AgentUserRegistration from 'src/pages/agents/home/UserRegistration'
 import AgentHospitalRegistration from 'src/pages/agents/home/HospitalRegistration';
+import HospitalRegister from 'src/pages/agents/home/HospitalRegistrationForms/HospitalRegister';
 import AgentHospitals from 'src/pages/agents/hospitals/Hospitals';
 import AgentUsers from 'src/pages/agents/users/Users';
 import AgentProfile from 'src/pages/agents/profile/Profile';
@@ -63,6 +64,7 @@ export const AgentHomeNavigations = () => {
         <Stack.Navigator screenOptions={ { headerShown: false } } initialRouteName="Home">
             <Stack.Screen name="Home" component={ AgentHome } />
             <Stack.Screen name="AgentUserRegistrationPayment" component={ AgentUserPayment } />
+            <Stack.Screen name="HospitalRegister" component={ HospitalRegister } />
             <Stack.Screen name="AgentHospitalRegistration" component={ AgentHospitalRegistration } />
         </Stack.Navigator>
     );

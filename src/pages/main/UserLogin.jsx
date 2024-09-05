@@ -1,40 +1,43 @@
 import React, { useState } from 'react';
-import { View, Image, KeyboardAvoidingView, Alert, Text } from 'react-native';
+import { View, Image, KeyboardAvoidingView, Alert } from 'react-native';
 import login2 from '../../assets/mobile/login2.png';
 import login3 from '../../assets/mobile/login3.png';
 import loginlogo from '../../assets/mobile/loginlogo.png';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
-import OTPFiled from '../../components/OTPFiled';
 import { useNavigation } from '@react-navigation/native';
 import httpService from 'src/httpService';
 
 function UserLogin() {
   const navigation = useNavigation();
 
-  const [isNumber, setIsNumber] = useState(true);
-  const [number, setNumber] = useState(true);
-
-
-  const getOTP = async () => {
+  const [number, setNumber] = useState('');
+  const [password, setPassword] = useState('');
+  const login = async () => {
+    console.log({ number, password })
     try {
-      const response = await httpService.post('auth/user-login', { number: '91' + number });
-      setIsNumber(false);
+      const response = await httpService.post('auth/user-login', { number, password });
+      console.log(response)
+      if (response.message === 'Verified') {
+        navigation.navigate('user');
+      } else if (response.message === 'Password incorrect') {
+        Alert.alert('Error', 'Please enter the correct password');
+      } else {
+        Alert.alert('Error', 'Data not found with this number');
+      }
     } catch (error) {
+      console.log(error);
       Alert.alert('Error', 'Data not found with this number');
     }
   }
 
   const handleChangeNumber = (property, value) => {
-    if (value.length <= 10) {
+    if (property === 'number' && value.length <= 10) {
       setNumber(value)
+    } else if (property === 'password') {
+      setPassword(value);
     }
   }
-
-  const verifyOTP = () => {
-    // TODO: verify number
-    navigation.navigate('user');
-  };
 
   return (
     <View style={ { flex: 1 } } className='relative'>
@@ -54,37 +57,31 @@ function UserLogin() {
         behavior='padding'
         className='absolute bottom-32 left-0 z-10 flex items-center justify-center flex-col w-screen'
       >
-        { isNumber && <View className='w-full items-center'>
+        <View className='w-full items-center'>
           <Input
             placeholder='Contact Number'
+            property='number'
             width='w-10/12'
             value={ number }
+            inputMode='numeric'
+            onChange={ handleChangeNumber }
+          />
+          <Input
+            placeholder='Password'
+            property='password'
+            width='w-10/12'
+            value={ password }
             onChange={ handleChangeNumber }
           />
           <Button
             style='w-10/12 py-4 mx-auto'
             color='blue'
-            label='GET OTP'
-            onPress={ getOTP }
-            disabled={ number.length !== 10 }
+            label='LOGIN'
+            onPress={ login }
+            disabled={ number.length !== 10 || password.length <= 6 }
           />
 
-        </View> }
-        { !isNumber && <View className='w-full items-center'>
-          <View className='w-10/12'>
-            <Text>Enter OTP</Text>
-            <OTPFiled />
-
-          </View>
-          <Button
-            style='w-10/12 py-4 mx-auto'
-            color='blue'
-            label='Login'
-            onPress={ verifyOTP }
-            disabled={ number.length !== 10 }
-          />
-
-        </View> }
+        </View>
       </KeyboardAvoidingView>
 
       <Image

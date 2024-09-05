@@ -14,11 +14,11 @@ function HospitalCard({ hospital, horizontal = false, }) {
             onPress={ () => navigation.navigate('Hospital', { hospitalId: hospital.hospitalId }) }
             className={ `border-1 ${horizontal ? 'w-[220] mx-1' : 'my-1 w-[49%]'} items-start border border-gray-300 p-1 my-1 rounded-md shadow-xl bg-white` }
         >
-            <Image
+            { hospital.mediaDetails.hospitalImageURL && <Image
                 source={ { uri: hospital.mediaDetails.hospitalImageURL } }
                 style={ { height: 120 } }
                 className='w-full'
-            />
+            /> }
             <Text className='font-semibold text-lg my-1 text-black'>
                 { hospital.hospitalDetails.hospitalTradeName.length > 18 ? hospital.hospitalDetails.hospitalTradeName.slice(0, 15) + '...' : hospital.hospitalDetails.hospitalTradeName }
             </Text>

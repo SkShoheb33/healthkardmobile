@@ -47,7 +47,7 @@ function Home() {
                     </View>
                     <View className='w-full items-center  my-4'>
                         <Button color='green' style='w-11/12 p-4' label='Register user' icon={ faUserPlus } onPress={ () => navigation.navigate('AgentUserRegistrationPayment') } />
-                        <Button color='green' style='w-11/12 p-4' label='Onboard hospital' icon={ faHospital } onPress={ () => navigation.navigate('AgentHospitalRegistration') } />
+                        <Button color='green' style='w-11/12 p-4' label='Onboard hospital' icon={ faHospital } onPress={ () => navigation.navigate('HospitalRegister') } />
                     </View>
                 </View>
             </ScrollView>
