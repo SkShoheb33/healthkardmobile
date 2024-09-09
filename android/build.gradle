@@ -24,3 +24,12 @@ buildscript {
 
 apply plugin: "com.facebook.react.rootproject"
 apply plugin: "com.google.gms.google-services"
+
+allprojects {
+   repositories {
+       google()
+       maven {
+            url  "https://phonepe.mycloudrepo.io/public/repositories/phonepe-intentsdk-android"
+       }
+   }
+}

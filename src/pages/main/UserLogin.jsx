@@ -1,25 +1,40 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Image, KeyboardAvoidingView, Alert } from 'react-native';
-import login2 from '../../assets/mobile/login2.png';
-import login3 from '../../assets/mobile/login3.png';
-import loginlogo from '../../assets/mobile/loginlogo.png';
-import Input from '../../components/Input';
-import Button from '../../components/Button';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import login2 from '@assets/mobile/login2.png';
+import login3 from '@assets/mobile/login3.png';
+import loginlogo from '@assets/mobile/loginlogo.png';
+import Input from '@components/Input';
+import Button from '@components/Button';
 import { useNavigation } from '@react-navigation/native';
 import httpService from 'src/httpService';
 
 function UserLogin() {
   const navigation = useNavigation();
-
   const [number, setNumber] = useState('');
   const [password, setPassword] = useState('');
+
+  useEffect(() => {
+    checkStoredNumber();
+  }, []);
+
+  const checkStoredNumber = async () => {
+    try {
+      const storedNumber = await AsyncStorage.getItem('userPhoneNumber');
+      if (storedNumber) {
+        navigation.replace('user');
+      }
+    } catch (error) {
+      console.log('Error checking stored number:', error);
+    }
+  };
+
   const login = async () => {
-    console.log({ number, password })
     try {
       const response = await httpService.post('auth/user-login', { number, password });
-      console.log(response)
       if (response.message === 'Verified') {
-        navigation.navigate('user');
+        await AsyncStorage.setItem('userPhoneNumber', number);
+        navigation.replace('user');
       } else if (response.message === 'Password incorrect') {
         Alert.alert('Error', 'Please enter the correct password');
       } else {

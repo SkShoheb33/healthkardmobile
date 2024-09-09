@@ -10,41 +10,49 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { faHome, faHospital, faIdCard, faUser } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import UserRenewal from 'src/pages/agents/home/UserRenewal/UserRenewal';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
-
-const HomeOptions = {
-    tabBarLabel: 'Home',
-    tabBarIcon: () => <FontAwesomeIcon icon={ faHome } size={ 24 } />,
-};
-
-const HospitalsOptions = {
-    tabBarLabel: 'Hospitals',
-    tabBarIcon: () => <FontAwesomeIcon icon={ faHospital } size={ 24 } />,
-};
-
-const HealthkardsOptions = {
-    tabBarLabel: 'Healthkards',
-    tabBarIcon: () => <FontAwesomeIcon icon={ faIdCard } size={ 24 } />,
-};
-
-const ProfileOptions = {
-    tabBarLabel: 'Profile',
-    tabBarIcon: () => <FontAwesomeIcon icon={ faUser } size={ 24 } />,
-};
 
 const tabOptions = {
     tabBarLabelPosition: 'below-icon',
     headerShown: false,
     tabBarShowLabel: true,
-    tabBarActiveTintColor: 'black',
-    inactiveTintColor: '#fff',
-    tabBarActiveBackgroundColor: '#E5F7EF',
-    tabBarInactiveTintColor: 'gray',
+    tabBarActiveTintColor: '#000000',
+    tabBarInactiveTintColor: '#FFFFFF',
+    tabBarActiveBackgroundColor: '#FFFFFF',
     tabBarStyle: {
-        backgroundColor: '#00BFA8',
+        backgroundColor: '#303486',
     },
+};
+
+const createTabBarIcon = (icon) => ({ focused }) => (
+    <FontAwesomeIcon
+        icon={ icon }
+        size={ 24 }
+        color={ focused ? '#303486' : '#FFFFFF' }
+    />
+);
+
+const HomeOptions = {
+    tabBarLabel: 'Home',
+    tabBarIcon: createTabBarIcon(faHome),
+};
+
+const HospitalsOptions = {
+    tabBarLabel: 'Hospitals',
+    tabBarIcon: createTabBarIcon(faHospital),
+};
+
+const HealthkardsOptions = {
+    tabBarLabel: 'Healthkards',
+    tabBarIcon: createTabBarIcon(faIdCard),
+};
+
+const ProfileOptions = {
+    tabBarLabel: 'Profile',
+    tabBarIcon: createTabBarIcon(faUser),
 };
 
 // Agent routes
@@ -64,6 +72,7 @@ export const AgentHomeNavigations = () => {
         <Stack.Navigator screenOptions={ { headerShown: false } } initialRouteName="Home">
             <Stack.Screen name="Home" component={ AgentHome } />
             <Stack.Screen name="AgentUserRegistrationPayment" component={ AgentUserPayment } />
+            <Stack.Screen name="UserRenewal" component={ UserRenewal } />
             <Stack.Screen name="HospitalRegister" component={ HospitalRegister } />
             <Stack.Screen name="AgentHospitalRegistration" component={ AgentHospitalRegistration } />
         </Stack.Navigator>

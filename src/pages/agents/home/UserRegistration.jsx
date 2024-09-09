@@ -10,7 +10,8 @@ import { styles } from 'src/styles/style'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faCamera, faCircleDot } from '@fortawesome/free-solid-svg-icons'
 import DatePicker from '@components/DatePicker'
-import { initialUser, plans } from './constants'
+import { initialUser } from './constants'
+import { plans } from 'src/pages/users/healthkards/components/constants'
 import userImagePlaceholder from '@assets/user-placeholder.png'
 import Camera from '@components/Camera'
 
@@ -57,7 +58,7 @@ function UserRegistration() {
 
     return (
         <View style={ { flex: 1 } } className='bg-white'>
-            <Navbar />
+            <Navbar color='blue' />
             <ScrollView style={ { flex: 1 } } className=''>
                 <SafeAreaView style={ { flex: 1 } } className='w-full my-12 items-center justify-center'>
                     <Heading label='USER REGISTRATION FORM' size='text-xl' />
@@ -66,7 +67,7 @@ function UserRegistration() {
                             <FontAwesomeIcon icon={ faCamera } size={ 24 } />
                         </Text>
                     </ImageBackground>
-                    <Camera getImage={ getImage } />
+                    <Camera getImage={ getImage } width='w-10/12' label={ userData.image ? 'Change user image' : 'Upload user image' } />
 
                     <Input placeholder='Name' onChange={ changeHandler } value={ userData.name } property='name' width='w-10/12' />
                     <View className='flex-row justify-between items-center w-10/12'>
@@ -85,11 +86,11 @@ function UserRegistration() {
                         {
                             plans.map((price, index) => {
                                 return (
-                                    <Pressable onPress={ () => priceHandler(price.plan, price.price) } style={ price.plan === userData.payments[0].plan && styles.blueBorder } key={ index } className='w-2/5 border-2 bg-[#E5F7EF] border-gray-400 rounded my-2 flex-row items-center p-2'>
-                                        <FontAwesomeIcon icon={ faCircleDot } color={ price.plan === userData.payments[0].plan ? '#303486' : '#575757' } />
+                                    <Pressable onPress={ () => priceHandler(price.id, price.price) } style={ price.id === userData.payments[0].plan && styles.blueBorder } key={ index } className='w-2/5 border-2 bg-[#E5F7EF] border-gray-400 rounded my-2 flex-row items-center p-2'>
+                                        <FontAwesomeIcon icon={ faCircleDot } color={ price.id === userData.payments[0].plan ? '#303486' : '#575757' } />
                                         <View className='p-1'>
-                                            <Text className={ `font-semibold text-lg ${price.plan === userData.payments[0].plan ? 'text-black' : 'text-gray-500'}` }>{ price.plan }</Text>
-                                            <Text className={ `text-xs ${price.plan === userData.payments[0].plan ? 'text-black' : 'text-gray-500'}` }>₹ { price.price }</Text>
+                                            <Text className={ `font-semibold text-lg ${price.id === userData.payments[0].plan ? 'text-black' : 'text-gray-500'}` }>{ price.id }</Text>
+                                            <Text className={ `text-xs ${price.id === userData.payments[0].plan ? 'text-black' : 'text-gray-500'}` }>₹ { price.price }</Text>
                                         </View>
                                     </Pressable>
                                 )

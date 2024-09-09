@@ -8,22 +8,24 @@ import HospitalCard from './components/HospitalCard';
 import httpService from 'src/httpService';
 import Loading from '@components/Loading';
 import Navbar from '@components/Navbar';
+import ShimmerContainer from '@components/ShimmerContainer';
 
 function Hospital({ route }) {
     const { hospitalId } = route.params;
     const [hospital, setHospital] = useState({});
     const [similarHospitals, setSimilarHospitals] = useState([]);
     const [isLoading, setLoadingStatus] = useState(true);
+    const [imageLoaded, setImageLoaded] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
             setLoadingStatus(true);
             try {
                 const result = await httpService.get('hospitals', `?hospitalId=${hospitalId}`);
-                setHospital(result[0]);
+                setHospital(result.hospitals[0]);
 
                 const hospitals = await httpService.get('hospitals');
-                setSimilarHospitals(hospitals);
+                setSimilarHospitals(hospitals.hospitals);
             } catch (err) {
                 console.log({ err });
             } finally {
@@ -34,17 +36,21 @@ function Hospital({ route }) {
     }, [hospitalId]);
 
     return (
-        <View style={ { flex: 1 } } className='bg-white'>
+        <View style={ { flex: 1 } } className='bg-white '>
             <Navbar />
-            <ScrollView>
-                { !isLoading && hospital.mediaDetails ? (
+            { !isLoading && hospital.mediaDetails ?
+                (<ScrollView>
                     <View>
-                        { hospital.mediaDetails.hospitalImageURL &&
+                        <ShimmerContainer
+                            style={ { height: 200, width: '100%' } }
+                            isVisible={ imageLoaded }
+                        >
                             <Image
-                                source={ { uri: hospital.mediaDetails.hospitalImageURL } }
-                                style={ { height: 200 } }
-                                className='w-full'
-                            /> }
+                                source={ { uri: hospital?.mediaDetails?.hospitalImageURL } }
+                                className='w-full h-full'
+                                onLoad={ () => setImageLoaded(true) }
+                            />
+                        </ShimmerContainer>
                         <View className='p-4'>
                             <Heading
                                 color='blue'
@@ -104,10 +110,11 @@ function Hospital({ route }) {
                             </ScrollView>
                         </View>
                     </View>
+
+                </ScrollView>
                 ) : (
                     <Loading isLoading={ isLoading } />
                 ) }
-            </ScrollView>
         </View>
     );
 }

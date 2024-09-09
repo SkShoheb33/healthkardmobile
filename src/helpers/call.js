@@ -1,26 +1,30 @@
 import { Alert, Linking, Platform } from "react-native";
 
-export const dialPhoneNumber = (phoneNumber = '919347235528') => {
+export const dialPhoneNumber = (phoneNumber = '919876543210') => {
     // Format phone number with the country code
+    const formattedNumber = phoneNumber.startsWith('+') ? phoneNumber : `+${phoneNumber}`;
     const url = Platform.select({
-        ios: `tel:${phoneNumber}`, // iOS uses 'tel:' scheme
-        android: `tel:+${phoneNumber}`, // Android uses 'tel:+<country code>'
+        ios: `telprompt:${formattedNumber}`,
+        android: `tel:${formattedNumber}`,
     });
 
-    console.log('Attempting to open URL:', url); // Log URL for debugging
+    console.log('Attempting to open URL:', url);
 
     Linking.canOpenURL(url)
         .then((supported) => {
             if (supported) {
-                console.log('URL is supported, opening:', url); // Log when URL is supported
+                console.log('URL is supported, opening:', url);
                 return Linking.openURL(url);
             } else {
-                console.log('URL is not supported:', url); // Log if URL is not supported
-                Alert.alert('Error', 'Unable to open dialer on this device');
+                console.log('URL is not supported:', url);
+                throw new Error('Dialer not supported on this device');
             }
         })
+        .then(() => {
+            console.log('Dialer opened successfully');
+        })
         .catch((err) => {
-            console.error('An error occurred:', err); // Log error for debugging
-            Alert.alert('Error', 'An unexpected error occurred while trying to open the dialer');
+            console.error('An error occurred:', err);
+            Alert.alert('Error', `Unable to open dialer: ${err.message}`);
         });
 };

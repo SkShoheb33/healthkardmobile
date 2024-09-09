@@ -10,6 +10,7 @@ import { styles } from 'src/styles/style';
 
 function Header({ location, setLocation, onSearch }) {
   const [showLocation, setShowLocation] = useState(false);
+  const CITIES = ['Narasaraopet', 'Guntur', 'Vijayawada'];
 
   return (
     <View
@@ -40,33 +41,19 @@ function Header({ location, setLocation, onSearch }) {
         {/* Location Options */ }
         { showLocation && (
           <View className="absolute top-0 w-full bg-white rounded-md p-2 shadow-xl border flex-row flex-wrap border-gray-200 left-0">
-            <Pressable
-              onPress={ () => {
-                setShowLocation(false);
-                setLocation('Narasaraopet');
-              } }
-              style={ styles.greenBorder }
-              className="p-2 rounded-md m-2 z-20">
-              <Text className="text-black">Narasaraopet</Text>
-            </Pressable>
-            <Pressable
-              onPress={ () => {
-                setShowLocation(false);
-                setLocation('Guntur');
-              } }
-              style={ styles.greenBorder }
-              className="p-2 rounded-md m-2 z-20">
-              <Text className="text-black">Guntur</Text>
-            </Pressable>
-            <Pressable
-              onPress={ () => {
-                setShowLocation(false);
-                setLocation('Vijayawada');
-              } }
-              style={ styles.greenBorder }
-              className="p-2 rounded-md m-2 z-20">
-              <Text className="text-black">Vijayawada</Text>
-            </Pressable>
+            { CITIES.map((city, index) => {
+              return (
+                <Pressable
+                  onPress={ () => {
+                    setShowLocation(false);
+                    setLocation(city);
+                  } }
+                  style={ styles.greenBorder }
+                  className="p-2 rounded-md m-2 z-20">
+                  <Text className="text-black">{ city }</Text>
+                </Pressable>
+              )
+            }) }
           </View>
         ) }
       </View>

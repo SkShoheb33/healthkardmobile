@@ -22,12 +22,11 @@ function HospitalRegister() {
     }
     return (
         <View style={ { flex: 1 } } className='bg-white'>
-            <Navbar />
+            <Navbar color='blue' />
             { !isOtp && <View style={ { flex: 1 } } className='w-10/12 justify-center mx-auto'>
                 <Heading label='Hospital Registration' size='text-xl' />
                 <Input placeholder='Enter hospital name' />
                 <Input placeholder='Enter email' />
-                <Text className='text-sm'>Terms and condition applied</Text>
                 <Button label='SEND OTP' onPress={ handleSendOTP } />
             </View> }
 

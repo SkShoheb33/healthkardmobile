@@ -4,7 +4,7 @@ import { styles } from '../styles/style'
 
 function Heading({ label, size, color = 'black', padding = 'py-2', style }) {
   return (
-    <Text style={ styles[`${color}Text`] } className={ `font-semibold ${size} ${padding} ${style}` }>{ label }</Text>
+    <Text style={ styles[`${color}Text`] } className={ `font-semibold ${size} ${padding} ${style} mx-1` }>{ label }</Text>
   )
 }
 

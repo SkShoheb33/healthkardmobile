@@ -13,14 +13,20 @@ import Navbar from './components/Navbar'
 import { images, ads } from './constants'
 
 function Home() {
-    const [hospitals, setHospitals] = useState([]);
+    const [hospitalData, setHospitalData] = useState({
+        hospitals: [],
+        currentPage: 0,
+        totalPages: 0,
+        totalHospitals: 0
+    });
     const navigation = useNavigation();
+    const ITEMS_PER_PAGE = 10;
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const result = await httpService.get('hospitals');
-                setHospitals(result);
+                const result = await httpService.get(`hospitals?page=${1}&limit=${ITEMS_PER_PAGE}`);
+                setHospitalData(result);
             } catch (err) {
                 console.log({ err });
             }
@@ -41,18 +47,23 @@ function Home() {
                     <Text className='font-semibold text-xl p-4 text-black'>
                         What are you Looking for?
                     </Text>
-                    <Organs images={ images } />
+                    <Organs images={ images } onClick={ (image) => navigation.navigate('HospitalsNavigation', { image }) } />
+
                     <Heading label='Advertisement' size='text-md' />
                     <Advertisements ads={ ads } />
                     <Heading label="Top Picks for You" size='text-xl' />
                     <ScrollView horizontal className='w-full p-2'>
-                        { hospitals.slice(0, 3).map((hospital, index) => (
-                            <HospitalCard
-                                key={ index }
-                                hospital={ hospital }
-                                horizontal={ true }
-                            />
-                        )) }
+                        { hospitalData.hospitals.length > 0 ? (
+                            hospitalData.hospitals.slice(0, 3).map((hospital, index) => (
+                                <HospitalCard
+                                    key={ index }
+                                    hospital={ hospital }
+                                    horizontal={ true }
+                                />
+                            ))
+                        ) : (
+                            <Text>No hospitals available</Text>
+                        ) }
                     </ScrollView>
                     <Button label='Explore All' color={ styles.blue } style='w-11/12 p-4 mx-auto' onPress={ () => navigation.navigate('HospitalsNavigation') } />
                 </View>

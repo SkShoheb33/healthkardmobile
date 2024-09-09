@@ -57,7 +57,7 @@ function HospitalRegistration() {
   }
   return (
     <View style={ { flex: 1 } } className='bg-white'>
-      <Navbar />
+      <Navbar color='blue' />
       <ScrollView style={ { flex: 1 } }>
         { currentForm === 'HospitalDetails' && <HospitalDetails hospital={ hospital } setHospital={ setHospital } /> }
         { currentForm === 'DoctorsDetails' && <DoctorsDetails hospital={ hospital } setHospital={ setHospital } /> }

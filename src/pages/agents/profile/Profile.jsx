@@ -1,27 +1,60 @@
 import React, { useEffect, useState } from 'react'
 import { Image, TouchableOpacity, ScrollView, Text, View } from 'react-native'
+import { useNavigation } from '@react-navigation/native'
 import Navbar from '@components/Navbar'
 import logo from 'src/assets/Logo.png'
 import { styles } from 'src/styles/style'
-import { getYears, hospitalsAdded, usersAdded } from './constants'
+import { getYears } from './constants'
 import Select from '@components/Select'
+import httpService from 'src/httpService'
+import { AGENT_ID } from '../constants'
+import { countByYearAndMonth, formatData } from 'src/helpers/formatData'
+
 function Profile() {
+    const navigation = useNavigation();
+    const [agentData, setAgentData] = useState(null);
+    const [totalAddons, setTotalAddons] = useState([
+        { label: 'Total Hospitals Onboarded', value: 0 },
+        { label: 'Total Users Onboarded', value: 0 },
+    ]);
+
+    useEffect(() => {
+        const fetchAgentData = async () => {
+            const result = await httpService.get(`agents/${AGENT_ID}`);
+            setAgentData(result);
+            setTotalAddons([
+                { label: 'Total Hospitals Onboarded', value: result.hospitalsAdded.length },
+                { label: 'Total Users Onboarded', value: result.usersAdded.length },
+            ]);
+        };
+        fetchAgentData();
+    }, []);
+
+    const handleLogout = () => {
+        navigation.navigate('First');
+    };
+
     return (
         <View style={ { flex: 1 } } className='bg-white' >
-            <Navbar />
+            <Navbar color='blue' />
             <ScrollView style={ { flex: 1 } } className='p-4'>
-                <Header />
+                <Header name={ agentData?.name } email={ agentData?.email } agentId={ agentData?.agentID } />
                 <View className='my-4 flex-row justify-between'>
-                    <View className='w-[45%] p-2 flex-col items-center justify-center border border-gray-300 shadow-md rounded-md'>
-                        <Text className='text-center text-black font-bold text-xl'>Total Hospitals Onboarded</Text>
-                        <Text style={ styles.greenText } className='text-2xl font-bold'>5</Text>
-                    </View>
-                    <View className='w-[45%] p-2 flex-col items-center justify-center border border-gray-300 shadow-md rounded-md'>
-                        <Text className='text-center text-black font-bold text-xl'>Total Users Onboarded</Text>
-                        <Text style={ styles.greenText } className='text-2xl font-bold'>20</Text>
-                    </View>
+                    { totalAddons.map((addon, index) => (
+                        <View key={ index } className='w-[45%] p-2 flex-col items-center justify-center border border-gray-300 shadow-md rounded-md'>
+                            <Text className='text-center text-black font-semibold text-lg'>{ addon.label }</Text>
+                            <Text style={ styles.greenText } className='text-2xl font-bold'>{ addon.value }</Text>
+                        </View>
+                    )) }
                 </View>
-                <JoiningPanel />
+                { agentData?.usersAdded && agentData?.hospitalsAdded && <JoiningPanel usersAdded={ agentData?.usersAdded } hospitalsAdded={ agentData?.hospitalsAdded } /> }
+
+                <TouchableOpacity
+                    onPress={ handleLogout }
+                    className='mt-6 bg-red-500 py-3 px-6 rounded-md self-center'
+                >
+                    <Text className='text-white font-bold text-lg'>Logout</Text>
+                </TouchableOpacity>
             </ScrollView>
         </View>
     )
@@ -29,72 +62,53 @@ function Profile() {
 
 export default Profile
 
-function Header() {
+function Header({ name = 'Agent name', email = 'Agent email', agentId = 'Agent id' }) {
     return (
         <View className='border border-gray-300 shadow-md p-2 rounded-md flex-row items-center bg-white'>
             <View className='w-1/3 p-2'>
                 <Image source={ logo } />
-                <TouchableOpacity className='w-full' style={ { width: 70, } }>
-                    <Text style={ styles.blueText } className='text-xs w-full text-center'>Edit profile</Text>
-                </TouchableOpacity>
             </View>
             <View className='w-2/3'>
                 <View className='flex-row items-center p-1'>
                     <Text className='font-semibold text-md text-black'>Name : </Text>
-                    <Text className='text-md text-black'>Agent name</Text>
+                    <Text className='text-md text-black'>{ name }</Text>
                 </View>
                 <View className='flex-row items-center p-1'>
                     <Text className='font-semibold text-md text-black'>AgentId : </Text>
-                    <Text className='text-md text-black'>Agent id</Text>
+                    <Text className='text-md text-black'>{ agentId }</Text>
                 </View>
                 <View className='flex-row items-center p-1'>
                     <Text className='font-semibold text-md text-black'>Email : </Text>
-                    <Text className='text-md text-black'>Agent email</Text>
+                    <Text className='text-md text-black'>{ email }</Text>
                 </View>
             </View>
         </View>
     )
 }
 
-function JoiningPanel() {
+function JoiningPanel({ usersAdded, hospitalsAdded }) {
     const [isUsersPane, setIsUsersPane] = useState(true);
     const [year, setYear] = useState(new Date().getFullYear());
     const [years, setYears] = useState([]);
-    const countByYearAndMonth = (data, isUsersPane) => {
-        const userCountByYearAndMonth = {};
-
-        data.forEach(entry => {
-            const [day, month, year] = entry.date.split(' ');
-            if (!userCountByYearAndMonth[year]) {
-                userCountByYearAndMonth[year] = {};
-            }
-            if (!userCountByYearAndMonth[year][month]) {
-                userCountByYearAndMonth[year][month] = 0;
-            }
-            if (isUsersPane) {
-                userCountByYearAndMonth[year][month] += entry.users.length;
-            } else {
-                userCountByYearAndMonth[year][month] += entry.hospitals.length;
-            }
-        });
-        return userCountByYearAndMonth;
-    };
-
     const [counts, setCounts] = useState({});
     useEffect(() => {
         if (isUsersPane) {
-            const usersCount = countByYearAndMonth(usersAdded, isUsersPane);
+            const usersCount = countByYearAndMonth(formatData(usersAdded, 'healthID') || {}, true);
             const range = getYears(usersCount);
             setYears(range);
             setCounts(usersCount);
         } else {
-            const hospitalCounts = countByYearAndMonth(hospitalsAdded, isUsersPane);
+            const hospitalCounts = countByYearAndMonth(formatData(hospitalsAdded, 'hospitalId') || {}, false);
             const range = getYears(hospitalCounts);
             setYears(range);
             setCounts(hospitalCounts);
         }
 
     }, [usersAdded, isUsersPane]);
+
+    if (!usersAdded || !hospitalsAdded) {
+        return <Text>Loading...</Text>
+    }
 
     return (
         <View>

@@ -1,11 +1,10 @@
 import React from 'react'
 import { Text, TouchableOpacity, View } from 'react-native'
 import ImagePicker from 'react-native-image-crop-picker';
-import Button from './Button';
 import RNFS from 'react-native-fs';
 import { styles } from 'src/styles/style';
 
-function Camera({ label, getImage, width }) {
+function Camera({ label = 'Upload or Take Picture', getImage, width = 'w-10/12' }) {
 
   async function convertImageToBase64(image) {
     try {
@@ -15,21 +14,41 @@ function Camera({ label, getImage, width }) {
       return null;
     }
   }
-  const openCamera = () => {
+
+  const openGallery = () => {
     ImagePicker.openPicker({
       width: 300,
       height: 400,
       cropping: true
-    }).then(image => {
-      convertImageToBase64(image).then((base64Image) => {
-        getImage(base64Image);
-      });
+    }).then(processImage);
+  }
+
+  const openCamera = () => {
+    ImagePicker.openCamera({
+      width: 300,
+      height: 400,
+      cropping: true
+    }).then(processImage);
+  }
+
+  const processImage = (image) => {
+    convertImageToBase64(image).then((base64Image) => {
+      getImage(base64Image);
     });
   }
+
   return (
-    <TouchableOpacity onPress={ openCamera }>
-      <Text style={ styles.blueText }>Change Picture</Text>
-    </TouchableOpacity>
+    <View className={ `${width} items-center justify-center` }>
+      <Text style={ styles.blueText }>{ label }</Text>
+      <View className="flex-row justify-around w-full mt-2">
+        <TouchableOpacity onPress={ openGallery } style={ styles.button }>
+          <Text style={ styles.buttonText }>Upload Picture</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={ openCamera } style={ styles.button }>
+          <Text style={ styles.buttonText }>Take Picture</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
   )
 }
 

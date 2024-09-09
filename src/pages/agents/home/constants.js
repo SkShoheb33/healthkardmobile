@@ -76,12 +76,12 @@ export const initialUser = {
     ]
 }
 
-export const plans = [
-    { plan: '1 month', price: 99 },
-    { plan: '3 months', price: 299 },
-    { plan: '6 months', price: 499 },
-    { plan: '1 year', price: 899 },
-]
+// export const plans = [
+//     { plan: '1 month', price: 99 },
+//     { plan: '3 months', price: 299 },
+//     { plan: '6 months', price: 499 },
+//     { plan: '1 year', price: 899 },
+// ]
 export const WELCOME = 'Welcome';
 export const PROGRESS = 'Your Progress of';
 export const TARGET = 'Target';

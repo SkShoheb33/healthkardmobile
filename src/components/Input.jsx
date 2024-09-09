@@ -5,7 +5,7 @@ import { styles } from '../styles/style'
 
 function Input({ placeholder, value, property = '', onChange = () => { }, width, onClick, onClickLable = 'verify', inputMode = 'text', error = { message: '', status: false } }) {
   return (
-    <View className={ `${width}` }>
+    <View className={ `${width} mx-auto` }>
       <View className={ `w-full justify-between items-center h-12 my-2 bg-white flex flex-row px-4 rounded border border-gray-200` }>
         <TextInput inputMode={ inputMode } placeholder={ placeholder } placeholderTextColor='#575757' value={ value } onChangeText={ (value) => onChange(property, value) } className={ `max-w-full ${onClick ? 'w-9/12' : 'w-full'} text-black` } />
         { onClick && <TouchableOpacity onPress={ onClick } className='bg-transparent'>

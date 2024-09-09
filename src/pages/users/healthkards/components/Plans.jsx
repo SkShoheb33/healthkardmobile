@@ -8,7 +8,7 @@ import { styles } from 'src/styles/style'
 function Plans({ plan, changePlan = () => { } }) {
     return (
         <View>
-            <Text className='my-4 text-xl text-center'>Choose your plan</Text>
+            <Text className='my-4 text-xl text-center text-black'>Choose your plan</Text>
             { plans.map((p) => (
                 <TouchableOpacity
                     key={ p.id }
@@ -18,8 +18,8 @@ function Plans({ plan, changePlan = () => { } }) {
                 >
                     <FontAwesomeIcon icon={ faCircleDot } color={ plan === p.id ? '#303486' : '#00BFA8' } />
                     <View className='mx-4'>
-                        <Text className='text-xl'>{ p.label } <Text className='text-gray-400'>{ p.price }</Text></Text>
-                        <Text className='text-xs'>Visit all hospitals associated with healthkard for { p.duration }</Text>
+                        <Text className='text-xl text-black'>{ p.label } <Text className='text-gray-400 text-sm'>{ p.price }</Text></Text>
+                        <Text className='text-xs text-black'>Visit all hospitals associated with healthkard for { p.duration }</Text>
                     </View>
                 </TouchableOpacity>
             )) }

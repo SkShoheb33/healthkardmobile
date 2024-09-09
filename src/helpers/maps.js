@@ -1,8 +1,6 @@
 import { Linking, Alert } from "react-native";
 
-export const openMap = () => {
-    const lat = 37.7749;
-    const lng = -122.4194;
+export const openMap = (lat = -37.7749, lng = -122.4194) => {
 
     // Define URLs for Google Maps and Apple Maps
     const googleMapsUrl = `google.navigation:q=${lat},${lng}`;

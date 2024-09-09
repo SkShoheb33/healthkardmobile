@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Image, ScrollView, Text, View } from 'react-native'
 import Navbar from 'src/components/Navbar'
 import img1 from 'src/assets/agentHome.png'
@@ -8,22 +8,31 @@ import { faHospital, faUserPlus } from '@fortawesome/free-solid-svg-icons'
 import { useNavigation } from '@react-navigation/native'
 import { PROGRESS, TARGET, WELCOME } from './constants'
 import { HEALTHKARDS, HOSPITALS } from '../../strings'
+import httpService from 'src/httpService'
+import { AGENT_ID } from '../constants'
 
 function Home() {
     const navigation = useNavigation();
-    const agentInfo = {
-        name: 'Shaik Shoheb'
-    }
+    const [agentInfo, setAgentInfo] = useState({})
+
+    useEffect(() => {
+        const fetchAgentData = async () => {
+            const result = await httpService.get(`agents/${AGENT_ID}`);
+            setAgentInfo(result);
+        };
+        fetchAgentData();
+    }, []);
+
 
     return (
         <View style={ { flex: 1 } } className=''>
-            <Navbar />
+            <Navbar color='blue' />
             <ScrollView style={ { flex: 1 } } className='h-full bg-white'>
                 <View style={ { flex: 1 } } className='w-full items-center justify-center h-full my-4'>
                     <View className='flex-row items-center justify-center gap-2 my-4 w-full p-2'>
                         <View className='w-1/2'>
                             <Text className='text-3xl font-bold text-black'>{ WELCOME },</Text>
-                            <Text className='text-xl font-bold  text-black'>{ agentInfo.name }</Text>
+                            <Text className='text-xl font-bold  text-black'>{ agentInfo?.name }</Text>
                         </View>
                         <View >
                             <Image source={ img1 } />
@@ -46,8 +55,9 @@ function Home() {
                         </View>
                     </View>
                     <View className='w-full items-center  my-4'>
-                        <Button color='green' style='w-11/12 p-4' label='Register user' icon={ faUserPlus } onPress={ () => navigation.navigate('AgentUserRegistrationPayment') } />
-                        <Button color='green' style='w-11/12 p-4' label='Onboard hospital' icon={ faHospital } onPress={ () => navigation.navigate('HospitalRegister') } />
+                        <Button color='blue' style='w-11/12 p-4' label='Register user' icon={ faUserPlus } iconSize={ 18 } onPress={ () => navigation.navigate('AgentUserRegistrationPayment') } />
+                        <Button color='blue' style='w-11/12 p-4' label='User renewal' icon={ faUserPlus } iconSize={ 18 } onPress={ () => navigation.navigate('UserRenewal') } />
+                        <Button color='blue' style='w-11/12 p-4' label='Onboard hospital' icon={ faHospital } iconSize={ 18 } onPress={ () => navigation.navigate('HospitalRegister') } />
                     </View>
                 </View>
             </ScrollView>
