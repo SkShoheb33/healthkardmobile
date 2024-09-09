@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { Image, ScrollView, Text, View } from 'react-native'
-import { useNavigation } from '@react-navigation/native';
+import { Image, ScrollView, Text, View, BackHandler } from 'react-native'
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { styles } from 'src/styles/style'
 import refer from 'src/assets/PNG/refer.png'
 import Organs from './components/Organs'
@@ -9,7 +9,7 @@ import HospitalCard from '../hospitals/components/HospitalCard'
 import Heading from '@components/Heading'
 import Button from '@components/Button'
 import httpService from 'src/httpService'
-import Navbar from './components/Navbar'
+import Navbar from '@components/Navbar'
 import { images, ads } from './constants'
 
 function Home() {
@@ -33,6 +33,24 @@ function Home() {
         };
         fetchData();
     }, []);
+
+    useFocusEffect(
+        React.useCallback(() => {
+            const onBackPress = () => {
+                // Exit the app when back is pressed
+                BackHandler.exitApp();
+                return true; // Prevent default behavior
+            };
+
+            // Add event listener for hardware back press
+            BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+            return () => {
+                // Remove the event listener on unmount
+                BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+            };
+        }, [])
+    );
 
     return (
         <View style={ { flex: 1 } }>

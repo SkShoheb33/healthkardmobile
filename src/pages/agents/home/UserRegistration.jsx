@@ -46,14 +46,12 @@ function UserRegistration() {
 
         }))
     }
-    const onSuccess = () => {
 
-    }
-    const onFailure = () => {
-
-    }
     const handlePayAndSubmit = () => {
-        navigation.navigate('Pay', { plan: userData.payments[0].plan, onSuccess: onSuccess, onFailure: onFailure });
+        navigation.navigate('Pay', {
+            plan: userData.payments[0].plan,
+            healthId: userData.healthId
+        });
     }
 
     return (
@@ -67,7 +65,7 @@ function UserRegistration() {
                             <FontAwesomeIcon icon={ faCamera } size={ 24 } />
                         </Text>
                     </ImageBackground>
-                    <Camera getImage={ getImage } width='w-10/12' label={ userData.image ? 'Change user image' : 'Upload user image' } />
+                    <Camera getImage={ getImage } width='w-10/12' />
 
                     <Input placeholder='Name' onChange={ changeHandler } value={ userData.name } property='name' width='w-10/12' />
                     <View className='flex-row justify-between items-center w-10/12'>

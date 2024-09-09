@@ -9,6 +9,7 @@ import Select from '@components/Select'
 import httpService from 'src/httpService'
 import { AGENT_ID } from '../constants'
 import { countByYearAndMonth, formatData } from 'src/helpers/formatData'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 function Profile() {
     const navigation = useNavigation();
@@ -31,6 +32,7 @@ function Profile() {
     }, []);
 
     const handleLogout = () => {
+        AsyncStorage.removeItem('agentToken');
         navigation.navigate('First');
     };
 

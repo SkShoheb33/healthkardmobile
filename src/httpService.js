@@ -9,8 +9,8 @@ const joinURL = (base, url) => `${base}/${url}`;
 
 class HttpService {
     constructor() {
-        this.domain = 'http://192.168.0.103:3002';
-        // this.domain = 'https://backend-green-tau.vercel.app/';
+        // this.domain = 'http://192.168.0.103:3002';
+        this.domain = 'https://backend-green-tau.vercel.app/';
     }
 
     async request(url, method = 'POST', data = null) {

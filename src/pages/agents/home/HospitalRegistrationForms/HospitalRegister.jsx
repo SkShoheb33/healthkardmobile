@@ -27,7 +27,7 @@ function HospitalRegister() {
                 <Heading label='Hospital Registration' size='text-xl' />
                 <Input placeholder='Enter hospital name' />
                 <Input placeholder='Enter email' />
-                <Button label='SEND OTP' onPress={ handleSendOTP } />
+                <Button label='SEND OTP' color='blue' onPress={ handleSendOTP } />
             </View> }
 
             { isOtp && <View style={ { flex: 1 } } className='w-10/12 justify-center mx-auto'>

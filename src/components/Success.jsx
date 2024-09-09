@@ -10,7 +10,6 @@ function Success() {
 
     return (
         <View style={ { flex: 1 } } className='bg-white'>
-            <Navbar />
             <View style={ { flex: 1 } } className=' items-center justify-center'>
                 <Image source={ succesImage } style={ { width: 120, height: 120 } } />
                 <Text className='text-2xl text-green-500 font-bold my-2'>Successfully Registered</Text>

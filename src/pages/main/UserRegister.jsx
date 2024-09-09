@@ -167,12 +167,15 @@ function UserRegister() {
             value={ userRegisterForm.password }
             placeholder='Enter Password'
             onChange={ onChangeHandler }
+            inputMode='password'
             width='w-10/12'
           />
           <Input
             property='confrim_password'
+            value={ confirmPassword }
             placeholder='Confrim password'
             width='w-10/12'
+            inputMode='password'
             onChange={ (property, value) => setConfirmPassword(value) }
           />
           <Button

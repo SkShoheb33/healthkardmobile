@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { Image, ScrollView, Text, View } from 'react-native'
+import { BackHandler, Image, ScrollView, Text, View } from 'react-native'
 import Navbar from 'src/components/Navbar'
 import img1 from 'src/assets/agentHome.png'
 import { styles } from 'src/styles/style'
 import Button from 'src/components/Button'
 import { faHospital, faUserPlus } from '@fortawesome/free-solid-svg-icons'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useFocusEffect } from '@react-navigation/native'
 import { PROGRESS, TARGET, WELCOME } from './constants'
 import { HEALTHKARDS, HOSPITALS } from '../../strings'
 import httpService from 'src/httpService'
@@ -22,6 +22,25 @@ function Home() {
         };
         fetchAgentData();
     }, []);
+
+    useFocusEffect(
+        React.useCallback(() => {
+            const onBackPress = () => {
+                // Exit the app when back is pressed
+                BackHandler.exitApp();
+                return true; // Prevent default behavior
+            };
+
+            // Add event listener for hardware back press
+            BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+            return () => {
+                // Remove the event listener on unmount
+                BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+            };
+        }, [])
+    );
+
 
 
     return (
@@ -55,7 +74,7 @@ function Home() {
                         </View>
                     </View>
                     <View className='w-full items-center  my-4'>
-                        <Button color='blue' style='w-11/12 p-4' label='Register user' icon={ faUserPlus } iconSize={ 18 } onPress={ () => navigation.navigate('AgentUserRegistrationPayment') } />
+                        <Button color='blue' style='w-11/12 p-4' label='Register user' icon={ faUserPlus } iconSize={ 18 } onPress={ () => navigation.navigate('UserRegistration') } />
                         <Button color='blue' style='w-11/12 p-4' label='User renewal' icon={ faUserPlus } iconSize={ 18 } onPress={ () => navigation.navigate('UserRenewal') } />
                         <Button color='blue' style='w-11/12 p-4' label='Onboard hospital' icon={ faHospital } iconSize={ 18 } onPress={ () => navigation.navigate('HospitalRegister') } />
                     </View>

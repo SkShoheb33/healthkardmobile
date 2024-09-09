@@ -1,10 +1,33 @@
-import React from 'react'
-import { Text, TouchableOpacity, View } from 'react-native'
+import React, { useEffect } from 'react'
+import { Text, TouchableOpacity, View, Platform, Alert } from 'react-native'
 import ImagePicker from 'react-native-image-crop-picker';
 import RNFS from 'react-native-fs';
 import { styles } from 'src/styles/style';
+import { request, PERMISSIONS, RESULTS } from 'react-native-permissions';
 
-function Camera({ label = 'Upload or Take Picture', getImage, width = 'w-10/12' }) {
+function Camera({ getImage, width = 'w-10/12' }) {
+  useEffect(() => {
+    requestCameraPermission();
+  }, []);
+
+  const requestCameraPermission = async () => {
+    try {
+      const result = await request(
+        Platform.OS === 'ios'
+          ? PERMISSIONS.IOS.CAMERA
+          : PERMISSIONS.ANDROID.CAMERA
+      );
+      if (result !== RESULTS.GRANTED) {
+        Alert.alert(
+          "Permission Required",
+          "Camera permission is required to take pictures.",
+          [{ text: "OK" }]
+        );
+      }
+    } catch (error) {
+      console.error("Error requesting camera permission:", error);
+    }
+  };
 
   async function convertImageToBase64(image) {
     try {
@@ -37,17 +60,21 @@ function Camera({ label = 'Upload or Take Picture', getImage, width = 'w-10/12' 
     });
   }
 
+  const handleOpenCamera = () => {
+    requestCameraPermission().then(() => {
+      openCamera();
+    });
+  };
+
   return (
-    <View className={ `${width} items-center justify-center` }>
-      <Text style={ styles.blueText }>{ label }</Text>
-      <View className="flex-row justify-around w-full mt-2">
-        <TouchableOpacity onPress={ openGallery } style={ styles.button }>
-          <Text style={ styles.buttonText }>Upload Picture</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={ openCamera } style={ styles.button }>
-          <Text style={ styles.buttonText }>Take Picture</Text>
-        </TouchableOpacity>
-      </View>
+    <View className={ `${width} flex-row items-center justify-center` }>
+      <TouchableOpacity onPress={ openGallery } style={ styles.button }>
+        <Text style={ styles.blueText }>Upload Picture</Text>
+      </TouchableOpacity>
+      <Text className='mx-2'>|</Text>
+      <TouchableOpacity onPress={ handleOpenCamera } style={ styles.button }>
+        <Text style={ styles.blueText }>Take Picture</Text>
+      </TouchableOpacity>
     </View>
   )
 }

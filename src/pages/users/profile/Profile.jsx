@@ -25,8 +25,7 @@ function Profile() {
 
     const handleLogout = async () => {
         try {
-            await AsyncStorage.removeItem('userPhoneNumber');
-            // Navigate to the login screen or wherever you want after logout
+            await AsyncStorage.removeItem('userToken');
             navigation.reset({
                 index: 0,
                 routes: [{ name: 'First' }],

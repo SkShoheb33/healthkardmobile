@@ -1,5 +1,5 @@
 import AgentHome from 'src/pages/agents/home/Home'
-import AgentUserRegistration from 'src/pages/agents/home/UserRegistration'
+import UserRegistration from 'src/pages/agents/home/UserRegistration'
 import AgentHospitalRegistration from 'src/pages/agents/home/HospitalRegistration';
 import HospitalRegister from 'src/pages/agents/home/HospitalRegistrationForms/HospitalRegister';
 import AgentHospitals from 'src/pages/agents/hospitals/Hospitals';
@@ -11,6 +11,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { faHome, faHospital, faIdCard, faUser } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import UserRenewal from 'src/pages/agents/home/UserRenewal/UserRenewal';
+import Payment from '@components/Payment';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -71,20 +72,11 @@ export const AgentHomeNavigations = () => {
     return (
         <Stack.Navigator screenOptions={ { headerShown: false } } initialRouteName="Home">
             <Stack.Screen name="Home" component={ AgentHome } />
-            <Stack.Screen name="AgentUserRegistrationPayment" component={ AgentUserPayment } />
+            <Stack.Screen name="UserRegistration" component={ UserRegistration } />
             <Stack.Screen name="UserRenewal" component={ UserRenewal } />
             <Stack.Screen name="HospitalRegister" component={ HospitalRegister } />
             <Stack.Screen name="AgentHospitalRegistration" component={ AgentHospitalRegistration } />
+            <Stack.Screen name="Pay" component={ Payment } />
         </Stack.Navigator>
     );
 };
-
-// agent user payment
-export const AgentUserPayment = () => {
-    return (
-        <Stack.Navigator screenOptions={ { headerShown: false } } initialRouteName="AgentUserRegistration">
-            <Stack.Screen name="AgentUserRegistration" component={ AgentUserRegistration } />
-            <Stack.Screen name="Pay" component={ Pay } />
-        </Stack.Navigator>
-    )
-}

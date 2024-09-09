@@ -2,7 +2,7 @@ import { faCircleDot } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import React from 'react'
 import { Text, TouchableOpacity, View } from 'react-native'
-import { plans } from './constants'
+import { plans } from '../pages/users/healthkards/components/constants'
 import { styles } from 'src/styles/style'
 
 function Plans({ plan, changePlan = () => { } }) {

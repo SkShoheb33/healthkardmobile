@@ -14,26 +14,11 @@ function UserLogin() {
   const [number, setNumber] = useState('');
   const [password, setPassword] = useState('');
 
-  useEffect(() => {
-    checkStoredNumber();
-  }, []);
-
-  const checkStoredNumber = async () => {
-    try {
-      const storedNumber = await AsyncStorage.getItem('userPhoneNumber');
-      if (storedNumber) {
-        navigation.replace('user');
-      }
-    } catch (error) {
-      console.log('Error checking stored number:', error);
-    }
-  };
-
   const login = async () => {
     try {
       const response = await httpService.post('auth/user-login', { number, password });
       if (response.message === 'Verified') {
-        await AsyncStorage.setItem('userPhoneNumber', number);
+        await AsyncStorage.setItem('userToken', `${response.name}-${response.id}`);
         navigation.replace('user');
       } else if (response.message === 'Password incorrect') {
         Alert.alert('Error', 'Please enter the correct password');
@@ -86,6 +71,7 @@ function UserLogin() {
             property='password'
             width='w-10/12'
             value={ password }
+            inputMode='password'
             onChange={ handleChangeNumber }
           />
           <Button

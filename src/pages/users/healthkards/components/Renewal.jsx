@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { SafeAreaView, View } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
-import Plans from './Plans'
+import Plans from '@components/Plans'
 import Navbar from '@components/Navbar'
 import Button from '@components/Button'
 

@@ -6,7 +6,7 @@ import { faAnglesLeft, faArrowLeftLong, faArrowRightLong, faCamera, faCircleDot 
 import { useNavigation } from '@react-navigation/native'
 import { styles } from '../../../../styles/style'
 import { KeyboardAvoidingView } from 'react-native'
-import Plans from './Plans'
+import Plans from '@components/Plans'
 import Navbar from '@components/Navbar'
 import { initialUser, plans } from './constants'
 import httpService from 'src/httpService'

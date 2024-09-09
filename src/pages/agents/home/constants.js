@@ -55,6 +55,7 @@ export const initialHospitals = {
 
 export const initialUser = {
     name: '',
+    healthId: `HK24${Math.floor(1000000 + Math.random() * 9000000)}`,
     image: '',
     email: '',
     number: '',

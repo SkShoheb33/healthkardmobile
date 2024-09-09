@@ -11,8 +11,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { faHome, faHospital, faIdCard, faUser } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import Renewal from 'src/pages/users/healthkards/components/Renewal';
-import { Pay } from './Pay';
 import TermsAndCondition from 'src/pages/users/profile/components/TermsAndConditions';
+import Payment from '@components/Payment';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -70,7 +70,7 @@ export const HealthkardsNavigation = () => {
             <Stack.Screen name="Healthkard" component={ Healthkard } />
             <Stack.Screen name="NewKard" component={ NewKard } />
             <Stack.Screen name="Plans" component={ Renewal } />
-            <Stack.Screen name='Pay' component={ Pay } />
+            <Stack.Screen name='Pay' component={ Payment } />
         </Stack.Navigator>
     );
 };

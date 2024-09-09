@@ -1,12 +1,32 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Image, Text, TouchableOpacity } from 'react-native';
 import login from 'src/assets/mobile/login.png';
 import { styles } from 'src/styles/style';
 import Button from '@components/Button';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function First() {
   const navigation = useNavigation();
+
+  useEffect(() => {
+    checkStoredNumber();
+  }, []);
+
+  const checkStoredNumber = async () => {
+    try {
+      const userToken = await AsyncStorage.getItem('userToken');
+      if (userToken) {
+        navigation.replace('user');
+      }
+      const agentToken = await AsyncStorage.getItem('agentToken');
+      if (agentToken) {
+        navigation.replace('agent');
+      }
+    } catch (error) {
+      console.log('Error checking stored number:', error);
+    }
+  };
 
   return (
     <View style={ { flex: 1 } } className='relative'>
