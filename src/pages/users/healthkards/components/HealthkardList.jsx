@@ -49,8 +49,7 @@ const Healthkard = ({ kard }) => {
                 isVisible={ imageLoaded }>
                 <Image
                     source={ { uri: kard.image } }
-                    className='w-10 h-10 border rounded-full'
-                    style={ { width: 80, height: 80 } }
+                    className='w-full h-full border rounded-full'
                     onLoad={ () => setImageLoaded(true) }
                 />
 

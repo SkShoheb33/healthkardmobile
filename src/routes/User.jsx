@@ -13,6 +13,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import Renewal from 'src/pages/users/healthkards/components/Renewal';
 import TermsAndCondition from 'src/pages/users/profile/components/TermsAndConditions';
 import Payment from '@components/Payment';
+import { UserSharedDataProvider } from 'src/context/UserSharedDataContext';
+import HelpAndFeedback from 'src/pages/users/profile/components/HelpAndFeedback';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -54,12 +56,14 @@ const tabOptions = {
 // User routes
 export const User = () => {
     return (
-        <Tab.Navigator screenOptions={ tabOptions } initialRouteName='Home'>
-            <Tab.Screen name="Home" component={ Home } options={ HomeOptions } />
-            <Tab.Screen name="HospitalsNavigation" component={ HospitalsNavigation } options={ HospitalsOptions } />
-            <Tab.Screen name="HealthkardsNavigation" component={ HealthkardsNavigation } options={ HealthkardsOptions } />
-            <Tab.Screen name="ProfileNavigation" component={ ProfileNavigation } options={ ProfileOptions } />
-        </Tab.Navigator>
+        <UserSharedDataProvider>
+            <Tab.Navigator screenOptions={ tabOptions } initialRouteName='Home'>
+                <Tab.Screen name="Home" component={ Home } options={ HomeOptions } />
+                <Tab.Screen name="HospitalsNavigation" component={ HospitalsNavigation } options={ HospitalsOptions } />
+                <Tab.Screen name="HealthkardsNavigation" component={ HealthkardsNavigation } options={ HealthkardsOptions } />
+                <Tab.Screen name="ProfileNavigation" component={ ProfileNavigation } options={ ProfileOptions } />
+            </Tab.Navigator>
+        </UserSharedDataProvider>
     );
 };
 
@@ -69,7 +73,7 @@ export const HealthkardsNavigation = () => {
             <Stack.Screen name="Healthkards" component={ Healthkards } />
             <Stack.Screen name="Healthkard" component={ Healthkard } />
             <Stack.Screen name="NewKard" component={ NewKard } />
-            <Stack.Screen name="Plans" component={ Renewal } />
+            <Stack.Screen name="Renewal" component={ Renewal } />
             <Stack.Screen name='Pay' component={ Payment } />
         </Stack.Navigator>
     );
@@ -89,6 +93,7 @@ export const ProfileNavigation = () => {
         <Stack.Navigator screenOptions={ { headerShown: false } } initialRouteName="Profile">
             <Stack.Screen name="Profile" component={ Profile } />
             <Stack.Screen name="RenewalHistory" component={ RenewalHistory } />
+            <Stack.Screen name="Feedback" component={ HelpAndFeedback } />
             <Stack.Screen name="TermsAndCondition" component={ TermsAndCondition } />
         </Stack.Navigator>
     )

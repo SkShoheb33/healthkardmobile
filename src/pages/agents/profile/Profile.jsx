@@ -33,6 +33,8 @@ function Profile() {
 
     const handleLogout = () => {
         AsyncStorage.removeItem('agentToken');
+        AsyncStorage.removeItem('agentName');
+        AsyncStorage.removeItem('agentId');
         navigation.navigate('First');
     };
 

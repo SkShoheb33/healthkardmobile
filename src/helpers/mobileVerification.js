@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import auth from '@react-native-firebase/auth';
 import { Alert } from 'react-native';
 
@@ -23,3 +24,8 @@ export async function verifyOTP(confirmation, code) {
         throw error;
     }
 }
+
+export async function getUserPhoneNumber() {
+    const user = await AsyncStorage.getItem('userNumber');
+    return user.phoneNumber;
+}   

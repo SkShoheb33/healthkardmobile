@@ -19,7 +19,10 @@ function AgentLogin() {
         try {
             const response = await httpService.post('auth/agent-login', { email, password });
             if (response.message === 'Login successful') {
-                await AsyncStorage.setItem('agentToken', `${response.name}-${response.id}`);
+                await AsyncStorage.setItem('agentName', response.name);
+                await AsyncStorage.setItem('agentId', response.agentId);
+                await AsyncStorage.setItem('agentToken', response.id);
+
                 navigation.navigate('agent');
             }
         } catch (error) {

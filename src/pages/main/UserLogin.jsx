@@ -18,7 +18,9 @@ function UserLogin() {
     try {
       const response = await httpService.post('auth/user-login', { number, password });
       if (response.message === 'Verified') {
-        await AsyncStorage.setItem('userToken', `${response.name}-${response.id}`);
+        await AsyncStorage.setItem('userName', response.name);
+        await AsyncStorage.setItem('userId', response.id.toString());
+        await AsyncStorage.setItem('userNumber', number);
         navigation.replace('user');
       } else if (response.message === 'Password incorrect') {
         Alert.alert('Error', 'Please enter the correct password');

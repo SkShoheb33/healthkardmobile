@@ -7,6 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 import httpService from 'src/httpService';
 import HealthkardList from './components/HealthkardList';
 import Navbar from '@components/Navbar';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const ITEMS_PER_PAGE = 10;
 
 function Healthkards() {
@@ -24,7 +25,9 @@ function Healthkards() {
         if (!hasMore || loading) return;
         setLoading(true);
         try {
-            const result = await httpService.get('users', `?number=${'917842722245'}&page=${userData.currentPage + 1}&limit=${ITEMS_PER_PAGE}`);
+            const userNumber = await AsyncStorage.getItem('userNumber');
+            console.log({ userNumber });
+            const result = await httpService.get('users', `?number=${'91' + userNumber}&page=${userData.currentPage + 1}&limit=${ITEMS_PER_PAGE}`);
             setUserData(prevData => ({
                 users: [...prevData.users, ...result.users],
                 currentPage: result.currentPage,

@@ -12,24 +12,25 @@ function Navbar() {
   useEffect(() => {
     const checkUserToken = async () => {
       try {
-        const userToken = await AsyncStorage.getItem('userToken');
-        if (userToken) {
-          setName(userToken.split('-')[0])
+        const userName = await AsyncStorage.getItem('userName');
+        if (userName) {
+          setName(userName)
         }
-        setIsUser(!!userToken)
+        setIsUser(!!userName)
       } catch (error) {
-        console.error('Error reading userToken:', error)
+        console.error('Error reading userName:', error)
       }
     }
 
     const checkAgentToken = async () => {
       try {
-        const agentToken = await AsyncStorage.getItem('agentToken');
-        if (agentToken) {
-          setName(agentToken.split('-')[0])
+        const agentName = await AsyncStorage.getItem('agentName');
+        if (agentName) {
+          setName(agentName)
+          setIsUser(false)
         }
       } catch (error) {
-        console.error('Error reading agentToken:', error)
+        console.error('Error reading agentName:', error)
       }
     }
     checkUserToken();

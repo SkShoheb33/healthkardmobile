@@ -3,10 +3,10 @@ import { View, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import Heading from './Heading';
 
-const Dropdown = ({ list = [], value, setValue, label = 'Choose Healthkard.' }) => {
+const Dropdown = ({ list = [], value, setValue, label = 'Choose Healthkard' }) => {
 
   return (
-    <View style={ styles.container } className='flex-row w-full justify-center items-center h-9'>
+    <View style={ styles.container } className='flex-row w-full justify-between items-center h-9'>
       <Heading label={ label } size={ 'text-md' } />
       <Picker
         selectedValue={ value }
@@ -28,10 +28,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   picker: {
+    color: '#000',
     height: 50,
-    width: '60%',
+    width: '70%',
   },
   selected: {
+    color: '#000',
     marginTop: 20,
     fontSize: 16,
   },

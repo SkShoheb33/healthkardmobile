@@ -42,8 +42,8 @@ function Hospital({ route }) {
                 (<ScrollView>
                     <View>
                         <ShimmerContainer
-                            style={ { height: 200, width: '100%' } }
                             isVisible={ imageLoaded }
+                            style={ { height: 200, width: '100%' } }
                         >
                             <Image
                                 source={ { uri: hospital?.mediaDetails?.hospitalImageURL } }

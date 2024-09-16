@@ -9,6 +9,7 @@ import Header from './components/Header';
 import httpService from 'src/httpService';
 import DropDown from '@components/DropDown';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import ShimmerContainer from '@components/ShimmerContainer';
 
 function Profile() {
     const [healthId, setHealthId] = useState('');
@@ -25,7 +26,9 @@ function Profile() {
 
     const handleLogout = async () => {
         try {
-            await AsyncStorage.removeItem('userToken');
+            await AsyncStorage.removeItem('userName');
+            await AsyncStorage.removeItem('userId');
+            await AsyncStorage.removeItem('userNumber');
             navigation.reset({
                 index: 0,
                 routes: [{ name: 'First' }],
@@ -39,7 +42,12 @@ function Profile() {
         const fetchHealthIds = async () => {
             setLoadingStatus(true);
             try {
-                const result = await httpService.get('users', `?number=917842722245`);
+                const userNumber = await AsyncStorage.getItem('userNumber');
+                if (!userNumber) {
+                    console.error('User number not found in AsyncStorage');
+                    return;
+                }
+                const result = await httpService.get('users', `?number=91${userNumber}`);
                 setUsersData(result);
                 const healthIds = result.users.map(item => ({ name: item.name, value: item.healthId }));
                 setHealthId(healthIds[0]?.value || '');
@@ -73,17 +81,17 @@ function Profile() {
     }, [healthId]);
 
     return (
-        <ScrollView style={ { flex: 1 } } className='bg-white'>
+        <View style={ { flex: 1 } } className='bg-white'>
             <Navbar />
-            <View>
-                <View style={ { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 8 } }>
+            <ScrollView className='flex-1 p-2'>
+                <View style={ { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' } }>
                     <DropDown
                         list={ healthIds }
                         setValue={ setHealthId }
                         value={ healthId }
                     />
                 </View>
-                { !isLoading && profile && (
+                { !isLoading && profile ? (
                     <Header
                         healthId={ healthId }
                         image={ profile.image }
@@ -91,7 +99,8 @@ function Profile() {
                         gender={ profile.gender }
                         age={ profile.age }
                     />
-                ) }
+                ) : <ShimmerContainer isVisible={ !isLoading && profile } style={ { width: '90%', height: 120, alignSelf: 'center' } } >
+                </ShimmerContainer> }
                 <Heading label="Others" />
                 <Services />
                 <View className="w-11/12 mx-auto mt-4">
@@ -106,8 +115,8 @@ function Profile() {
                         <FontAwesomeIcon icon={ faChevronRight } size={ 24 } color="white" />
                     </TouchableOpacity>
                 </View>
-            </View>
-        </ScrollView>
+            </ScrollView>
+        </View>
     );
 }
 
@@ -122,7 +131,7 @@ function Services() {
             <ServiceItem
                 icon={ faComments }
                 label="Help and Feedback"
-                navigateTo='RenewalHistory'
+                navigateTo='Feedback'
             />
             <ServiceItem
                 icon={ faScroll }
@@ -138,10 +147,12 @@ function ServiceItem({ icon, label, navigateTo }) {
     return (
         <TouchableOpacity onPress={ () => navigation.navigate(navigateTo) } style={ { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderWidth: 1, borderColor: '#ccc', paddingVertical: 8, paddingHorizontal: 16, borderRadius: 8, marginVertical: 4 } }>
             <View style={ { flexDirection: 'row', alignItems: 'center' } }>
-                <FontAwesomeIcon icon={ icon } size={ 24 } />
+                <View className=' p-2 rounded-full'>
+                    <FontAwesomeIcon icon={ icon } size={ 24 } />
+                </View>
                 <Heading label={ label } size='text-xl' style={ { marginLeft: 8 } } />
             </View>
-            <FontAwesomeIcon icon={ faChevronRight } size={ 24 } />
+            <FontAwesomeIcon icon={ faChevronRight } size={ 16 } />
         </TouchableOpacity>
     );
 }

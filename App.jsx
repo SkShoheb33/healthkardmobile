@@ -27,8 +27,8 @@ function App() {
 
   const checkLoginStatus = async () => {
     try {
-      const userPhoneNumber = await AsyncStorage.getItem('userPhoneNumber');
-      setIsLoggedIn(!!userPhoneNumber);
+      const userId = await AsyncStorage.getItem('userId');
+      setIsLoggedIn(!!userId);
     } catch (error) {
       console.error('Error checking login status:', error);
     } finally {

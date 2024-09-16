@@ -26,5 +26,21 @@ export const styles = StyleSheet.create({
     },
     blackText: {
         color: '#000'
+    },
+    bgRed: {
+        backgroundColor: '#BD3B3B'
     }
 })
+
+export const colors = {
+    primary: '#00BFA8',
+    secondary: '#BD3B3B',
+    tertiary: '#FF0000',
+    quaternary: '#303486',
+    quinary: '#000',
+    senary: '#ccc',
+    septenary: '#000000',
+    octonary: '#FFFFFF',
+    nonary: '#000000',
+    denary: '#FFFFFF',
+}

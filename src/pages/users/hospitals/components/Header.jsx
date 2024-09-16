@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Pressable, Text, View, TextInput } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Pressable, Text, View, TextInput, Modal } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import {
   faFilter,
@@ -7,11 +7,19 @@ import {
   faSearch,
 } from '@fortawesome/free-solid-svg-icons';
 import { styles } from 'src/styles/style';
+import { SERVICES, CITIES } from 'src/pages/users/home/constants';
+import { useUserSharedData } from 'src/context/UserSharedDataContext';
 
 function Header({ location, setLocation, onSearch }) {
+  const { updateUserData } = useUserSharedData();
   const [showLocation, setShowLocation] = useState(false);
-  const CITIES = ['Narasaraopet', 'Guntur', 'Vijayawada'];
+  const [showFilter, setShowFilter] = useState(false);
+  const [selectedService, setSelectedService] = useState(null);
 
+  useEffect(() => {
+    console.log(selectedService);
+    updateUserData({ service: selectedService });
+  }, [selectedService]);
   return (
     <View
       style={ styles.green }
@@ -37,7 +45,10 @@ function Header({ location, setLocation, onSearch }) {
           placeholder="Search for Hospital"
           onChangeText={ hospital => onSearch(hospital) }
         />
-        <FontAwesomeIcon icon={ faFilter } color="white" size={ 24 } />
+        <Pressable onPress={ () => setShowFilter(true) }>
+          <FontAwesomeIcon icon={ faFilter } color="white" size={ 24 } />
+        </Pressable>
+
         {/* Location Options */ }
         { showLocation && (
           <View className="absolute top-0 w-full bg-white rounded-md p-2 shadow-xl border flex-row flex-wrap border-gray-200 left-0">
@@ -49,6 +60,7 @@ function Header({ location, setLocation, onSearch }) {
                     setLocation(city);
                   } }
                   style={ styles.greenBorder }
+                  key={ index }
                   className="p-2 rounded-md m-2 z-20">
                   <Text className="text-black">{ city }</Text>
                 </Pressable>
@@ -57,6 +69,44 @@ function Header({ location, setLocation, onSearch }) {
           </View>
         ) }
       </View>
+
+      {/* Filter Modal */ }
+      <Modal
+        animationType="slide"
+        transparent={ true }
+        visible={ showFilter }
+        onRequestClose={ () => setShowFilter(false) }
+      >
+        <View className="flex-1 justify-end">
+          <View className="bg-white rounded-t-3xl p-4">
+            <Text className="text-xl font-bold mb-4 text-black">Select Services</Text>
+            <View className="flex-row flex-wrap">
+              { SERVICES.map((service, index) => (
+                <Pressable
+                  key={ index }
+                  onPress={ () => {
+                    setSelectedService(service);
+                    setShowFilter(false);
+                  } }
+                  style={ [
+                    styles.greenBorder,
+                    selectedService === service && styles.selectedService
+                  ] }
+                  className="p-2 rounded-md m-2"
+                >
+                  <Text className="text-black">{ service }</Text>
+                </Pressable>
+              )) }
+            </View>
+            <Pressable
+              onPress={ () => setShowFilter(false) }
+              className="mt-4 p-2 bg-red-500 rounded-md"
+            >
+              <Text className="text-white text-center">Close</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }

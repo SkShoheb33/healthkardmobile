@@ -6,8 +6,12 @@ import httpService from 'src/httpService';
 import Loading from '@components/Loading';
 import Navbar from '@components/Navbar';
 import Header from './components/Header';
+import { useUserSharedData } from 'src/context/UserSharedDataContext';
 
 function Hospitals() {
+    const { userData } = useUserSharedData();
+    const userService = userData.service;
+
     const [hospitalData, setHospitalData] = useState({
         hospitals: [],
         currentPage: 0,
@@ -21,10 +25,11 @@ function Hospitals() {
     const [searchTerm, setSearchTerm] = useState('');
     const ITEMS_PER_PAGE = 10;
 
-    const filterHospitals = useCallback((hospitals, searchTerm, city) => {
+    const filterHospitals = useCallback((hospitals, searchTerm, city, service) => {
         return hospitals.filter(hospital =>
             hospital.hospitalDetails.hospitalTradeName.toLowerCase().includes(searchTerm.toLowerCase()) &&
-            hospital.hospitalDetails.address.city.toLowerCase().includes(city.toLowerCase())
+            hospital.hospitalDetails.address.city.toLowerCase().includes(city.toLowerCase()) &&
+            (service ? hospital.hospitalDetails.servicesOffered.includes(service) || service === "All Services" : true)
         );
     }, []);
 
@@ -47,21 +52,22 @@ function Hospitals() {
         }
     }, []);
 
-    const onSearch = useCallback(async (hospitalName) => {
-        setSearchTerm(hospitalName);
+    const updateFilteredHospitals = useCallback(async () => {
         const allHospitals = await fetchAllHospitals();
-        const filtered = filterHospitals(allHospitals, hospitalName, location);
+        const filtered = filterHospitals(allHospitals, searchTerm, location, userService);
         setFilteredHospitals(filtered);
-        setHasMore(false); // Disable infinite scrolling when filtering
-    }, [location, filterHospitals, fetchAllHospitals]);
+        setHasMore(false);
+    }, [fetchAllHospitals, filterHospitals, searchTerm, location, userService]);
 
-    const onLocationChange = useCallback(async (newLocation) => {
+    const onSearch = useCallback((hospitalName) => {
+        setSearchTerm(hospitalName);
+        updateFilteredHospitals();
+    }, [updateFilteredHospitals]);
+
+    const onLocationChange = useCallback((newLocation) => {
         setLocation(newLocation);
-        const allHospitals = await fetchAllHospitals();
-        const filtered = filterHospitals(allHospitals, searchTerm, newLocation);
-        setFilteredHospitals(filtered);
-        setHasMore(false); // Disable infinite scrolling when filtering
-    }, [searchTerm, filterHospitals, fetchAllHospitals]);
+        updateFilteredHospitals();
+    }, [updateFilteredHospitals]);
 
     const fetchHospitals = useCallback(async () => {
         if (!hasMore || isLoading) return;
@@ -77,7 +83,7 @@ function Hospitals() {
                 totalPages: result.totalPages,
                 totalHospitals: result.totalHospitals
             }));
-            const filtered = filterHospitals(newHospitals, searchTerm, location);
+            const filtered = filterHospitals(newHospitals, searchTerm, location, userService);
             setFilteredHospitals(filtered);
             setHasMore(result.currentPage < result.totalPages);
         } catch (err) {
@@ -85,11 +91,15 @@ function Hospitals() {
         } finally {
             setLoadingStatus(false);
         }
-    }, [hasMore, isLoading, hospitalData.currentPage, location, searchTerm, filterHospitals]);
+    }, [hasMore, isLoading, hospitalData.currentPage, location, searchTerm, filterHospitals, userService]);
 
     useEffect(() => {
         fetchHospitals();
     }, []);
+
+    useEffect(() => {
+        updateFilteredHospitals();
+    }, [userService, updateFilteredHospitals]);
 
     const renderHospitalCard = ({ item }) => (
         <HospitalCard hospital={ item } />
@@ -103,7 +113,11 @@ function Hospitals() {
     return (
         <View style={ { flex: 1 } } className='bg-white'>
             <Navbar />
-            <Header location={ location } setLocation={ onLocationChange } onSearch={ onSearch } />
+            <Header
+                location={ location }
+                setLocation={ onLocationChange }
+                onSearch={ onSearch }
+            />
             <FlatList
                 data={ filteredHospitals }
                 renderItem={ renderHospitalCard }
@@ -112,7 +126,9 @@ function Hospitals() {
                 contentContainerStyle={ { padding: 8 } }
                 ListHeaderComponent={
                     <Heading
-                        label={ `Top pick's in ${location}` }
+                        label={ userService
+                            ? `Top pick's in ${location} for ${userService}`
+                            : `Top pick's in ${location}` }
                         size='text-xl'
                     />
                 }

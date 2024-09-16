@@ -1,17 +1,15 @@
 import React from 'react'
 import { Pressable, SafeAreaView, ScrollView, Text, View } from 'react-native'
-import Heading from '../../../../components/Heading'
-import Input from '../../../../components/Input'
-import Button from '../../../../components/Button'
-import { styles } from '../../../../styles/style'
-import { pickFile } from '../../../../helpers/fileupload'
-import Multiselect from '../../../../components/Multiselect'
-import TimePicker from '../../../../components/TimePicker'
+import Heading from '@components/Heading'
+import Input from '@components/Input'
+import Button from '@components/Button'
+import { styles } from 'src/styles/style'
+import { pickFile } from 'src/helpers/fileupload'
+import Multiselect from '@components/Multiselect'
+import TimePicker from '@components/TimePicker'
+import { days, services } from './constants'
 
 function HospitalDetails({ hospital, setHospital }) {
-    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Friday', 'Thrusday', 'Saturday']
-    const services = ["All Services", "Bones", "Children (Pediatrics)", "Dental", "Ears", "Eyes", "Gastro", "General Medicine", "Hair", "Heart", "Kidney", "Lungs", "Neuro", "Nose", "Reproductive", "Skin"];
-
     const changeDaysAvailabilityHandler = (index) => {
         const tempDays = hospital.hospitalDetails.daysAvailabilty;
         tempDays[index] = !tempDays[index];

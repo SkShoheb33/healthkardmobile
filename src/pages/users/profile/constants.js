@@ -1,3 +1,5 @@
+import { getUserPhoneNumber } from "src/helpers/mobileVerification"
+
 export const payments = [
     {
         "healthId": "HID000001",
@@ -75,6 +77,18 @@ export const payments = [
         "transactionId": "TXN000005",
         "issueDate": "2024-08-29T09:00:00Z",
         "paymentStatus": false
+    }
+]
+
+
+
+export const emptyFeedback = [
+    {
+        "category": "Features",
+        "description": "",
+        "phoneNumber": getUserPhoneNumber(),
+        "date": new Date().toISOString(),
+        "seen": false
     }
 ]
 

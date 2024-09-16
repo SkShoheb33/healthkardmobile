@@ -18,7 +18,7 @@ function HospitalCard({ hospital, horizontal = false, }) {
         >
 
             <ShimmerContainer
-                style={ { height: 120, width: horizontal ? 220 : '100%' } }
+                style={ { height: 120, width: horizontal ? 210 : '100%' } }
                 isVisible={ imageLoaded }>
 
                 <Image
@@ -40,8 +40,8 @@ function HospitalCard({ hospital, horizontal = false, }) {
                         <Text className='text-[#808080]'>Read more</Text> }
                 </Text>
                 <View className='w-full flex-row justify-between'>
-                    <Button onPress={ () => openMap(hospital.hospitalDetails.address.lat, hospital.hospitalDetails.address.lng) } label='Locate' style='px-1 py-2 w-[45%]' color='blue' icon={ faLocationDot } />
-                    <Button onPress={ () => dialPhoneNumber(hospital.hospitalDetails.hospitalNumber) } label='Call' style='px-1 py-2 w-[45%]' icon={ faPhone } />
+                    <Button onPress={ () => openMap(hospital.hospitalDetails.address.lat, hospital.hospitalDetails.address.lng) } label='Locate' style='px-1 py-2 w-[45%]' textStyle='text-xs' color='blue' icon={ faLocationDot } />
+                    <Button onPress={ () => dialPhoneNumber(hospital.hospitalDetails.hospitalNumber) } label='Call' style='px-1 py-2 w-[45%]' textStyle='text-xs' icon={ faPhone } />
                 </View>
             </View>
         </Pressable>
