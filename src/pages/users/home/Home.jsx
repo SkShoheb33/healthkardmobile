@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { Image, ScrollView, Text, View, BackHandler } from 'react-native'
+import React, { useEffect, useState, useCallback } from 'react'
+import { Image, ScrollView, Text, View, BackHandler, Dimensions, RefreshControl } from 'react-native'
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { styles } from 'src/styles/style'
 import Organs from './components/Organs'
@@ -13,6 +13,7 @@ import ShimmerContainer from '@components/ShimmerContainer';
 import Curosols from '@components/Curosols';
 
 function Home() {
+    const screenWidth = Dimensions.get('window').width;
     const [hospitalData, setHospitalData] = useState({
         hospitals: [],
         currentPage: 0,
@@ -21,20 +22,27 @@ function Home() {
     });
 
     const [bannerLoading, setBannerLoading] = useState(false);
+    const [refreshing, setRefreshing] = useState(false);
 
     const navigation = useNavigation();
     const ITEMS_PER_PAGE = 10;
 
+    const fetchData = async () => {
+        try {
+            const result = await httpService.get(`hospitals?page=${1}&limit=${ITEMS_PER_PAGE}`);
+            setHospitalData(result);
+        } catch (err) {
+            console.log({ err });
+        }
+    };
+
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const result = await httpService.get(`hospitals?page=${1}&limit=${ITEMS_PER_PAGE}`);
-                setHospitalData(result);
-            } catch (err) {
-                console.log({ err });
-            }
-        };
         fetchData();
+    }, []);
+
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        fetchData().then(() => setRefreshing(false));
     }, []);
 
     useFocusEffect(
@@ -53,11 +61,17 @@ function Home() {
     return (
         <View style={ { flex: 1 } }>
             <Navbar />
-            <ScrollView style={ { flex: 1 } } className='flex-1 p-1'>
+            <ScrollView
+                style={ { flex: 1 } }
+                className='flex-1 p-1'
+                refreshControl={
+                    <RefreshControl refreshing={ refreshing } onRefresh={ onRefresh } />
+                }
+            >
                 <Heading label="Welcome to Healthkard" size='text-xl' />
                 <ShimmerContainer
                     isVisible={ bannerLoading }
-                    style={ { width: 400, height: 140, alignSelf: 'center' } }
+                    style={ { width: screenWidth, height: 140, alignSelf: 'center' } }
                 >
                     <Image
                         source={ require('src/assets/banner.png') }

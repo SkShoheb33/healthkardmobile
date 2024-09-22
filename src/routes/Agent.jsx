@@ -5,7 +5,7 @@ import HospitalRegister from 'src/pages/agents/home/HospitalRegistrationForms/Ho
 import AgentHospitals from 'src/pages/agents/hospitals/Hospitals';
 import AgentUsers from 'src/pages/agents/users/Users';
 import AgentProfile from 'src/pages/agents/profile/Profile';
-import { Pay } from './Pay';
+import Healthkard from '@components/Healthkard';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { faHome, faHospital, faIdCard, faUser } from '@fortawesome/free-solid-svg-icons';
@@ -59,7 +59,7 @@ const ProfileOptions = {
 // Agent routes
 export const Agent = () => {
     return (
-        <Tab.Navigator screenOptions={ tabOptions } initialRouteName='Home'>
+        <Tab.Navigator screenOptions={ tabOptions } initialRouteName='AgentHomeNavigations'>
             <Tab.Screen name="AgentHomeNavigations" component={ AgentHomeNavigations } options={ HomeOptions } />
             <Tab.Screen name="AgentHospitals" component={ AgentHospitals } options={ HospitalsOptions } />
             <Tab.Screen name="AgentUsers" component={ AgentUsers } options={ HealthkardsOptions } />
@@ -74,6 +74,7 @@ export const AgentHomeNavigations = () => {
             <Stack.Screen name="Home" component={ AgentHome } />
             <Stack.Screen name="UserRegistration" component={ UserRegistration } />
             <Stack.Screen name="UserRenewal" component={ UserRenewal } />
+            <Stack.Screen name="Healthkard" component={ Healthkard } />
             <Stack.Screen name="HospitalRegister" component={ HospitalRegister } />
             <Stack.Screen name="AgentHospitalRegistration" component={ AgentHospitalRegistration } />
             <Stack.Screen name="Pay" component={ Payment } />

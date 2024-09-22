@@ -2,18 +2,20 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import auth from '@react-native-firebase/auth';
 import { Alert } from 'react-native';
 
-export async function sendOTP(phoneNumber) {
+export const sendMobileOTP = async (phoneNumber) => {
+    console.log('Sending OTP to:', phoneNumber);
     try {
-        const confirmation = await auth().signInWithPhoneNumber('+91' + phoneNumber);
-        return confirmation; // Save this confirmation object for later verification
+        const formattedPhoneNumber = phoneNumber.startsWith('+91') ? phoneNumber : `+91${phoneNumber}`;
+        const confirmation = await auth().signInWithPhoneNumber(formattedPhoneNumber);
+        console.log('OTP sent successfully');
+        return confirmation;
     } catch (error) {
-        Alert.alert('Error', 'Failed to send otp, please try again');
-        console.error("Failed to send OTP:", error);
+        console.error('Error sending OTP:', error);
         throw error;
     }
-}
+};
 
-export async function verifyOTP(confirmation, code) {
+export async function verifyMobileOTP(confirmation, code) {
     try {
         const credential = auth.PhoneAuthProvider.credential(confirmation.verificationId, code);
         const userData = await auth().signInWithCredential(credential);
@@ -27,5 +29,6 @@ export async function verifyOTP(confirmation, code) {
 
 export async function getUserPhoneNumber() {
     const user = await AsyncStorage.getItem('userNumber');
-    return user.phoneNumber;
-}   
+    return user.phoneNumber ? (user.phoneNumber.startsWith('+91') ? user.phoneNumber : `+91${user.phoneNumber}`) : null;
+}
+

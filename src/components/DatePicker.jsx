@@ -18,14 +18,14 @@ const DatePicker = ({ placeHolder = 'Date', width, onChange, value }) => {
     const handleConfirm = (date) => {
         setSelectedDate(date);
         hideDatePicker();
-        onChange(date);
+        onChange(date.toISOString());
     };
 
     return (
-        <View className={ `items-center justify-start bg-white h-12 ${width} border border-gray-200 rounded` }>
-            <TouchableOpacity onPress={ showDatePicker } className='h-full w-full'>
-                <View className='w-full h-full items-center justify-center'>
-                    <Text className='text-black'>
+        <View className={ `items-start justify-start bg-white h-12 ${width} border border-gray-200 rounded px-4` }>
+            <TouchableOpacity onPress={ showDatePicker } className='h-full w-full items-start'>
+                <View className='w-full h-full items-start justify-center'>
+                    <Text className={ selectedDate ? 'text-black' : 'text-gray-500' }>
                         { selectedDate ? selectedDate.toLocaleDateString() : placeHolder }
                     </Text>
                 </View>

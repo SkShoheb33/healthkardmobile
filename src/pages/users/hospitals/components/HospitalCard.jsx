@@ -29,19 +29,19 @@ function HospitalCard({ hospital, horizontal = false, }) {
             </ShimmerContainer>
 
             <Text className='font-semibold text-lg my-1 text-black'>
-                { hospital.hospitalDetails.hospitalTradeName.length > 18 ? hospital.hospitalDetails.hospitalTradeName.slice(0, 15) + '...' : hospital.hospitalDetails.hospitalTradeName }
+                { hospital?.hospitalDetails?.hospitalTradeName?.length > 18 ? hospital?.hospitalDetails?.hospitalTradeName?.slice(0, 15) + '...' : hospital?.hospitalDetails?.hospitalTradeName }
             </Text>
             <View style={ { flex: 1 } } className='justify-between'>
                 <Text className='my-1 text-black text-justify'>
-                    { hospital.mediaDetails.desc.length > 120
-                        ? hospital.mediaDetails.desc.slice(0, 120).replace(/\n/g, ' ') + '...'
-                        : hospital.mediaDetails.desc.replace(/\n/g, ' ') }
-                    { hospital.mediaDetails.desc.length > 120 &&
+                    { hospital?.mediaDetails?.desc?.length > 120
+                        ? hospital?.mediaDetails?.desc?.slice(0, 120).replace(/\n/g, ' ') + '...'
+                        : hospital?.mediaDetails?.desc?.replace(/\n/g, ' ') }
+                    { hospital?.mediaDetails?.desc?.length > 120 &&
                         <Text className='text-[#808080]'>Read more</Text> }
                 </Text>
                 <View className='w-full flex-row justify-between'>
-                    <Button onPress={ () => openMap(hospital.hospitalDetails.address.lat, hospital.hospitalDetails.address.lng) } label='Locate' style='px-1 py-2 w-[45%]' textStyle='text-xs' color='blue' icon={ faLocationDot } />
-                    <Button onPress={ () => dialPhoneNumber(hospital.hospitalDetails.hospitalNumber) } label='Call' style='px-1 py-2 w-[45%]' textStyle='text-xs' icon={ faPhone } />
+                    <Button onPress={ () => openMap(hospital?.hospitalDetails?.address?.lat, hospital?.hospitalDetails?.address?.lng) } label='Locate' style='px-1 py-2 w-[45%]' textStyle='text-xs' color='blue' icon={ faLocationDot } />
+                    <Button onPress={ () => dialPhoneNumber(hospital?.hospitalDetails?.hospitalNumber) } label='Call' style='px-1 py-2 w-[45%]' textStyle='text-xs' icon={ faPhone } />
                 </View>
             </View>
         </Pressable>

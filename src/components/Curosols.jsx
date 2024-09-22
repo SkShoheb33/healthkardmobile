@@ -42,7 +42,7 @@ function Curosols({ list, time = 5000 }) {
                     <View key={ index } style={ { width: screenWidth } }>
                         <ShimmerContainer
                             isVisible={ true }
-                            style={ { width: 400, height: 140, alignSelf: 'center' } }
+                            style={ { width: screenWidth, height: 140, alignSelf: 'center' } }
                         >
                             <Image
                                 source={ image }

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Image, KeyboardAvoidingView } from 'react-native';
+import { View, Image, KeyboardAvoidingView, Alert } from 'react-native';
 import login2 from 'src/assets/mobile/login2.png';
 import login3 from 'src/assets/mobile/login3.png';
 import loginlogo from 'src/assets/mobile/loginlogo.png';
@@ -14,9 +14,11 @@ function AgentLogin() {
     const navigation = useNavigation();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [loggingIn, setLoggingIn] = useState(false);
 
     const login = async () => {
         try {
+            setLoggingIn(true);
             const response = await httpService.post('auth/agent-login', { email, password });
             if (response.message === 'Login successful') {
                 await AsyncStorage.setItem('agentName', response.name);
@@ -26,7 +28,10 @@ function AgentLogin() {
                 navigation.navigate('agent');
             }
         } catch (error) {
+            Alert.alert('Error', 'Please check your email and password or internet connection');
             console.log(error);
+        } finally {
+            setLoggingIn(false);
         }
     }
 
@@ -68,6 +73,7 @@ function AgentLogin() {
                         label='Login'
                         disabled={ !validateEmail(email) || password.length < 6 }
                         onPress={ login }
+                        loading={ loggingIn }
                     />
 
                 </View>

@@ -7,13 +7,15 @@ import { styles } from 'src/styles/style'
 import { getYears } from './constants'
 import Select from '@components/Select'
 import httpService from 'src/httpService'
-import { AGENT_ID } from '../constants'
-import { countByYearAndMonth, formatData } from 'src/helpers/formatData'
+import { countByYearAndMonth, formatCurrency, formatData } from 'src/helpers/formatData'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import Button from '@components/Button'
 
 function Profile() {
     const navigation = useNavigation();
     const [agentData, setAgentData] = useState(null);
+    const [loggingOut, setLoggingOut] = useState(false);
+
     const [totalAddons, setTotalAddons] = useState([
         { label: 'Total Hospitals Onboarded', value: 0 },
         { label: 'Total Users Onboarded', value: 0 },
@@ -21,11 +23,12 @@ function Profile() {
 
     useEffect(() => {
         const fetchAgentData = async () => {
-            const result = await httpService.get(`agents/${AGENT_ID}`);
+            const agentToken = await AsyncStorage.getItem('agentToken');
+            const result = await httpService.get(`agents/${agentToken}`);
             setAgentData(result);
             setTotalAddons([
                 { label: 'Total Hospitals Onboarded', value: result.hospitalsAdded.length },
-                { label: 'Total Users Onboarded', value: result.usersAdded.length },
+                { label: 'Total Revenue', value: result.usersAdded.reduce((total, user) => total + user.amount, 0) },
             ]);
         };
         fetchAgentData();
@@ -35,7 +38,11 @@ function Profile() {
         AsyncStorage.removeItem('agentToken');
         AsyncStorage.removeItem('agentName');
         AsyncStorage.removeItem('agentId');
-        navigation.navigate('First');
+        setLoggingOut(true);
+        setTimeout(() => {
+            setLoggingOut(false);
+            navigation.navigate('First');
+        }, 2000);
     };
 
     return (
@@ -47,18 +54,18 @@ function Profile() {
                     { totalAddons.map((addon, index) => (
                         <View key={ index } className='w-[45%] p-2 flex-col items-center justify-center border border-gray-300 shadow-md rounded-md'>
                             <Text className='text-center text-black font-semibold text-lg'>{ addon.label }</Text>
-                            <Text style={ styles.greenText } className='text-2xl font-bold'>{ addon.value }</Text>
+                            <Text style={ styles.greenText } className='text-2xl font-bold'>{ formatCurrency(addon.value, index === 1) }</Text>
                         </View>
                     )) }
                 </View>
-                { agentData?.usersAdded && agentData?.hospitalsAdded && <JoiningPanel usersAdded={ agentData?.usersAdded } hospitalsAdded={ agentData?.hospitalsAdded } /> }
+                { agentData?.usersAdded && agentData?.hospitalsAdded && <CalenderPanel usersAdded={ agentData?.usersAdded } hospitalsAdded={ agentData?.hospitalsAdded } /> }
 
-                <TouchableOpacity
+                <Button
+                    label='Logout'
                     onPress={ handleLogout }
-                    className='mt-6 bg-red-500 py-3 px-6 rounded-md self-center'
-                >
-                    <Text className='text-white font-bold text-lg'>Logout</Text>
-                </TouchableOpacity>
+                    color='red'
+                    loading={ loggingOut }
+                />
             </ScrollView>
         </View>
     )
@@ -90,14 +97,14 @@ function Header({ name = 'Agent name', email = 'Agent email', agentId = 'Agent i
     )
 }
 
-function JoiningPanel({ usersAdded, hospitalsAdded }) {
+function CalenderPanel({ usersAdded, hospitalsAdded }) {
     const [isUsersPane, setIsUsersPane] = useState(true);
     const [year, setYear] = useState(new Date().getFullYear());
     const [years, setYears] = useState([]);
     const [counts, setCounts] = useState({});
     useEffect(() => {
         if (isUsersPane) {
-            const usersCount = countByYearAndMonth(formatData(usersAdded, 'healthID') || {}, true);
+            const usersCount = countByYearAndMonth(formatData(usersAdded, 'amount') || {}, true);
             const range = getYears(usersCount);
             setYears(range);
             setCounts(usersCount);
@@ -130,8 +137,8 @@ function JoiningPanel({ usersAdded, hospitalsAdded }) {
             <View className='flex-row flex-wrap'>
                 { counts[year] && Object.keys(counts[year]).map(month => (
                     <View key={ month } className='w-1/5 justify-around m-2 items-center border border-gray-300 rounded-md'>
-                        <Text style={ styles.blue } className='text-white w-full text-center'>{ month.length > 5 ? month.slice(0, 4) + '...' : month }</Text>
-                        <Text style={ styles.greenText } className='my-2 text-xl shadow'>{ counts[year][month] }</Text>
+                        <Text style={ styles.blue } className='text-white w-full text-center'>{ month }</Text>
+                        <Text style={ styles.greenText } className='my-2 text-xs shadow'>{ isUsersPane ? formatCurrency(counts[year][month]) : counts[year][month] }</Text>
                     </View>
                 )) }
             </View>

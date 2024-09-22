@@ -1,5 +1,5 @@
-import React, { useState, useCallback } from 'react'
-import { Pressable, Text, View } from 'react-native'
+import React, { useState, useCallback, useEffect } from 'react'
+import { Alert, Pressable, Text, View } from 'react-native'
 import { CURRENCY } from 'src/pages/strings'
 import Dropdown from './DropDown';
 import Heading from './Heading';
@@ -8,11 +8,17 @@ import Navbar from './Navbar';
 import Success from './Success';
 import Failed from './Failed';
 import { useNavigation } from '@react-navigation/native';
+import httpService from 'src/httpService';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Loading from './Loading';
 
 function Payment({ route }) {
-    const { onlyOnline, plan, healthId } = route.params || {};
+    const { onlyOnline, plan, healthId, userData } = route.params || {};
     const navigation = useNavigation();
 
+    useEffect(() => {
+        console.log({ healthId, plan });
+    }, [healthId, plan]);
     const [currentPlan, setCurrentPlan] = useState(plan || '3 months');
     const [changePlan, setChangePlan] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
@@ -53,28 +59,37 @@ function Payment({ route }) {
         setChangePlan(false);
     }
 
-    const handlePaymentSuccess = useCallback(() => {
-        setPaymentStatus('success');
-        console.log('success' + healthId)
-        navigation.setParams({ paymentStatus: 'success' });
-    }, [navigation]);
-
-    const handlePaymentFailure = useCallback(() => {
-        setPaymentStatus('failed');
-        console.log('failed' + healthId)
-        navigation.setParams({ paymentStatus: 'failed' });
-    }, [navigation]);
-
-    const pay = (flag) => {
+    const pay = async (mode) => {
         setIsProcessing(true);
-        setTimeout(() => {
-            setIsProcessing(false);
-            if (!flag) {
-                handlePaymentSuccess();
-            } else {
-                handlePaymentFailure();
+        if (mode === 'offline') {
+            const payment = {
+                plan: currentPlan,
+                amount: plans[currentPlan]?.price - plans[currentPlan]?.discount,
+                transactionId: null,
+                issueDate: new Date().toISOString(),
+                paymentStatus: true,
+                agent: await AsyncStorage.getItem('agentId')
             }
-        }, 2000); // Simulate 2 seconds of processing time
+
+            try {
+                if (!healthId) {
+                    userData.payments.push(payment);
+                    const newUser = await httpService.post('users', userData);
+                    navigation.navigate('Healthkard', { healthId: newUser.healthId });
+                } else {
+                    const updatedUser = await httpService.put('users', healthId, data = { payment });
+                    navigation.navigate('Healthkard', { healthId: updatedUser.healthId });
+                }
+            } catch (error) {
+                console.log({ error });
+            } finally {
+                setIsProcessing(false);
+            }
+        } else {
+            Alert.alert('Warning', 'Please select offline payment mode');
+            setIsProcessing(false);
+        }
+
     }
 
     return (
@@ -109,15 +124,17 @@ function Payment({ route }) {
                             <Text className='text-black'> { CURRENCY + ' ' + (plans[currentPlan]?.price - plans[currentPlan]?.discount) }</Text>
                         </View>
                     </View>
+                    <Text className='text-black text-sm'>{ '**Inclusive of all taxes' }</Text>
                     { changePlan && < Dropdown label='Select plan : ' list={ plans_list } value={ currentPlan } setValue={ onPlanChange } /> }
                     <Heading style='text-xl text-black' label={ 'Please select the payment mode' } />
                     { !onlyOnline && <View className='w-full items-center'>
-                        <Button label={ 'CASH RECIEVED' } color={ 'blue' } onPress={ () => pay(true) } />
+                        <Button label={ 'CASH RECIEVED' } color={ 'blue' } onPress={ () => pay('offline') } />
                         <Text className='text-black'>-- or --</Text>
                     </View> }
-                    <Button label={ 'ONLINE PAYMENT' } color={ 'blue' } onPress={ () => pay(false) } />
+                    <Button label={ 'ONLINE PAYMENT' } color={ 'blue' } onPress={ () => pay('online') } />
                 </View>
-                : <Text className='text-black'>Processing payment...</Text> }
+                : <Loading isLoading={ isProcessing } text='Processing...' />
+            }
         </View>
     )
 }

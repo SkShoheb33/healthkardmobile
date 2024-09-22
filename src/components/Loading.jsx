@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import Spinner from 'react-native-spinkit';
 
-function Loading({ isLoading }) {
+function Loading({ isLoading, text = 'Please Wait...' }) {
   if (!isLoading) return null;
 
   return (
@@ -10,10 +10,10 @@ function Loading({ isLoading }) {
       <Spinner
         isVisible={ true }
         size={ 50 }
-        type="FadingCircle"
+        type="ChasingDots"
         color="#303486"
       />
-      <Text style={ styles.text }>Loading...</Text>
+      <Text style={ styles.text }>{ text }</Text>
     </View>
   );
 }

@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react'
 import { Text, TouchableOpacity, View, Platform, Alert } from 'react-native'
 import ImagePicker from 'react-native-image-crop-picker';
-import RNFS from 'react-native-fs';
 import { styles } from 'src/styles/style';
 import { request, PERMISSIONS, RESULTS } from 'react-native-permissions';
+import storage from '@react-native-firebase/storage';
 
 function Camera({ getImage, width = 'w-10/12' }) {
   useEffect(() => {
@@ -29,12 +29,26 @@ function Camera({ getImage, width = 'w-10/12' }) {
     }
   };
 
-  async function convertImageToBase64(image) {
+  const uploadImageToFirebase = async (image) => {
+    const { path, filename } = image;
+    const reference = storage().ref(`users/${filename || Date.now()}`);
+
     try {
-      const base64String = await RNFS.readFile(image.path, 'base64');
-      return `data:${image.mime};base64,${base64String}`;
+      await reference.putFile(path);
+      const url = await reference.getDownloadURL();
+      return url;
     } catch (error) {
+      console.error("Error uploading image to Firebase:", error);
       return null;
+    }
+  }
+
+  const processImage = async (image) => {
+    const imageUrl = await uploadImageToFirebase(image);
+    if (imageUrl) {
+      getImage(imageUrl);
+    } else {
+      Alert.alert("Upload Failed", "Failed to upload image. Please try again.");
     }
   }
 
@@ -52,12 +66,6 @@ function Camera({ getImage, width = 'w-10/12' }) {
       height: 400,
       cropping: true
     }).then(processImage);
-  }
-
-  const processImage = (image) => {
-    convertImageToBase64(image).then((base64Image) => {
-      getImage(base64Image);
-    });
   }
 
   const handleOpenCamera = () => {

@@ -17,7 +17,7 @@ function DoctorsDetails({ hospital, setHospital }) {
     }, [doctorList]);
 
     const addOneMoreDoctor = () => {
-        setDoctorList(prev => [...prev, {...doctorDetails, id: uuid.v4()}]);
+        setDoctorList(prev => [...prev, { ...doctorDetails, id: uuid.v4() }]);
     };
 
     const deleteDoctor = (id) => {
@@ -25,30 +25,30 @@ function DoctorsDetails({ hospital, setHospital }) {
     };
 
     const onChangeHandler = (id, key, value) => {
-        setDoctorList(prev => 
-            prev.map(doctor => 
+        setDoctorList(prev =>
+            prev.map(doctor =>
                 doctor.id === id ? { ...doctor, [key]: value } : doctor
             )
         );
     };
 
     return (
-        <View style={{ flex: 1 }}>
+        <View style={ { flex: 1, padding: 12 } }>
             <Heading label='Doctors Details' size='text-2xl font-semibold' />
-            <ScrollView style={{ flex: 1 }} className='w-full px-4'>
-                <SafeAreaView style={{ flex: 1 }} className='w-full'>
-                    {doctorList.map((doctor, index) => (
+            <ScrollView style={ { flex: 1 } } className='w-full px-2'>
+                <SafeAreaView style={ { flex: 1 } } className='w-full'>
+                    { doctorList.map((doctor, index) => (
                         <DoctorForm
-                            key={doctor.id} 
-                            doctor={doctor} 
-                            index={index} 
-                            deleteDoctor={deleteDoctor} 
-                            onChangeHandler={onChangeHandler} 
+                            key={ doctor.id }
+                            doctor={ doctor }
+                            index={ index }
+                            deleteDoctor={ deleteDoctor }
+                            onChangeHandler={ onChangeHandler }
                         />
-                    ))}
+                    )) }
                 </SafeAreaView>
                 <View className='flex-row items-center justify-between'>
-                    <Button label='Add one more doctor' onPress={addOneMoreDoctor} />
+                    <Button label='Add one more doctor' onPress={ addOneMoreDoctor } />
                 </View>
             </ScrollView>
         </View>

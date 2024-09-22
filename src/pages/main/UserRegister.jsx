@@ -9,6 +9,8 @@ import { useNavigation } from '@react-navigation/native';
 import { errorsMessages, intialUserRegisterForm } from './constants';
 import httpService from 'src/httpService';
 import { validateEmail } from 'src/helpers/validations';
+import { sendMobileOTP, verifyMobileOTP } from 'src/helpers/mobileVerification';
+import ErrorBoundary from '@components/ErrorBoundary';
 
 function UserRegister() {
   const navigation = useNavigation();
@@ -49,6 +51,15 @@ function UserRegister() {
       return;
     }
     try {
+      const emailCheckResponse = await httpService.post('auth/check-email', { email: userRegisterForm.email });
+      if (emailCheckResponse.exists) {
+        setErrors(prev => ({
+          ...prev,
+          email: { ...prev.email, status: true }
+        }))
+        Alert.alert('Error', emailCheckResponse.message);
+        return;
+      }
       const response = await httpService.post('auth/send-otp', { "userName": userRegisterForm.name, email: userRegisterForm.email });
       setActualOtp(response.otpCode);
     } catch (error) {
@@ -80,6 +91,20 @@ function UserRegister() {
     }))
   }
 
+  const validateNumber = async () => {
+    const response = await httpService.post('auth/check-number', { number: userRegisterForm.number });
+    if (response.exists) {
+      setErrors(prev => ({
+        ...prev,
+        number: { ...prev.number, status: true }
+      }))
+
+      Alert.alert('Error', response.message);
+      return;
+    }
+    setIsPasswordSection(true);
+  }
+
   const register = async () => {
     try {
       const response = await httpService.post('auth/new-user', userRegisterForm);
@@ -92,107 +117,110 @@ function UserRegister() {
   }
 
   return (
-    <View style={ { flex: 1 } } className='relative'>
-      <Image
-        source={ login2 }
-        className='absolute top-0 left-0'
-      />
-
-      <View className='absolute top-40 items-center justify-center w-full'>
+    <ErrorBoundary>
+      <View style={ { flex: 1 } } className='relative'>
         <Image
-          source={ loginlogo }
-          className=''
+          source={ login2 }
+          className='absolute top-0 left-0'
         />
-      </View>
 
-      { !isPasswordSection ?
-        <KeyboardAvoidingView
-          behavior='padding'
-          className='absolute bottom-20 left-0 z-10 flex items-center justify-center flex-col w-screen'
-        >
-          <Input
-            property='name'
-            value={ userRegisterForm.name }
-            placeholder='Enter your name'
-            width='w-10/12'
-            onChange={ onChangeHandler }
-            error={ errors['name'] }
+        <View className='absolute top-40 items-center justify-center w-full'>
+          <Image
+            source={ loginlogo }
+            className=''
           />
-          { !actualOtp || emailVerified ?
+        </View>
+
+        { !isPasswordSection ?
+          <KeyboardAvoidingView
+            behavior='padding'
+            className='absolute bottom-20 left-0 z-10 flex items-center justify-center flex-col w-screen'
+          >
             <Input
-              property='email'
-              value={ userRegisterForm.email }
-              placeholder='Email'
+              property='name'
+              value={ userRegisterForm.name }
+              placeholder='Enter your name'
               width='w-10/12'
-              onClick={ emailVerified ? () => { } : sendOTPHandler }
-              onClickLable={ emailVerified ? 'Verified' : 'Send OTP' }
               onChange={ onChangeHandler }
-              error={ errors['email'] }
-            /> :
+              error={ errors['name'] }
+            />
+            { !actualOtp || emailVerified ?
+              <Input
+                property='email'
+                value={ userRegisterForm.email }
+                placeholder='Email'
+                width='w-10/12'
+                onClick={ sendOTPHandler }
+                onClickLable={ emailVerified ? 'Verified' : 'Send OTP' }
+                onChange={ onChangeHandler }
+                error={ errors['email'] }
+              /> :
+              <Input
+                property='otpCode'
+                value={ enteredOtp }
+                placeholder='Enter otp'
+                width='w-10/12'
+                inputMode='numeric'
+                onClick={ verifyOTPHandler }
+                onClickLable='Verify OTP'
+                error={ errors['otp'] }
+                onChange={ (property, value) => setEnteredOtp(value) }
+              />
+            }
             <Input
-              property='otpCode'
-              value={ enteredOtp }
-              placeholder='Enter otp'
+              property='number'
+              value={ userRegisterForm.number }
+              placeholder='Contact Number'
               width='w-10/12'
               inputMode='numeric'
-              onClick={ verifyOTPHandler }
-              onClickLable='Verify OTP'
-              error={ errors['otp'] }
-              onChange={ (property, value) => setEnteredOtp(value) }
+              disabled={ true }
+              onChange={ onChangeHandler }
+              error={ errors['number'] }
             />
-          }
-          <Input
-            property='number'
-            value={ userRegisterForm.number }
-            placeholder='Contact Number'
-            width='w-10/12'
-            inputMode='numeric'
-            onChange={ onChangeHandler }
-            error={ errors['number'] }
-          />
-          <Button
-            style='w-10/12 py-4 mx-auto'
-            color='blue'
-            label='Set Password'
-            onPress={ () => setIsPasswordSection(true) }
-            disabled={ !userRegisterForm.name || !emailVerified || userRegisterForm.number.length !== 10 }
-          />
-        </KeyboardAvoidingView> :
-        <KeyboardAvoidingView
-          behavior='padding'
-          className='absolute bottom-20 left-0 z-10 flex items-center justify-center flex-col w-screen'
-        >
-          <Input
-            property='password'
-            value={ userRegisterForm.password }
-            placeholder='Enter Password'
-            onChange={ onChangeHandler }
-            inputMode='password'
-            width='w-10/12'
-          />
-          <Input
-            property='confrim_password'
-            value={ confirmPassword }
-            placeholder='Confrim password'
-            width='w-10/12'
-            inputMode='password'
-            onChange={ (property, value) => setConfirmPassword(value) }
-          />
-          <Button
-            style='w-10/12 py-4 mx-auto'
-            color='blue'
-            label='Register'
-            disabled={ userRegisterForm.password !== confirmPassword || userRegisterForm.password <= 6 }
-            onPress={ register }
-          />
-        </KeyboardAvoidingView>
-      }
+            <Button
+              style='w-10/12 py-4 mx-auto'
+              color='blue'
+              label='Set Password'
+              onPress={ validateNumber }
+              disabled={ !userRegisterForm.name || !emailVerified }
+            />
+          </KeyboardAvoidingView> :
+          <KeyboardAvoidingView
+            behavior='padding'
+            className='absolute bottom-20 left-0 z-10 flex items-center justify-center flex-col w-screen'
+          >
+            <Input
+              property='password'
+              value={ userRegisterForm.password }
+              placeholder='Enter Password'
+              onChange={ onChangeHandler }
+              inputMode='password'
+              width='w-10/12'
+            />
+            <Input
+              property='confrim_password'
+              value={ confirmPassword }
+              placeholder='Confrim password'
+              width='w-10/12'
+              inputMode='password'
+              onChange={ (property, value) => setConfirmPassword(value) }
+            />
+            <Button
+              style='w-10/12 py-4 mx-auto'
+              color='blue'
+              label='Register'
+              disabled={ userRegisterForm.password !== confirmPassword || userRegisterForm.password <= 6 }
+              onPress={ register }
+            />
+          </KeyboardAvoidingView>
+        }
 
-      <Image
-        source={ login3 }
-        className='absolute bottom-0 left-0 w-full'
-      />
-    </View>
+        <Image
+          source={ login3 }
+          className='absolute bottom-0 left-0 w-full'
+        />
+      </View>
+    </ErrorBoundary>
   );
 }
 

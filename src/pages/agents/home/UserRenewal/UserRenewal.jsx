@@ -4,7 +4,7 @@ import Input from '@components/Input'
 import Navbar from '@components/Navbar'
 import React, { useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
-import { View, ScrollView, Text, Keyboard } from 'react-native'
+import { View, ScrollView, Text, Keyboard, Pressable } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { formatDate } from 'src/helpers/formatData'
 import httpService from 'src/httpService'
@@ -71,36 +71,48 @@ function UserRenewal() {
     return (
         <View className='flex-1 bg-white'>
             <Navbar color='blue' />
-            { showPlans ?
-                <View className='flex-1 p-4'>
-                    <Plans plan={ plan } changePlan={ setPlan } />
-                    <Button label='Pay' style='w-11/12 p-2' color='blue' onPress={ () => handlePayment() } />
-                </View>
-                : <View style={ { flex: 1 } }>
-                    <Heading label='Search User' size='text-xl' />
-                    <Input label='Search User' width='w-11/12' placeholder='Search User by phone number or healthId' onChange={ (property, value) => setSearch(value) } />
-                    <Button label='Search' style='w-11/12 p-2' color='blue' onPress={ () => fetchUsers() } disabled={ isLoading } />
-                    { users.length > 0 && (
-                        <View style={ { flex: 1 } } className="mt-4">
-                            <Heading label='Search Results' size='text-lg' />
-                            <ScrollView style={ { flex: 1 } } className='flex-1 p-4'
-                                onTouchEnd={ Keyboard.dismiss }
-                                keyboardShouldPersistTaps='always'
-                                onScroll={ onScroll }
-                                scrollEventThrottle={ 16 }
-                                pagingEnabled
-                            >
-                                { users.map((user, index) => (
-                                    <TouchableOpacity onPress={ () => handleUserPress(user) } key={ index } className="bg-gray-100 p-4 rounded-md my-2">
-                                        <Text className="font-bold text-black">{ user.name }</Text>
-                                        <Text className="text-sm text-black">Health ID: { user.healthId }</Text>
-                                        <Text className="text-sm text-black">Valid till: { formatDate(user.expireDate) }</Text>
-                                    </TouchableOpacity>
-                                )) }
-                            </ScrollView>
+            <View className='flex-1 p-4'>
+                { showPlans ?
+                    <View className='flex-1 p-4'>
+                        <View className='w-full flex-col items-center justify-center'>
+                            <View className='flex-row items-center justify-center'>
+                                <Text className='text-black font-bold mr-2'>Selected user :</Text>
+                                <Text className='text-center text-black'>{ selectedUser?.name }</Text>
+                            </View>
+                            <Pressable onPress={ () => setShowPlans(false) } className='flex-row items-center justify-center my-2'><Text className='text-black font-bold ml-2 text-xs'>(Change)</Text></Pressable>
                         </View>
-                    ) }
-                </View> }
+                        <Plans plan={ plan } changePlan={ setPlan } />
+                        <Button label='Pay' style='w-full p-4' color='blue' onPress={ () => handlePayment() } />
+                    </View>
+                    : <View style={ { flex: 1 } } className='w-full mx-auto items-center justify-center'>
+                        <Heading label='Search User' size='text-xl' />
+                        <Input label='Search User' width='w-11/12' placeholder='Search User by phone number or healthId' onChange={ (property, value) => setSearch(value) } />
+                        <Button label='Search' style='w-11/12 p-2' color='blue' onPress={ () => fetchUsers() } disabled={ isLoading } />
+                        { users.length > 0 ? (
+                            <View style={ { flex: 1 } } className="mt-4 w-full">
+                                <Heading label='Search Results' size='text-lg' />
+                                <ScrollView style={ { flex: 1 } } className='flex-1 p-4 w-full'
+                                    onTouchEnd={ Keyboard.dismiss }
+                                    keyboardShouldPersistTaps='always'
+                                    onScroll={ onScroll }
+                                    scrollEventThrottle={ 16 }
+                                    pagingEnabled
+                                >
+                                    {
+                                        users.map((user, index) => (
+                                            <TouchableOpacity onPress={ () => handleUserPress(user) } key={ index } className="bg-gray-100 p-4 rounded-md my-2 w-full">
+                                                <Text className="font-bold text-black">{ user.name }</Text>
+                                                <Text className="text-sm text-black">Health ID: { user.healthId }</Text>
+                                                <Text className="text-sm text-black">Valid till: { formatDate(user.expireDate) }</Text>
+                                            </TouchableOpacity>
+                                        ))
+                                    }
+                                </ScrollView>
+                            </View>
+
+                        ) : <Text className='text-center text-black'>No users found</Text> }
+                    </View> }
+            </View>
         </View>
     )
 }

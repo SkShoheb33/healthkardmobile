@@ -65,6 +65,6 @@ export const images = [
 ];
 
 export const SERVICES = ["All Services", "Bones", "Children (Pediatrics)", "Dental", "Ears", "Eyes", "Gastro", "General Medicine", "Hair", "Heart", "Kidney", "Lungs", "Neuro", "Nose", "Reproductive", "Skin"];
-export const CITIES = ["Narasaraopet", "Guntur", "Vijayawada"];
+export const CITIES = ["All Cities", "Narasaraopet", "Guntur", "Vijayawada"];
 export const ads = [ad1, ad2, ad1, ad2];
 

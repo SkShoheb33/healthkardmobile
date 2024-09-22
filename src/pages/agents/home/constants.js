@@ -55,34 +55,35 @@ export const initialHospitals = {
 
 export const initialUser = {
     name: '',
-    healthId: `HK24${Math.floor(1000000 + Math.random() * 9000000)}`,
+    healthId: null,
     image: '',
     email: '',
     number: '',
     gender: '',
     age: '',
-    dob: '',
+    dob: new Date(),
     address: '',
     city: '',
     pincode: '',
     agent: '',
-    payments: [
-        {
-            plan: '1 month',
-            amount: 99,
-            transactionId: '',
-            issueDate: '',
-            paymentStatus: ''
-        }
-    ]
+    payments: []
 }
 
-// export const plans = [
-//     { plan: '1 month', price: 99 },
-//     { plan: '3 months', price: 299 },
-//     { plan: '6 months', price: 499 },
-//     { plan: '1 year', price: 899 },
-// ]
 export const WELCOME = 'Welcome';
 export const PROGRESS = 'Your Progress of';
 export const TARGET = 'Target';
+
+export const fullYear = {
+    Jan: 'January',
+    Feb: 'February',
+    Mar: 'March',
+    Apr: 'April',
+    May: 'May',
+    Jun: 'June',
+    Jul: 'July',
+    Aug: 'August',
+    Sep: 'September',
+    Oct: 'October',
+    Nov: 'November',
+    Dec: 'December',
+}

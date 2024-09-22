@@ -8,12 +8,12 @@ async function requestStoragePermission() {
         try {
             const granted = await PermissionsAndroid.request(
                 PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE, {
-                    title: 'Storage Permission',
-                    message: 'App needs access to your storage to upload files.',
-                    buttonNeutral: 'Ask Me Later',
-                    buttonNegative: 'Cancel',
-                    buttonPositive: 'OK',
-                }
+                title: 'Storage Permission',
+                message: 'App needs access to your storage to upload files.',
+                buttonNeutral: 'Ask Me Later',
+                buttonNegative: 'Cancel',
+                buttonPositive: 'OK',
+            }
             );
             return granted === PermissionsAndroid.RESULTS.GRANTED;
         } catch (err) {
@@ -25,7 +25,7 @@ async function requestStoragePermission() {
     }
 }
 
-export const pickFile = async() => {
+export const pickFile = async () => {
     const permissionGranted = await requestStoragePermission();
     if (!permissionGranted) {
         console.error('Permission not granted');
@@ -48,7 +48,7 @@ export const pickFile = async() => {
     }
 };
 
-const resolveFilePath = async(uri) => {
+const resolveFilePath = async (uri) => {
     if (Platform.OS === 'android' && uri.startsWith('content://')) {
         try {
             // Read the file content as base64
@@ -64,7 +64,7 @@ const resolveFilePath = async(uri) => {
     }
     return uri;
 };
-const upload = async(filePath, fileName) => {
+const upload = async (filePath, fileName) => {
     if (filePath) {
         try {
             const fileExists = await RNFS.exists(filePath);
@@ -73,12 +73,13 @@ const upload = async(filePath, fileName) => {
                 return;
             }
 
-            const fileRef = storage().ref(fileName);
+            const fileRef = storage().ref(`hospitals/${fileName}$${Date.now()}$${fileName.split('.').pop()}`);
 
             await fileRef.putFile(filePath);
             console.log(fileName);
             const fileURL = await fileRef.getDownloadURL();
-            return { fileURL, fileName };
+            return fileURL;
+            // return { fileURL, fileName };
         } catch (error) {
             console.error('Error uploading file:', error);
         }
@@ -86,3 +87,12 @@ const upload = async(filePath, fileName) => {
         console.error('Invalid file path');
     }
 };
+
+export const getFileNameFromURL = (url) => {
+    const parts = url.split('/');
+    const fileNameWithParams = parts[parts.length - 1];
+    const fileName = fileNameWithParams.split('?')[0];
+    const decodedFileName = decodeURIComponent(fileName);
+    const [, originalName, time, extension] = decodedFileName.split('$');
+    return `${originalName}.${extension}`;
+}

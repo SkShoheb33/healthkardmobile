@@ -51,7 +51,7 @@ function Header({ location, setLocation, onSearch }) {
 
         {/* Location Options */ }
         { showLocation && (
-          <View className="absolute top-0 w-full bg-white rounded-md p-2 shadow-xl border flex-row flex-wrap border-gray-200 left-0">
+          <View className="absolute top-0 w-full bg-white rounded-md p-2 shadow-xl border flex-row flex-wrap border-gray-200 left-0 z-20">
             { CITIES.map((city, index) => {
               return (
                 <Pressable
@@ -61,8 +61,8 @@ function Header({ location, setLocation, onSearch }) {
                   } }
                   style={ styles.greenBorder }
                   key={ index }
-                  className="p-2 rounded-md m-2 z-20">
-                  <Text className="text-black">{ city }</Text>
+                  className="p-2 rounded-md m-1 z-20">
+                  <Text className="text-black text-xs">{ city }</Text>
                 </Pressable>
               )
             }) }

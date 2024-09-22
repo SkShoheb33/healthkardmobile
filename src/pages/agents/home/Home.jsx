@@ -1,26 +1,54 @@
-import React, { useEffect, useState } from 'react'
-import { BackHandler, Image, ScrollView, Text, View } from 'react-native'
+import React, { useEffect, useState, useCallback } from 'react'
+import { BackHandler, Image, ScrollView, Text, View, RefreshControl } from 'react-native'
 import Navbar from 'src/components/Navbar'
 import img1 from 'src/assets/agentHome.png'
 import { styles } from 'src/styles/style'
 import Button from 'src/components/Button'
 import { faHospital, faUserPlus } from '@fortawesome/free-solid-svg-icons'
 import { useNavigation, useFocusEffect } from '@react-navigation/native'
-import { PROGRESS, TARGET, WELCOME } from './constants'
+import { fullYear, PROGRESS, TARGET, WELCOME } from './constants'
 import { HEALTHKARDS, HOSPITALS } from '../../strings'
 import httpService from 'src/httpService'
-import { AGENT_ID } from '../constants'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { countByYearAndMonth, formatCurrency, formatData, getCurrentMonthAndYear } from 'src/helpers/formatData'
 
 function Home() {
     const navigation = useNavigation();
-    const [agentInfo, setAgentInfo] = useState({})
+    const [agentInfo, setAgentInfo] = useState({});
+    const [currentMonthAmount, setCurrentMonthAmount] = useState(0);
+    const [healthkardsTarget, setHealthkardsTarget] = useState(15000);
+    const [currentMonthHospitalCount, setCurrentMonthHospitalCount] = useState(0);
+    const [hospitalCountTarget, setHospitalCountTarget] = useState(10);
+    const [refreshing, setRefreshing] = useState(false);
+    const [currentMonthYear, setCurrentMonthYear] = useState(0);
+
+    const fetchAgentData = async () => {
+        const id = await AsyncStorage.getItem('agentToken');
+
+        try {
+            const result = await httpService.get(`agents/${id}`);
+            setAgentInfo(result);
+            const usersAmount = countByYearAndMonth(formatData(result?.usersAdded, 'amount') || {}, true);
+            const hospitalsAdded = countByYearAndMonth(formatData(result?.hospitalsAdded, 'hospitalId') || {}, false);
+            const currentMonth = getCurrentMonthAndYear();
+            setCurrentMonthYear(currentMonth);
+            console.log(currentMonth);
+            setCurrentMonthAmount(usersAmount[currentMonth.year][currentMonth.month] || 0);
+            setCurrentMonthHospitalCount(hospitalsAdded[currentMonth.year][currentMonth.month] || 0);
+            setHealthkardsTarget(result?.healthkardsTarget);
+            setHospitalCountTarget(result?.hospitalsTarget);
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     useEffect(() => {
-        const fetchAgentData = async () => {
-            const result = await httpService.get(`agents/${AGENT_ID}`);
-            setAgentInfo(result);
-        };
         fetchAgentData();
+    }, []);
+
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        fetchAgentData().then(() => setRefreshing(false));
     }, []);
 
     useFocusEffect(
@@ -41,12 +69,16 @@ function Home() {
         }, [])
     );
 
-
-
     return (
         <View style={ { flex: 1 } } className=''>
             <Navbar color='blue' />
-            <ScrollView style={ { flex: 1 } } className='h-full bg-white'>
+            <ScrollView
+                style={ { flex: 1 } }
+                className='h-full bg-white'
+                refreshControl={
+                    <RefreshControl refreshing={ refreshing } onRefresh={ onRefresh } />
+                }
+            >
                 <View style={ { flex: 1 } } className='w-full items-center justify-center h-full my-4'>
                     <View className='flex-row items-center justify-center gap-2 my-4 w-full p-2'>
                         <View className='w-1/2'>
@@ -59,18 +91,18 @@ function Home() {
                     </View>
                     <View className='w-full justify-center items-center my-4'>
                         <Text style={ styles.blueText } className='text-2xl '>{ PROGRESS }</Text>
-                        <Text style={ styles.blueText } className='text-2xl '>August, 2024</Text>
+                        <Text style={ styles.blueText } className='text-2xl '>{ fullYear[currentMonthYear.month] }, { currentMonthYear.year }</Text>
                     </View>
                     <View className='flex-row justify-around gap-4 my-4'>
                         <View style={ styles.blue } className=' w-2/5 p-4 rounded-md'>
                             <Text className='text-xl text-white text-center'>{ HEALTHKARDS }</Text>
-                            <Text className='text-white text-center text-xl font-bold'>80</Text>
-                            <Text className='text-white text-center'>{ TARGET } : 90</Text>
+                            <Text className='text-white text-center text-xl font-bold'>{ formatCurrency(currentMonthAmount) }</Text>
+                            <Text className='text-white text-center'>{ TARGET } : { formatCurrency(healthkardsTarget) }</Text>
                         </View>
                         <View style={ styles.blue } className=' w-2/5 p-4 rounded-md'>
                             <Text className='text-xl text-white text-center'>{ HOSPITALS }</Text>
-                            <Text className='text-white text-center text-xl font-bold'>5</Text>
-                            <Text className='text-white text-center'>{ TARGET } : 10</Text>
+                            <Text className='text-white text-center text-xl font-bold'>{ currentMonthHospitalCount }</Text>
+                            <Text className='text-white text-center'>{ TARGET } : { hospitalCountTarget }</Text>
                         </View>
                     </View>
                     <View className='w-full items-center  my-4'>

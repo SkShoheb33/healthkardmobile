@@ -18,88 +18,40 @@ function Hospitals() {
         totalPages: 0,
         totalHospitals: 0
     });
-    const [filteredHospitals, setFilteredHospitals] = useState([]);
     const [isLoading, setLoadingStatus] = useState(false);
-    const [location, setLocation] = useState('Narasaraopet');
-    const [hasMore, setHasMore] = useState(true);
+    const [location, setLocation] = useState('All cities');
     const [searchTerm, setSearchTerm] = useState('');
     const ITEMS_PER_PAGE = 10;
 
-    const filterHospitals = useCallback((hospitals, searchTerm, city, service) => {
-        return hospitals.filter(hospital =>
-            hospital.hospitalDetails.hospitalTradeName.toLowerCase().includes(searchTerm.toLowerCase()) &&
-            hospital.hospitalDetails.address.city.toLowerCase().includes(city.toLowerCase()) &&
-            (service ? hospital.hospitalDetails.servicesOffered.includes(service) || service === "All Services" : true)
-        );
-    }, []);
-
-    const fetchAllHospitals = useCallback(async () => {
+    const fetchHospitals = useCallback(async (page = 1, refresh = false) => {
         setLoadingStatus(true);
         try {
-            const result = await httpService.get(`hospitals?page=1&limit=${Number.MAX_SAFE_INTEGER}`);
-            setHospitalData({
-                hospitals: result.hospitals,
-                currentPage: result.currentPage,
-                totalPages: result.totalPages,
-                totalHospitals: result.totalHospitals
-            });
-            return result.hospitals;
-        } catch (err) {
-            console.log({ err });
-            return [];
-        } finally {
-            setLoadingStatus(false);
-        }
-    }, []);
-
-    const updateFilteredHospitals = useCallback(async () => {
-        const allHospitals = await fetchAllHospitals();
-        const filtered = filterHospitals(allHospitals, searchTerm, location, userService);
-        setFilteredHospitals(filtered);
-        setHasMore(false);
-    }, [fetchAllHospitals, filterHospitals, searchTerm, location, userService]);
-
-    const onSearch = useCallback((hospitalName) => {
-        setSearchTerm(hospitalName);
-        updateFilteredHospitals();
-    }, [updateFilteredHospitals]);
-
-    const onLocationChange = useCallback((newLocation) => {
-        setLocation(newLocation);
-        updateFilteredHospitals();
-    }, [updateFilteredHospitals]);
-
-    const fetchHospitals = useCallback(async () => {
-        if (!hasMore || isLoading) return;
-
-        setLoadingStatus(true);
-        try {
-            const result = await httpService.get(`hospitals?page=${hospitalData.currentPage + 1}&limit=${ITEMS_PER_PAGE}`);
-            const newHospitals = [...hospitalData.hospitals, ...result.hospitals];
+            const url = `hospitals?page=${page}&limit=${ITEMS_PER_PAGE}${userService ? `&service=${userService}` : ''}${location !== 'All cities' ? `&city=${location}` : ''}${searchTerm ? `&search=${searchTerm}` : ''}`;
+            const result = await httpService.get(url);
             setHospitalData(prevData => ({
-                ...prevData,
-                hospitals: newHospitals,
+                hospitals: refresh ? result.hospitals : [...prevData.hospitals, ...result.hospitals],
                 currentPage: result.currentPage,
                 totalPages: result.totalPages,
                 totalHospitals: result.totalHospitals
             }));
-            const filtered = filterHospitals(newHospitals, searchTerm, location, userService);
-            setFilteredHospitals(filtered);
-            setHasMore(result.currentPage < result.totalPages);
         } catch (err) {
             console.log({ err });
         } finally {
             setLoadingStatus(false);
         }
-    }, [hasMore, isLoading, hospitalData.currentPage, location, searchTerm, filterHospitals, userService]);
+    }, [location, searchTerm, userService]);
 
-    useEffect(() => {
-        fetchHospitals();
+    const onSearch = useCallback((hospitalName) => {
+        setSearchTerm(hospitalName);
+    }, []);
+
+    const onLocationChange = useCallback((newLocation) => {
+        setLocation(newLocation);
     }, []);
 
     useEffect(() => {
-        updateFilteredHospitals();
-    }, [userService, updateFilteredHospitals]);
+        fetchHospitals(1, true);
+    }, [fetchHospitals]);
 
     const renderHospitalCard = ({ item }) => (
         <HospitalCard hospital={ item } />
@@ -108,6 +60,12 @@ function Hospitals() {
     const renderFooter = () => {
         if (!isLoading) return null;
         return <Loading isLoading={ true } />;
+    };
+
+    const loadMore = () => {
+        if (hospitalData.currentPage < hospitalData.totalPages && !isLoading) {
+            fetchHospitals(hospitalData.currentPage + 1);
+        }
     };
 
     return (
@@ -119,9 +77,9 @@ function Hospitals() {
                 onSearch={ onSearch }
             />
             <FlatList
-                data={ filteredHospitals }
+                data={ hospitalData.hospitals }
                 renderItem={ renderHospitalCard }
-                keyExtractor={ (item, index) => index.toString() }
+                keyExtractor={ (item) => item._id.toString() }
                 numColumns={ 2 }
                 contentContainerStyle={ { padding: 8 } }
                 ListHeaderComponent={
@@ -132,7 +90,7 @@ function Hospitals() {
                         size='text-xl'
                     />
                 }
-                onEndReached={ fetchHospitals }
+                onEndReached={ loadMore }
                 onEndReachedThreshold={ 0.1 }
                 ListFooterComponent={ renderFooter }
             />

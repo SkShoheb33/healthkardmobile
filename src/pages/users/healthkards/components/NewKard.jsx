@@ -8,6 +8,7 @@ import { styles } from '../../../../styles/style'
 import { KeyboardAvoidingView } from 'react-native'
 import Plans from '@components/Plans'
 import Navbar from '@components/Navbar'
+import DatePicker from '@components/DatePicker'
 import { initialUser, plans } from './constants'
 import httpService from 'src/httpService'
 import { pay } from 'src/helpers/payment'
@@ -28,14 +29,14 @@ function NewKard() {
   const handlePayment = async (plan) => {
     console.log(userData);
     try {
-      pay();
+      navigation.navigate('Pay', { userData, plan: plan.plan });
     } catch (error) {
       Alert.alert('Error', 'Failed to initiate payment');
       console.error(error);
     }
   }
   return (
-    <View style={ { flex: 1 } } className=''>
+    <View style={ { flex: 1 } } className=' bg-white'>
       <Navbar />
       <KeyboardAvoidingView behavior={ Platform.OS === 'ios' ? 'padding' : 'height' } style={ { flex: 1 } } className='flex flex-col items-center w-full pb-12'>
         <Image source={ Ad1 } />
@@ -55,15 +56,20 @@ const Form1 = ({ userData, inputChangeHandler, setPageNumber }) => {
 
   return (
     <View className='w-10/12 mx-auto'>
-      <Text className='my-8 text-xl text-center'>Get your healthkard</Text>
+      <Text className='my-8 text-xl text-center text-black'>Get your healthkard</Text>
       <View className='w-full p-2 rounded-md my-4 bg-gray-300'>
         <Text className='text-xs text-black'>Name</Text>
         <TextInput value={ userData.name } onChangeText={ value => inputChangeHandler('name', value) } />
       </View>
       <View className='flex flex-row justify-between my-4'>
         <View className='w-5/12 p-2 rounded-md bg-gray-300'>
-          <Text className='text-xs text-black'>Age</Text>
-          <TextInput value={ userData.age } onChangeText={ value => inputChangeHandler('age', value) } />
+          <Text className='text-xs text-black mb-1'>Date of Birth</Text>
+          <DatePicker
+            placeHolder="Select Date"
+            width="w-full"
+            onChange={ (date) => inputChangeHandler('dateOfBirth', date) }
+            value={ userData.dateOfBirth ? new Date(userData.dateOfBirth) : null }
+          />
         </View>
         <View className='w-6/12 p-2 rounded-md bg-gray-300'>
           <Text className='text-xs text-black'>Gender</Text>

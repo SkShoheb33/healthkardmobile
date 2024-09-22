@@ -1,47 +1,73 @@
-import React, { useEffect, useState } from 'react'
-import { Image, ScrollView, Text, View } from 'react-native'
-import Navbar from '../../../components/Navbar'
-import httpService from '../../../httpService'
-import logoSmall from '../../../assets/logo-small.png'
-import { styles } from '../../../styles/style'
+import React, { useEffect, useState, useCallback } from 'react'
+import { Image, ScrollView, Text, View, RefreshControl } from 'react-native'
+import Navbar from '@components/Navbar'
+import httpService from 'src/httpService'
+import logoSmall from 'src/assets/logo-small.png'
+import { styles } from 'src/styles/style'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faCheck } from '@fortawesome/free-solid-svg-icons'
 import { faClock } from '@fortawesome/free-regular-svg-icons'
-import { AGENT_ID } from '../constants'
-import { formatData } from 'src/helpers/formatData'
+import { formatData, formateAddress } from 'src/helpers/formatData'
 import ShimmerContainer from '@components/ShimmerContainer'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import Loading from '@components/Loading'
 
 function Hospitals() {
   const [hospitalsAdded, setHospitalsAdded] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const fetchHospitalsAdded = async () => {
+    try {
+      setLoading(true);
+      const agentToken = await AsyncStorage.getItem('agentToken');
+      const result = await httpService.get(`agents/${agentToken}/hospitals-added`);
+      const formattedResult = formatData(result, 'hospitalID');
+      setHospitalsAdded(formattedResult);
+    } catch (error) {
+      console.log({ error });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchHospitalsAdded = async () => {
-      const result = await httpService.get(`agents/${AGENT_ID}/hospitals-added`);
-      const formattedResult = formatData(result, 'hospitalId');
-      setHospitalsAdded(formattedResult);
-    };
     fetchHospitalsAdded();
-  }, [AGENT_ID]);
+  }, []);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    fetchHospitalsAdded().then(() => setRefreshing(false));
+  }, []);
 
   return (
     <View style={ { flex: 1 } } className='bg-white'>
       <Navbar color='blue' />
-      <ScrollView style={ { flex: 1 } }>
+      <ScrollView
+        style={ { flex: 1 } }
+        refreshControl={
+          <RefreshControl refreshing={ refreshing } onRefresh={ onRefresh } />
+        }
+      >
         <View style={ { flex: 1 } } className='p-2'>
           {
-            hospitalsAdded.map((day, index) => {
-              return (
-                <View key={ index } className='p-2'>
-                  <View className='flex-row justify-between'>
-                    <Text className='text-black font-semibold text-lg'>{ day.date }</Text>
-                    <Text className='text-black'>Count : { day?.hospitalId?.length }</Text>
+            loading ? <Loading isLoading={ loading } /> :
+              hospitalsAdded?.map((day, index) => {
+                return (
+                  <View key={ index } className='p-2'>
+                    <View className='flex-row justify-between'>
+                      <Text className='text-black font-semibold text-lg'>{ day.date }</Text>
+                      <Text className='text-black'>Count : { day?.hospitalID?.length }</Text>
+                    </View>
+                    {
+                      day?.hospitalID?.map((hospital, index) => <HospitalCard key={ index } hospitalId={ hospital } />)
+                    }
                   </View>
-                  {
-                    day?.hospitalId?.map((hospital, index) => <HospitalCard key={ index } hospitalId={ hospital } />)
-                  }
-                </View>
-              )
-            })
+                )
+              })
+          }
+          {
+            hospitalsAdded?.length === 0 && <Text className='text-black text-center text-lg'>No hospitals added</Text>
           }
         </View>
       </ScrollView>
@@ -89,7 +115,10 @@ const HospitalCard = ({ hospitalId }) => {
             ? hospital?.hospitalDetails?.hospitalLegalName.slice(0, 27) + '...'
             : hospital?.hospitalDetails?.hospitalLegalName }
         </Text>
-        <Text className='text-black text-sm'>
+        <Text className='text-black text-sm font-semibold'>
+          { formateAddress(hospital?.hospitalDetails?.address) }
+        </Text>
+        <Text className='text-black text-xs'>
           { hospital?.hospitalDetails?.servicesOffered?.slice(0, 3).join(', ') }
           { hospital?.hospitalDetails?.servicesOffered?.length > 3 && '...' }
         </Text>

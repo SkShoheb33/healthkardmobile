@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, Image, Pressable, Alert, Modal, TouchableOpacity, StyleSheet } from 'react-native'
-import { useNavigation } from '@react-navigation/native';
+import { View, Text, Image, Pressable, Alert, Modal, TouchableOpacity, StyleSheet, BackHandler } from 'react-native'
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { styles } from 'src/styles/style';
 import httpService from 'src/httpService';
 import Navbar from '@components/Navbar';
@@ -9,6 +9,8 @@ import ShimmerContainer from '@components/ShimmerContainer';
 import Input from '@components/Input';
 import Button from '@components/Button';
 import Heading from '@components/Heading';
+import { formatDate } from 'src/helpers/formatData';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function Healthkard({ route }) {
     const navigation = useNavigation();
@@ -20,6 +22,7 @@ function Healthkard({ route }) {
     const [newPhoneNumber, setNewPhoneNumber] = useState('');
     const [otp, setOtp] = useState('');
     const [showOtpInput, setShowOtpInput] = useState(false);
+    const [isAgent, setIsAgent] = useState(false);
 
     const askConfirmation = () => {
         Alert.alert(
@@ -64,12 +67,30 @@ function Healthkard({ route }) {
 
     useEffect(() => {
         const fetchData = async () => {
+            const agentId = await AsyncStorage.getItem('agentId');
+            setIsAgent(agentId);
             const result = await httpService.get('users', `?healthId=${healthId}`);
             setKard(result.users[0]);
             setLoading(true);
         }
         fetchData();
     }, [healthId])
+
+    useFocusEffect(
+        React.useCallback(() => {
+            if (!isAgent) {
+                const onBackPress = () => {
+                    navigation.navigate('Home');
+                    return true;
+                };
+
+                BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+                return () =>
+                    BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+            }
+        }, [navigation, isAgent])
+    );
 
     return (
         <View style={ { flex: 1 } }>
@@ -97,8 +118,9 @@ function Healthkard({ route }) {
                                 { kard.name }
                             </Text>
                             <Text className='my-1 text-black'>
-                                <Text style={ styles.blueText } className='font-semibold'>Gender & Age : </Text>
-                                { kard.gender }, { kard.age }
+                                <Text style={ styles.blueText } className='font-semibold'>Gender & DOB : </Text>
+                                <Text>{ kard.gender === 'm' ? 'Male' : kard.gender === 'f' ? 'Female' : kard.gender }</Text>
+                                <Text>, { formatDate(kard.dob) }</Text>
                             </Text>
                             { kard.email &&
                                 <Text className='my-1 text-black'>
@@ -109,7 +131,10 @@ function Healthkard({ route }) {
                             { kard.number &&
                                 <Text className='my-1 text-black'>
                                     <Text style={ styles.blueText } className='font-semibold'>Phone : </Text>
-                                    { `+${kard.number.slice(0, 2)} ${kard.number.slice(2)}` }
+                                    { kard.number.length === 10
+                                        ? `+91 ${kard.number.slice(0, 5)} ${kard.number.slice(5)}`
+                                        : `+${kard.number.slice(0, 2)} ${kard.number.slice(2)}`
+                                    }
                                 </Text>
                             }
                             <Text className='my-1 text-black'>
@@ -118,82 +143,88 @@ function Healthkard({ route }) {
                             </Text>
                             <Text className='my-1 text-black'>
                                 <Text style={ styles.blueText } className='font-semibold'>Last Plan : </Text>
-                                { kard.lastPlan }
+                                { kard.payments && kard.payments.length > 0
+                                    ? (kard.payments.filter(payment => payment.paymentStatus === true).pop()?.plan || 'No valid plan')
+                                    : 'No plan' }
                             </Text>
                             <View className='flex flex-row w-full items-center justify-between'>
                                 <Text className='my-1 text-black'>
                                     <Text style={ styles.blueText } className='font-semibold'>Validity Till : </Text>
-                                    { kard.paymentStatus ?
-                                        <Text>{ (new Date(kard.expireDate)).toLocaleDateString() }</Text> :
-                                        <Text className='text-red-500'>Invalid</Text>
-                                    }
+                                    <Text>{ formatDate(kard.expireDate) }</Text>
                                 </Text>
-                                <Pressable onPress={ () => navigation.navigate('Renewal', { healthId: healthId }) } style={ styles.blue } className='p-2 rounded-md px-4'>
+                                { !isAgent && <Pressable onPress={ () => navigation.navigate('Renewal', { healthId: healthId }) } style={ styles.blue } className='p-2 rounded-md px-4'>
                                     <Text className='text-white'>Renew</Text>
-                                </Pressable>
+                                </Pressable> }
                             </View>
-                            <View className='flex flex-row justify-between mt-4'>
+                            { !isAgent && <View className='flex flex-row justify-between mt-4'>
                                 <Pressable onPress={ handleChangePhoneNumber } style={ styles.blue } className='p-2 rounded-md px-4'>
                                     <Text className='text-white'>Change Phone Number</Text>
                                 </Pressable>
                                 <Pressable onPress={ askConfirmation } style={ [styles.bgRed] } className='p-2 rounded-md px-4'>
                                     <Text className='text-white'>Delete</Text>
                                 </Pressable>
-                            </View>
+                            </View> }
                         </View>
-                    </View> : <Loading isLoading={ loading } /> }
+                    </View> : <Loading isLoading={ loading } text='Generating Health Card...' /> }
+                { isAgent && <Button
+                    label="Go to home"
+                    onPress={ () => navigation.navigate('Home') }
+                    color='green'
+                    style='w-1/2 p-4 mx-auto'
+                /> }
             </View>
-
-            <Modal
-                animationType="slide"
-                transparent={ true }
-                visible={ modalVisible }
-                onRequestClose={ () => setModalVisible(false) }
-            >
-                <TouchableOpacity
-                    style={ modalStyles.overlay }
-                    className='flex flex-1 justify-end'
-                    activeOpacity={ 1 }
-                    onPressOut={ () => setModalVisible(false) }
+            { !isAgent &&
+                <Modal
+                    animationType="slide"
+                    transparent={ true }
+                    visible={ modalVisible }
+                    onRequestClose={ () => setModalVisible(false) }
                 >
-                    <View className='justify-center items-center rounded-t-xl p-4 bg-white'>
-                        <Heading label="Change Phone Number" size="text-xl" />
+                    <TouchableOpacity
+                        style={ modalStyles.overlay }
+                        className='flex flex-1 justify-end'
+                        activeOpacity={ 1 }
+                        onPressOut={ () => setModalVisible(false) }
+                    >
+                        <View className='justify-center items-center rounded-t-xl p-4 bg-white'>
+                            <Heading label="Change Phone Number" size="text-xl" />
 
-                        <Input
-                            placeholder="Enter new phone number"
-                            value={ newPhoneNumber }
-                            onChangeText={ setNewPhoneNumber }
-                            keyboardType="phone-pad"
-                        />
-                        { !showOtpInput ? (
-                            <Button
-                                label="Send OTP"
-                                onPress={ handleSendOtp }
-                                color='blue'
+                            <Input
+                                placeholder="Enter new phone number"
+                                value={ newPhoneNumber }
+                                onChangeText={ setNewPhoneNumber }
+                                keyboardType="phone-pad"
                             />
-                        ) : (
-                            <>
-                                <Input
-                                    placeholder="Enter OTP"
-                                    value={ otp }
-                                    onChangeText={ setOtp }
-                                    keyboardType="numeric"
-                                />
+                            { !showOtpInput ? (
                                 <Button
-                                    label="Change Number"
-                                    onPress={ handleChangeNumber }
+                                    label="Send OTP"
+                                    onPress={ handleSendOtp }
                                     color='blue'
                                 />
-                            </>
-                        ) }
-                        <Button
-                            label="Cancel"
-                            onPress={ () => setModalVisible(false) }
-                            color='red'
-                        />
-                    </View>
-                </TouchableOpacity>
-            </Modal>
+                            ) : (
+                                <>
+                                    <Input
+                                        placeholder="Enter OTP"
+                                        value={ otp }
+                                        onChangeText={ setOtp }
+                                        keyboardType="numeric"
+                                    />
+                                    <Button
+                                        label="Change Number"
+                                        onPress={ handleChangeNumber }
+                                        color='blue'
+                                    />
+                                </>
+                            ) }
+                            <Button
+                                label="Cancel"
+                                onPress={ () => setModalVisible(false) }
+                                color='red'
+                            />
+                        </View>
+                    </TouchableOpacity>
+                </Modal>
+            }
         </View>
     )
 }
@@ -204,4 +235,4 @@ const modalStyles = StyleSheet.create({
     },
 });
 
-export default Healthkard
+export default Healthkard;

@@ -19,7 +19,8 @@ const Stack = createStackNavigator();
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+  const [isAgentLoggedIn, setIsAgentLoggedIn] = useState(false);
 
   useEffect(() => {
     checkLoginStatus();
@@ -28,7 +29,9 @@ function App() {
   const checkLoginStatus = async () => {
     try {
       const userId = await AsyncStorage.getItem('userId');
-      setIsLoggedIn(!!userId);
+      setIsUserLoggedIn(!!userId);
+      const agentId = await AsyncStorage.getItem('agentId');
+      setIsAgentLoggedIn(!!agentId);
     } catch (error) {
       console.error('Error checking login status:', error);
     } finally {
@@ -47,7 +50,7 @@ function App() {
   return (
     <SafeAreaProvider style={ { flex: 1 } } className='bg-white'>
       <NavigationContainer>
-        <Stack.Navigator screenOptions={ { headerShown: false } } initialRouteName={ isLoggedIn ? "user" : "First" }>
+        <Stack.Navigator screenOptions={ { headerShown: false } } initialRouteName={ isUserLoggedIn ? "user" : isAgentLoggedIn ? "agent" : "First" }>
           <Stack.Screen name="First" component={ First } />
           <Stack.Screen name="UserLogin" component={ UserLogin } />
           <Stack.Screen name="UserRegister" component={ UserRegister } />

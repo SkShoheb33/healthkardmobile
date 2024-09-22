@@ -1,6 +1,6 @@
 import Healthkards from 'src/pages/users/healthkards/Healthkards';
 import NewKard from 'src/pages/users/healthkards/components/NewKard';
-import Healthkard from 'src/pages/users/healthkards/components/Healthkard';
+import Healthkard from '@components/Healthkard';
 import Profile from 'src/pages/users/profile/Profile';
 import RenewalHistory from 'src/pages/users/profile/components/RenewalHistory';
 import Home from 'src/pages/users/home/Home';
