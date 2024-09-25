@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { View, Image, Text, TouchableOpacity } from 'react-native';
-import login from 'src/assets/mobile/login.png';
+import { ImageLogin } from './constants';
 import { styles } from 'src/styles/style';
 import Button from '@components/Button';
 import { useNavigation } from '@react-navigation/native';
@@ -30,7 +30,7 @@ function First() {
 
   return (
     <View style={ { flex: 1 } } className='relative'>
-      <Image source={ login } className='w-full' />
+      <Image source={ { uri: ImageLogin } } className='w-full h-1/2' />
 
       <Text style={ styles.greenText } className='text-3xl p-6 text-center'>
         Start your journey now with{ ' ' }

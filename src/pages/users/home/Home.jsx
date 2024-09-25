@@ -8,7 +8,7 @@ import Heading from '@components/Heading'
 import Button from '@components/Button'
 import httpService from 'src/httpService'
 import Navbar from '@components/Navbar'
-import { images, ads } from './constants'
+import { images, ads, banner } from './constants'
 import ShimmerContainer from '@components/ShimmerContainer';
 import Curosols from '@components/Curosols';
 
@@ -68,26 +68,24 @@ function Home() {
                     <RefreshControl refreshing={ refreshing } onRefresh={ onRefresh } />
                 }
             >
-                <Heading label="Welcome to Healthkard" size='text-xl' />
+                <Heading label="!! Welcome to Healthkard" size='text-xl mx-2' />
                 <ShimmerContainer
                     isVisible={ bannerLoading }
                     style={ { width: screenWidth, height: 140, alignSelf: 'center' } }
                 >
                     <Image
-                        source={ require('src/assets/banner.png') }
+                        source={ { uri: banner } }
                         style={ { width: '100%', height: '100%', alignSelf: 'center' } }
                         resizeMode='contain'
                         onLoad={ () => setBannerLoading(true) }
                     />
                 </ShimmerContainer>
                 <View className=''>
-                    <Text className='font-semibold text-xl my-4 text-black'>
-                        What are you Looking for?
-                    </Text>
+                    <Heading label="What are you Looking for?" size='text-xl mx-2' />
                     <Organs images={ images } />
-                    <Heading label='Advertisement' size='text-md' />
+                    <Heading label='Advertisement' size='text-md mx-2' />
                     <Curosols list={ ads } time={ 3000 } />
-                    <Heading label="Top Picks for You" size='text-xl' />
+                    <Heading label="Top Picks for You" size='text-xl mx-2' />
                     <ScrollView horizontal className='w-full p-2'>
                         { hospitalData.hospitals.length > 0 ? (
                             hospitalData.hospitals.slice(0, 3).map((hospital, index) => (

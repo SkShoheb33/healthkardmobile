@@ -28,3 +28,5 @@ export const initialUser = {
         }
     ]
 }
+
+export const banner = 'https://firebasestorage.googleapis.com/v0/b/healthkard-mobile-9599d.appspot.com/o/assets%2Fads%2Fbanner.png?alt=media&token=f309ee49-2a33-49e7-80a0-859f74b98372'

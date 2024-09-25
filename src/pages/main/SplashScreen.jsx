@@ -4,6 +4,7 @@ import { View, Text, Image, Animated, StyleSheet } from 'react-native';
 function SplashScreen({ onFinish }) {
     const fadeAnim = useRef(new Animated.Value(0)).current;
     const translateY = useRef(new Animated.Value(40)).current;
+    const splashImage = 'https://firebasestorage.googleapis.com/v0/b/healthkard-mobile-9599d.appspot.com/o/assets%2Flogo%2FLogo.png?alt=media&token=6636cc55-c1e8-429c-852f-758d32238177';
 
     useEffect(() => {
         Animated.parallel([
@@ -30,8 +31,9 @@ function SplashScreen({ onFinish }) {
         <View style={ styles.container }>
             <Animated.View style={ [styles.content, { opacity: fadeAnim, transform: [{ translateY }] }] }>
                 <Image
-                    source={ require('../../assets/Logo.png') }
+                    source={ { uri: splashImage } }
                     style={ styles.logo }
+                    className='w-full h-full'
                     resizeMode="contain"
                 />
                 <Text style={ styles.text }>HealthKard</Text>

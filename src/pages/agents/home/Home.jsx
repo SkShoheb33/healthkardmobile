@@ -1,16 +1,16 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import { BackHandler, Image, ScrollView, Text, View, RefreshControl } from 'react-native'
 import Navbar from 'src/components/Navbar'
-import img1 from 'src/assets/agentHome.png'
 import { styles } from 'src/styles/style'
 import Button from 'src/components/Button'
 import { faHospital, faUserPlus } from '@fortawesome/free-solid-svg-icons'
 import { useNavigation, useFocusEffect } from '@react-navigation/native'
-import { fullYear, PROGRESS, TARGET, WELCOME } from './constants'
+import { agentHomeImage1, fullYear, PROGRESS, TARGET, WELCOME } from './constants'
 import { HEALTHKARDS, HOSPITALS } from '../../strings'
 import httpService from 'src/httpService'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { countByYearAndMonth, formatCurrency, formatData, getCurrentMonthAndYear } from 'src/helpers/formatData'
+import ShimmerContainer from '@components/ShimmerContainer'
 
 function Home() {
     const navigation = useNavigation();
@@ -32,7 +32,6 @@ function Home() {
             const hospitalsAdded = countByYearAndMonth(formatData(result?.hospitalsAdded, 'hospitalId') || {}, false);
             const currentMonth = getCurrentMonthAndYear();
             setCurrentMonthYear(currentMonth);
-            console.log(currentMonth);
             setCurrentMonthAmount(usersAmount[currentMonth.year][currentMonth.month] || 0);
             setCurrentMonthHospitalCount(hospitalsAdded[currentMonth.year][currentMonth.month] || 0);
             setHealthkardsTarget(result?.healthkardsTarget);
@@ -80,14 +79,14 @@ function Home() {
                 }
             >
                 <View style={ { flex: 1 } } className='w-full items-center justify-center h-full my-4'>
-                    <View className='flex-row items-center justify-center gap-2 my-4 w-full p-2'>
+                    <View className='flex-row items-center justify-center my-4 w-full p-2'>
                         <View className='w-1/2'>
                             <Text className='text-3xl font-bold text-black'>{ WELCOME },</Text>
                             <Text className='text-xl font-bold  text-black'>{ agentInfo?.name }</Text>
                         </View>
-                        <View >
-                            <Image source={ img1 } />
-                        </View>
+                        <ShimmerContainer isVisible={ true } style={ { width: '45%', height: 200 } }>
+                            <Image source={ { uri: agentHomeImage1 } } className='w-full h-full' />
+                        </ShimmerContainer>
                     </View>
                     <View className='w-full justify-center items-center my-4'>
                         <Text style={ styles.blueText } className='text-2xl '>{ PROGRESS }</Text>

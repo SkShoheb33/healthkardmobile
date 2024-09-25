@@ -10,22 +10,19 @@ import httpService from 'src/httpService';
 import DropDown from '@components/DropDown';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ShimmerContainer from '@components/ShimmerContainer';
+import Button from '@components/Button';
 
 function Profile() {
     const [healthId, setHealthId] = useState('');
     const [profile, setProfile] = useState({});
     const [healthIds, setHealthIds] = useState([]);
     const [isLoading, setLoadingStatus] = useState(false);
-    const [usersData, setUsersData] = useState({
-        users: [],
-        currentPage: 1,
-        totalPages: 1,
-        totalUsers: 0
-    });
+    const [loggingOut, setLoggingOut] = useState(false);
     const navigation = useNavigation();
 
     const handleLogout = async () => {
         try {
+            setLoggingOut(true);
             await AsyncStorage.removeItem('userName');
             await AsyncStorage.removeItem('userId');
             await AsyncStorage.removeItem('userNumber');
@@ -35,6 +32,8 @@ function Profile() {
             });
         } catch (error) {
             console.error('Error during logout:', error);
+        } finally {
+            setLoggingOut(false);
         }
     };
 
@@ -48,7 +47,6 @@ function Profile() {
                     return;
                 }
                 const result = await httpService.get('users', `?number=91${userNumber}`);
-                setUsersData(result);
                 const healthIds = result.users.map(item => ({ name: item.name, value: item.healthId }));
                 setHealthId(healthIds[0]?.value || '');
                 setHealthIds(healthIds);
@@ -84,8 +82,9 @@ function Profile() {
         <View style={ { flex: 1 } } className='bg-white'>
             <Navbar />
             <ScrollView className='flex-1 p-2'>
-                <View style={ { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' } }>
+                <View className='w-full'>
                     <DropDown
+                        style={ { width: '100%' } }
                         list={ healthIds }
                         setValue={ setHealthId }
                         value={ healthId }
@@ -96,37 +95,28 @@ function Profile() {
                         healthId={ healthId }
                         image={ profile.image }
                         name={ profile.name }
-                        gender={ profile.gender }
-                        age={ profile.age }
+                        validity={ profile.expireDate }
                     />
                 ) : <ShimmerContainer isVisible={ !isLoading && profile } style={ { width: '90%', height: 120, alignSelf: 'center' } } >
                 </ShimmerContainer> }
                 <Heading label="Others" />
-                <Services />
-                <View className="w-11/12 mx-auto mt-4">
-                    <TouchableOpacity
-                        onPress={ handleLogout }
-                        className="flex-row items-center justify-between bg-red-500 py-3 px-4 rounded-lg"
-                    >
-                        <View className="flex-row items-center">
-                            <FontAwesomeIcon icon={ faSignOutAlt } size={ 24 } color="white" />
-                            <Text className="text-white text-lg font-bold ml-2">Logout</Text>
-                        </View>
-                        <FontAwesomeIcon icon={ faChevronRight } size={ 24 } color="white" />
-                    </TouchableOpacity>
+                <Services profile={ profile } />
+                <View className="w-full mx-auto mt-4">
+                    <Button onPress={ handleLogout } label='Logout' color='red' icon={ faSignOutAlt } loading={ loggingOut } />
                 </View>
             </ScrollView>
         </View>
     );
 }
 
-function Services() {
+function Services({ profile }) {
     return (
-        <View style={ { width: '91%', marginHorizontal: 'auto' } }>
+        <View style={ { width: '100%', marginHorizontal: 'auto' } }>
             <ServiceItem
                 icon={ faCalendar }
                 label="Renewal history"
                 navigateTo='RenewalHistory'
+                payments={ profile.payments }
             />
             <ServiceItem
                 icon={ faComments }
@@ -142,10 +132,17 @@ function Services() {
     );
 }
 
-function ServiceItem({ icon, label, navigateTo }) {
+function ServiceItem({ icon, label, navigateTo, payments }) {
     const navigation = useNavigation()
+    const navigate = () => {
+        if (navigateTo === 'RenewalHistory') {
+            navigation.navigate(navigateTo, { payments: payments })
+        } else {
+            navigation.navigate(navigateTo)
+        }
+    }
     return (
-        <TouchableOpacity onPress={ () => navigation.navigate(navigateTo) } style={ { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderWidth: 1, borderColor: '#ccc', paddingVertical: 8, paddingHorizontal: 16, borderRadius: 8, marginVertical: 4 } }>
+        <TouchableOpacity onPress={ navigate } style={ { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderWidth: 1, borderColor: '#ccc', paddingVertical: 8, paddingHorizontal: 16, borderRadius: 8, marginVertical: 4 } }>
             <View style={ { flexDirection: 'row', alignItems: 'center' } }>
                 <View className=' p-2 rounded-full'>
                     <FontAwesomeIcon icon={ icon } size={ 24 } />

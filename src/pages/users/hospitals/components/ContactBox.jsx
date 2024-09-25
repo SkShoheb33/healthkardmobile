@@ -1,7 +1,7 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faEnvelope, faLocationDot, faPhone } from '@fortawesome/free-solid-svg-icons';
-import { Pressable, Text, View } from 'react-native';
+import { Pressable, Text, TouchableOpacity, View } from 'react-native';
 import { styles } from 'src/styles/style';
 import Address from '@components/Address';
 import PhoneNumber from '@components/PhoneNumber';
@@ -9,6 +9,7 @@ import Heading from '@components/Heading';
 import Button from '@components/Button';
 import { openMap } from 'src/helpers/maps';
 import { dialPhoneNumber } from 'src/helpers/call';
+import { openMailClient } from 'src/helpers/mail';
 
 const ContactBox = ({ address, number, email }) => {
     return (
@@ -31,27 +32,30 @@ const ContactBox = ({ address, number, email }) => {
             />
             {/* Phone Number Section */ }
             <View className='w-full my-2 flex flex-row items-center'>
-                <Button
-                    color='green'
-                    style='w-2/12'
-                    icon={ faPhone }
+                <TouchableOpacity
                     onPress={ () => dialPhoneNumber(number) }
-                />
-                <PhoneNumber
-                    number={ number }
-                    style='w-10/12 mx-2'
-                    color='blue'
-                />
+                    className='flex flex-row items-center w-full'
+                >
+                    <FontAwesomeIcon icon={ faPhone } color='#303486' />
+                    <PhoneNumber
+                        number={ number }
+                        style='w-10/12 mx-2'
+                        color='blue'
+                    />
+                </TouchableOpacity>
             </View>
             {/* Email Section */ }
-            <View className='w-full my-2 flex flex-row items-center'>
+            <TouchableOpacity
+                onPress={ () => openMailClient(email) }
+                className='w-full my-2 flex flex-row items-center'
+            >
                 <FontAwesomeIcon icon={ faEnvelope } color='#303486' />
                 <Heading
                     label={ email }
                     color='blue'
                     style='mx-2'
                 />
-            </View>
+            </TouchableOpacity>
         </View>
     );
 };

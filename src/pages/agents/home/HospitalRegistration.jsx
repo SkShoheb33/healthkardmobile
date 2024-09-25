@@ -12,6 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import httpService from 'src/httpService';
 import Geolocation from '@react-native-community/geolocation';
 import { validateHospitalDetails } from 'src/helpers/validations';
+import { useNavigation } from '@react-navigation/native';
 
 function HospitalRegistration() {
   const [hospital, setHospital] = useState(initialHospitals);
@@ -20,6 +21,7 @@ function HospitalRegistration() {
   const [rightButtonDisabled, setRightButtonDisabled] = useState(false);
   const [error, setError] = useState(null);
   const [validationErrors, setValidationErrors] = useState({});
+  const navigation = useNavigation();
 
   useEffect(() => {
     requestLocationPermission();
@@ -73,8 +75,9 @@ function HospitalRegistration() {
         ...hospital,
         agentID: agentId
       };
-      // console.log('Updated Hospital Details:');
       const response = await httpService.post('hospitals', updatedHospital);
+
+      navigation.navigate('HospitalUploaded', { response });
 
     } catch (error) {
       console.error('Error in save:', error);

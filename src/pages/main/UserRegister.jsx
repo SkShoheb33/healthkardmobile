@@ -1,16 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { View, Image, KeyboardAvoidingView, Alert } from 'react-native';
-import login2 from '../../assets/mobile/login2.png';
-import login3 from '../../assets/mobile/login3.png';
-import loginlogo from '../../assets/mobile/loginlogo.png';
-import Input from '../../components/Input';
-import Button from '../../components/Button';
+import { ImageLogin2, ImageLogin3, ImageLoginLogo } from './constants';
+import Input from '@components/Input';
+import Button from '@components/Button';
 import { useNavigation } from '@react-navigation/native';
 import { errorsMessages, intialUserRegisterForm } from './constants';
 import httpService from 'src/httpService';
 import { validateEmail } from 'src/helpers/validations';
-import { sendMobileOTP, verifyMobileOTP } from 'src/helpers/mobileVerification';
 import ErrorBoundary from '@components/ErrorBoundary';
+import { Policy } from './UserLogin';
 
 function UserRegister() {
   const navigation = useNavigation();
@@ -120,14 +118,16 @@ function UserRegister() {
     <ErrorBoundary>
       <View style={ { flex: 1 } } className='relative'>
         <Image
-          source={ login2 }
-          className='absolute top-0 left-0'
+          source={ { uri: ImageLogin2 } }
+          style={ { height: 210, width: 140 } }
+          className=' top-0 left-0'
+          resizeMode='cover'
         />
-
-        <View className='absolute top-40 items-center justify-center w-full'>
+        <View className='absolute top-40 left-0 w-full items-center justify-center'>
           <Image
-            source={ loginlogo }
-            className=''
+            source={ { uri: ImageLoginLogo } }
+            style={ { height: 120, width: '80%' } }
+            resizeMode='contain'
           />
         </View>
 
@@ -139,7 +139,7 @@ function UserRegister() {
             <Input
               property='name'
               value={ userRegisterForm.name }
-              placeholder='Enter your name'
+              placeholder='Enter your Name as Govt ID'
               width='w-10/12'
               onChange={ onChangeHandler }
               error={ errors['name'] }
@@ -212,12 +212,15 @@ function UserRegister() {
               disabled={ userRegisterForm.password !== confirmPassword || userRegisterForm.password <= 6 }
               onPress={ register }
             />
+            <Policy navigation={ navigation } />
           </KeyboardAvoidingView>
         }
 
         <Image
-          source={ login3 }
-          className='absolute bottom-0 left-0 w-full'
+          source={ { uri: ImageLogin3 } }
+          style={ { height: '60%', width: '100%' } }
+          className='absolute bottom-0 left-0'
+          resizeMode='cover'
         />
       </View>
     </ErrorBoundary>

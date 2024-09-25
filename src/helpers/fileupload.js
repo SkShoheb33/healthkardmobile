@@ -1,21 +1,14 @@
-import { PermissionsAndroid, Platform } from 'react-native';
+import { Platform } from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 import storage from '@react-native-firebase/storage';
 import RNFS from 'react-native-fs';
+import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
 
 async function requestStoragePermission() {
     if (Platform.OS === 'android') {
         try {
-            const granted = await PermissionsAndroid.request(
-                PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE, {
-                title: 'Storage Permission',
-                message: 'App needs access to your storage to upload files.',
-                buttonNeutral: 'Ask Me Later',
-                buttonNegative: 'Cancel',
-                buttonPositive: 'OK',
-            }
-            );
-            return granted === PermissionsAndroid.RESULTS.GRANTED;
+            const result = await request(PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE);
+            return result === RESULTS.GRANTED;
         } catch (err) {
             console.warn(err);
             return false;
@@ -95,4 +88,27 @@ export const getFileNameFromURL = (url) => {
     const decodedFileName = decodeURIComponent(fileName);
     const [, originalName, time, extension] = decodedFileName.split('$');
     return `${originalName}.${extension}`;
-}
+};
+
+export const deleteFile = async (fileURL) => {
+    if (!fileURL || (!fileURL.startsWith('gs://') && !fileURL.startsWith('https://'))) {
+        console.error('Invalid file URL:', fileURL);
+        return;
+    }
+
+    try {
+        const fileRef = storage().refFromURL(fileURL);
+        console.log({ fileRef });
+        // Check if the file exists
+        const fileExists = await fileRef.getDownloadURL().then(() => true).catch(() => false);
+        if (!fileExists) {
+            console.error('File does not exist at the specified URL:', fileURL);
+            return;
+        }
+
+        await fileRef.delete();
+        console.log('File deleted successfully');
+    } catch (error) {
+        console.error('Error deleting file:', error);
+    }
+};

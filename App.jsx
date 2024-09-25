@@ -12,6 +12,10 @@ import { Agent } from 'src/routes/Agent';
 import { User } from 'src/routes/User';
 import AgentLogin from 'src/pages/main/AgentLogin';
 import SplashScreen from 'src/pages/main/SplashScreen';
+import UsersConditions from 'src/pages/main/termsAndConditons/UsersConditions';
+import CookiePolicy from 'src/pages/main/termsAndConditons/CookiePolicy';
+import RefundPolicy from 'src/pages/main/termsAndConditons/RefundPolicy';
+import Tour from 'src/pages/main/tour/Tour';
 
 enableScreens();
 
@@ -21,6 +25,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
   const [isAgentLoggedIn, setIsAgentLoggedIn] = useState(false);
+  const [isTourCompleted, setIsTourCompleted] = useState(false);
 
   useEffect(() => {
     checkLoginStatus();
@@ -32,6 +37,8 @@ function App() {
       setIsUserLoggedIn(!!userId);
       const agentId = await AsyncStorage.getItem('agentId');
       setIsAgentLoggedIn(!!agentId);
+      const tourCompleted = await AsyncStorage.getItem('TourCompleted');
+      setIsTourCompleted(!!tourCompleted);
     } catch (error) {
       console.error('Error checking login status:', error);
     } finally {
@@ -50,13 +57,17 @@ function App() {
   return (
     <SafeAreaProvider style={ { flex: 1 } } className='bg-white'>
       <NavigationContainer>
-        <Stack.Navigator screenOptions={ { headerShown: false } } initialRouteName={ isUserLoggedIn ? "user" : isAgentLoggedIn ? "agent" : "First" }>
+        <Stack.Navigator screenOptions={ { headerShown: false } } initialRouteName={ isUserLoggedIn ? "user" : isAgentLoggedIn ? "agent" : isTourCompleted ? "First" : "Tour" }>
+          <Stack.Screen name="Tour" component={ Tour } />
           <Stack.Screen name="First" component={ First } />
           <Stack.Screen name="UserLogin" component={ UserLogin } />
           <Stack.Screen name="UserRegister" component={ UserRegister } />
           <Stack.Screen name="AgentLogin" component={ AgentLogin } />
           <Stack.Screen name="user" component={ User } />
           <Stack.Screen name="agent" component={ Agent } />
+          <Stack.Screen name="UsersConditions" component={ UsersConditions } />
+          <Stack.Screen name="CookiePolicy" component={ CookiePolicy } />
+          <Stack.Screen name="RefundPolicy" component={ RefundPolicy } />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>

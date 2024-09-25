@@ -31,19 +31,28 @@ function Multiselect({ selectedItems: alreadySelectedItems, placeHolder = 'Tap t
         <ErrorBoundary>
             <View className='relative z-10'>
                 <Pressable onPress={ () => setShowList(!showList) } className='h-12 bg-white justify-center rounded-md p-4'>
-                    <Text className=''>{ getDisplayText() }</Text>
+                    <Text className='text-black'>{ getDisplayText() }</Text>
                 </Pressable>
-                { showList && <ScrollView className='max-h-48 absolute z-20 bottom-20 left-0 w-full bg-white border border-gray-200 rounded-md'>
-                    {
-                        list.map((item, index) => {
-                            return (
-                                <TouchableOpacity onPress={ () => onSelect(item) } key={ index } className={ `p-2 ${selectedItems.includes(item) && 'bg-[#E5F7EF]'}` }>
-                                    <Text className='text-black'>{ item }</Text>
-                                </TouchableOpacity>
-                            )
-                        })
-                    }
-                </ScrollView> }
+                { showList &&
+                    <View style={ { flex: 1 } } className=' absolute z-20 bottom-16 left-0 w-full rounded-md bg-white border border-gray-300'>
+                        <View
+                            style={ { flex: 1 } }
+                            className=''
+                            keyboardShouldPersistTaps='handled'
+                            nestedScrollEnabled={ true } // Ensure nested scrolling is enabled
+                        >
+                            {
+                                list.map((item, index) => {
+                                    return (
+                                        <TouchableOpacity onPress={ () => onSelect(item) } key={ index } className={ `p-2 ${selectedItems.includes(item) && 'bg-[#E5F7EF]'}` }>
+                                            <Text className='text-black'>{ item }</Text>
+                                        </TouchableOpacity>
+                                    )
+                                })
+                            }
+                        </View>
+                    </View>
+                }
             </View>
         </ErrorBoundary>
     )

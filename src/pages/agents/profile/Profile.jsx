@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { Image, TouchableOpacity, ScrollView, Text, View } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import Navbar from '@components/Navbar'
-import logo from 'src/assets/Logo.png'
 import { styles } from 'src/styles/style'
 import { getYears } from './constants'
 import Select from '@components/Select'
@@ -74,10 +73,12 @@ function Profile() {
 export default Profile
 
 function Header({ name = 'Agent name', email = 'Agent email', agentId = 'Agent id' }) {
+    const logoImage = 'https://firebasestorage.googleapis.com/v0/b/healthkard-mobile-9599d.appspot.com/o/assets%2Flogo%2FLogo.png?alt=media&token=6636cc55-c1e8-429c-852f-758d32238177';
+
     return (
         <View className='border border-gray-300 shadow-md p-2 rounded-md flex-row items-center bg-white'>
             <View className='w-1/3 p-2'>
-                <Image source={ logo } />
+                <Image source={ { uri: logoImage } } style={ { width: 80, height: 60 } } />
             </View>
             <View className='w-2/3'>
                 <View className='flex-row items-center p-1'>

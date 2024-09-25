@@ -13,12 +13,17 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Loading from './Loading';
 
 function Payment({ route }) {
-    const { onlyOnline, plan, healthId, userData } = route.params || {};
+    const { plan, healthId, userData } = route.params || {};
     const navigation = useNavigation();
+    const [isAgentLoggedIn, setIsAgentLoggedIn] = useState(false);
 
     useEffect(() => {
-        console.log({ healthId, plan });
-    }, [healthId, plan]);
+        const checkAgent = async () => {
+            const isAgentLoggedIn = await AsyncStorage.getItem('agentId')
+            setIsAgentLoggedIn(!!isAgentLoggedIn);
+        }
+        checkAgent();
+    }, []);
     const [currentPlan, setCurrentPlan] = useState(plan || '3 months');
     const [changePlan, setChangePlan] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
@@ -127,7 +132,7 @@ function Payment({ route }) {
                     <Text className='text-black text-sm'>{ '**Inclusive of all taxes' }</Text>
                     { changePlan && < Dropdown label='Select plan : ' list={ plans_list } value={ currentPlan } setValue={ onPlanChange } /> }
                     <Heading style='text-xl text-black' label={ 'Please select the payment mode' } />
-                    { !onlyOnline && <View className='w-full items-center'>
+                    { isAgentLoggedIn && <View className='w-full items-center'>
                         <Button label={ 'CASH RECIEVED' } color={ 'blue' } onPress={ () => pay('offline') } />
                         <Text className='text-black'>-- or --</Text>
                     </View> }

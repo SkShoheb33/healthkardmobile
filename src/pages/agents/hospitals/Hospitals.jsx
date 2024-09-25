@@ -2,7 +2,6 @@ import React, { useEffect, useState, useCallback } from 'react'
 import { Image, ScrollView, Text, View, RefreshControl } from 'react-native'
 import Navbar from '@components/Navbar'
 import httpService from 'src/httpService'
-import logoSmall from 'src/assets/logo-small.png'
 import { styles } from 'src/styles/style'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faCheck } from '@fortawesome/free-solid-svg-icons'
@@ -87,6 +86,7 @@ const HospitalCard = ({ hospitalId }) => {
     }
     fetchHospital();
   }, [hospitalId])
+  const logoImage = 'https://firebasestorage.googleapis.com/v0/b/healthkard-mobile-9599d.appspot.com/o/assets%2Flogo%2Flogo-small.png?alt=media&token=b98fada5-c5c8-4002-992c-253b68afb8fe'
 
   return (
     <View className='flex-row items-center my-2 p-2 border border-gray-300 rounded-md shadow-xl relative bg-white'>
@@ -107,7 +107,7 @@ const HospitalCard = ({ hospitalId }) => {
 
       <View className='flex mx-2'>
         <View className='flex-row items-center'>
-          <Image source={ logoSmall } className='mr-2' />
+          <Image source={ { uri: logoImage } } className='mr-2' />
           <Text style={ styles.greenText } className=' text-sm'>{ hospitalId }</Text>
         </View>
         <Text className='text-black text-lg font-semibold'>

@@ -1,17 +1,19 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Pressable, SafeAreaView, ScrollView, Text, View } from 'react-native'
 import Heading from '@components/Heading'
 import Input from '@components/Input'
 import Button from '@components/Button'
 import { styles } from 'src/styles/style'
-import { pickFile } from 'src/helpers/fileupload'
+import { getFileNameFromURL, pickFile } from 'src/helpers/fileupload'
 import Multiselect from '@components/Multiselect'
 import TimePicker from '@components/TimePicker'
 import { days, hospitalTypes, services } from './constants'
 import Select from '@components/Select'
+import UploadedFile from '@components/UploadedFile'
 
 function HospitalDetails({ hospital, setHospital, errors }) {
     // const [errors, setErrors] = useState({});
+    const [uploadingLicense, setUploadingLicense] = useState(false);
 
     const changeDaysAvailabilityHandler = (index) => {
         const tempDays = hospital.hospitalDetails.daysAvailabilty;
@@ -46,14 +48,26 @@ function HospitalDetails({ hospital, setHospital, errors }) {
         }))
     }
     const upload = async (key) => {
-        const url = await pickFile();
-        changeHandler(key, url);
-    };
+        setUploadingLicense(true);
+        try {
+            const url = await pickFile();
+            changeHandler(key, url);
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setUploadingLicense(false);
+        }
+    }
 
     return (
         <View style={ { flex: 1, padding: 12 } }>
             <Heading label='Hospital Details' size='text-2xl font-semibold' />
-            <ScrollView style={ { flex: 1 } } className='w-full px-2'>
+            <ScrollView
+                style={ { flex: 1 } }
+                className='w-full px-2'
+                keyboardShouldPersistTaps='handled'
+                nestedScrollEnabled={ true } // Ensure nested scrolling is enabled
+            >
                 <SafeAreaView style={ { flex: 1 } } className='w-full'>
                     <Heading label='General details' size='text-lg' />
                     <View style={ styles.lightGreen } className='p-2 rounded-md'>
@@ -87,7 +101,10 @@ function HospitalDetails({ hospital, setHospital, errors }) {
                                 message: errors.licenseNumber
                             } }
                         />
-                        <Button onPress={ () => upload('hospitalLicense') } label='Upload License' color='blue' />
+                        { hospital.hospitalDetails.hospitalLicense ?
+                            <UploadedFile url={ hospital.hospitalDetails.hospitalLicense } onDelete={ () => changeHandler('hospitalLicense', null) } />
+                            : <Button onPress={ () => upload('hospitalLicense') } label='Upload License' color='blue' loading={ uploadingLicense } />
+                        }
                         { errors.hospitalLicense && <Text className='text-xs text-[#BD3B3B]'>{ errors.hospitalLicense }</Text> }
                         <Input
                             placeholder='Contact Number'
@@ -225,7 +242,7 @@ function HospitalDetails({ hospital, setHospital, errors }) {
                             selectedItems={ hospital?.hospitalDetails?.servicesOffered || [] }
                             placeHolder='Services offered'
                             list={ services }
-                            onChange={ changeHandler }
+                            onChange={ (property, value) => changeHandler(property, value) } // Update the onChange handler
                         />
                         { errors.servicesOffered && <Text className='text-xs text-[#BD3B3B]'>{ errors.servicesOffered }</Text> }
                     </View>

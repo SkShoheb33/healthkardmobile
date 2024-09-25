@@ -39,6 +39,7 @@ function Navbar() {
   }, [])
 
   const navbarColor = isUser ? 'green' : 'blue'
+  const logoImage = 'https://firebasestorage.googleapis.com/v0/b/healthkard-mobile-9599d.appspot.com/o/assets%2Flogo%2FLogo.png?alt=media&token=6636cc55-c1e8-429c-852f-758d32238177';
 
   return (
     <SafeAreaView style={ styles[navbarColor] } className={ `p-4 flex items-center flex-row justify-between w-full` }>
@@ -48,16 +49,16 @@ function Navbar() {
           style={ { width: 30, height: 22.5 } }
         >
           <Image
-            source={ require('src/assets/Logo.png') }
+            source={ { uri: logoImage } }
             resizeMode='contain'
             style={ { width: '100%', height: '100%' } }
           />
         </ShimmerContainer>
-        <Text className='font-bold flex text-white '>{ name || 'User name' }</Text>
+        <Text className='font-bold flex text-white text-lg'>{ name || 'Healthkard' }</Text>
       </View>
-      <Text>
+      { name && <Text>
         <FontAwesomeIcon icon={ faBell } color='white' size={ 18 } />
-      </Text>
+      </Text> }
     </SafeAreaView>
   )
 }

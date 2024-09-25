@@ -12,7 +12,7 @@ import { faCamera, faCircleDot } from '@fortawesome/free-solid-svg-icons'
 import DatePicker from '@components/DatePicker'
 import { initialUser } from './constants'
 import { plans } from 'src/pages/users/healthkards/components/constants'
-import userImagePlaceholder from '@assets/user-placeholder.png'
+import { userImagePlaceholder } from './constants'
 import Camera from '@components/Camera'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { userValidation } from 'src/helpers/validations'
@@ -22,6 +22,7 @@ function UserRegistration() {
     const [userData, setUserData] = useState(initialUser);
     const [plan, setPlan] = useState('1 month');
     const [errors, setErrors] = useState({});
+
 
     const changeHandler = (property, value) => {
         setUserData(prev => ({
@@ -61,7 +62,7 @@ function UserRegistration() {
             <ScrollView style={ { flex: 1 } } className=''>
                 <SafeAreaView style={ { flex: 1 } } className='w-full my-12 items-center justify-center'>
                     <Heading label='USER REGISTRATION FORM' size='text-xl' />
-                    <ImageBackground source={ !userData.image ? userImagePlaceholder : { uri: userData.image } } style={ { height: 150, width: 150 } } className='rounded-full overflow-hidden border border-gray-200'>
+                    <ImageBackground source={ !userData.image ? { uri: userImagePlaceholder } : { uri: userData.image } } style={ { height: 150, width: 150 } } className='rounded-full overflow-hidden border border-gray-200'>
                         <Text className='h-full w-full'>
                             <FontAwesomeIcon icon={ faCamera } size={ 24 } />
                         </Text>

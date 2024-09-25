@@ -1,25 +1,23 @@
 import React, { useRef, useState } from 'react'
-import { Alert, Image, Pressable, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import Ad1 from '../../../../assets/PNG/AD1.png'
+import { Alert, Image, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { faAnglesLeft, faArrowLeftLong, faArrowRightLong, faCamera, faCircleDot } from '@fortawesome/free-solid-svg-icons'
+import { faArrowLeftLong, faArrowRightLong, faCamera } from '@fortawesome/free-solid-svg-icons'
 import { useNavigation } from '@react-navigation/native'
-import { styles } from '../../../../styles/style'
+import { styles } from 'src/styles/style'
 import { KeyboardAvoidingView } from 'react-native'
 import Plans from '@components/Plans'
 import Navbar from '@components/Navbar'
 import DatePicker from '@components/DatePicker'
-import { initialUser, plans } from './constants'
-import httpService from 'src/httpService'
-import { pay } from 'src/helpers/payment'
+import { banner, initialUser, plans } from './constants'
+import ShimmerContainer from '@components/ShimmerContainer'
 
 function NewKard() {
   const navigation = useNavigation();
   const [userData, setUserData] = useState(initialUser);
   const [pageNumber, setPageNumber] = useState(1);
+  const [bannerLoading, setBannerLoading] = useState(false);
 
   const inputChangeHandler = (property, value) => {
-    console.log({ property, value })
     setUserData(prev => ({
       ...prev,
       [property]: value
@@ -27,7 +25,6 @@ function NewKard() {
   }
 
   const handlePayment = async (plan) => {
-    console.log(userData);
     try {
       navigation.navigate('Pay', { userData, plan: plan.plan });
     } catch (error) {
@@ -39,7 +36,14 @@ function NewKard() {
     <View style={ { flex: 1 } } className=' bg-white'>
       <Navbar />
       <KeyboardAvoidingView behavior={ Platform.OS === 'ios' ? 'padding' : 'height' } style={ { flex: 1 } } className='flex flex-col items-center w-full pb-12'>
-        <Image source={ Ad1 } />
+        <ShimmerContainer isVisible={ bannerLoading } style={ { width: '80%', height: 140 } }>
+          <Image
+            source={ { uri: banner } }
+            className='mx-auto w-full h-full'
+            resizeMode='contain'
+            onLoad={ () => setBannerLoading(true) }
+          />
+        </ShimmerContainer>
         <ScrollView style={ { flex: 1 } } className=' w-full'>
           { pageNumber === 1 && <Form1 userData={ userData } inputChangeHandler={ inputChangeHandler } setPageNumber={ setPageNumber } /> }
           { pageNumber === 2 && <Form2 userData={ userData } inputChangeHandler={ inputChangeHandler } setPageNumber={ setPageNumber } /> }
@@ -59,7 +63,7 @@ const Form1 = ({ userData, inputChangeHandler, setPageNumber }) => {
       <Text className='my-8 text-xl text-center text-black'>Get your healthkard</Text>
       <View className='w-full p-2 rounded-md my-4 bg-gray-300'>
         <Text className='text-xs text-black'>Name</Text>
-        <TextInput value={ userData.name } onChangeText={ value => inputChangeHandler('name', value) } />
+        <CustomTextInput value={ userData.name } onChangeText={ value => inputChangeHandler('name', value) } placeholder="Enter your name" />
       </View>
       <View className='flex flex-row justify-between my-4'>
         <View className='w-5/12 p-2 rounded-md bg-gray-300'>
@@ -73,12 +77,12 @@ const Form1 = ({ userData, inputChangeHandler, setPageNumber }) => {
         </View>
         <View className='w-6/12 p-2 rounded-md bg-gray-300'>
           <Text className='text-xs text-black'>Gender</Text>
-          <TextInput value={ userData.gender } onChangeText={ value => inputChangeHandler('gender', value) } />
+          <CustomTextInput value={ userData.gender } onChangeText={ value => inputChangeHandler('gender', value) } placeholder="Enter your gender" />
         </View>
       </View>
       <View className='w-full p-2 rounded-md my-4 bg-gray-300'>
         <Text className='text-xs text-black'>Email</Text>
-        <TextInput value={ userData.email } onChangeText={ value => inputChangeHandler('email', value) } />
+        <CustomTextInput value={ userData.email } onChangeText={ value => inputChangeHandler('email', value) } placeholder="Enter your email" />
       </View>
       <View className='flex-row justify-between my-4'>
         <View><Text className='text-black'>Page 1</Text></View>
@@ -100,16 +104,16 @@ const Form2 = ({ userData, inputChangeHandler, setPageNumber }) => {
       <Text className='my-8 text-xl text-center'>Get your healthkard</Text>
       <View className='w-full p-2 rounded-md my-4 bg-gray-300'>
         <Text className='text-xs text-black'>Address</Text>
-        <TextInput value={ userData.address } onChangeText={ value => inputChangeHandler('address', value) } />
+        <CustomTextInput value={ userData.address } onChangeText={ value => inputChangeHandler('address', value) } placeholder="Enter your address" />
       </View>
       <View className='flex flex-row justify-between my-4'>
         <View className='w-5/12 p-2 rounded-md bg-gray-300'>
           <Text className='text-xs text-black'>Town/City</Text>
-          <TextInput value={ userData.city } onChangeText={ value => inputChangeHandler('city', value) } />
+          <CustomTextInput value={ userData.city } onChangeText={ value => inputChangeHandler('city', value) } placeholder="Enter your town/city" />
         </View>
         <View className='w-6/12 p-2 rounded-md bg-gray-300'>
           <Text className='text-xs text-black'>Pincode</Text>
-          <TextInput value={ userData.pincode } onChangeText={ value => inputChangeHandler('pincode', value) } />
+          <CustomTextInput value={ userData.pincode } onChangeText={ value => inputChangeHandler('pincode', value) } placeholder="Enter your pincode" />
         </View>
       </View>
       <View className='w-full p-2 py-4 rounded-md my-4 justify-center flex-row items-center bg-gray-300'>
@@ -167,3 +171,10 @@ const Form3 = ({ userData, handlePayment, setPageNumber, setUserData }) => {
   );
 };
 export default NewKard
+
+
+const CustomTextInput = ({ value, onChangeText, placeholder }) => {
+  return (
+    <TextInput value={ value } onChangeText={ onChangeText } placeholder={ placeholder } className='text-black' />
+  );
+};

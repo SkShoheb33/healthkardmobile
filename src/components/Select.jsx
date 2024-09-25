@@ -11,6 +11,7 @@ const Select = ({ placeholder = { label: 'Select an option...', value: null }, o
         items={ options }
         onValueChange={ (value) => setSelectedValue(value) }
         value={ selectedValue }
+        style={ { inputIOS: { color: 'black' }, inputAndroid: { color: 'black' } } } // Added style prop
       />
     </View>
   );

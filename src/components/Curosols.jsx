@@ -45,7 +45,7 @@ function Curosols({ list, time = 5000 }) {
                             style={ { width: screenWidth, height: 140, alignSelf: 'center' } }
                         >
                             <Image
-                                source={ image }
+                                source={ { uri: image } }
                                 style={ { width: '100%', height: '100%', alignSelf: 'center' } }
                                 resizeMode="contain"
                             />

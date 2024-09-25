@@ -1,6 +1,3 @@
-import ad1 from 'src/assets/ad1.png'
-import ad2 from 'src/assets/ad2.png'
-
 export const images = [
     {
         image: 'https://firebasestorage.googleapis.com/v0/b/healthkard-mobile-9599d.appspot.com/o/assets%2Forgans%2Fimg1.png?alt=media&token=86c1cc0e-ed8f-4b03-b3ec-d6f998f88918',
@@ -66,5 +63,11 @@ export const images = [
 
 export const SERVICES = ["All Services", "Bones", "Children (Pediatrics)", "Dental", "Ears", "Eyes", "Gastro", "General Medicine", "Hair", "Heart", "Kidney", "Lungs", "Neuro", "Nose", "Reproductive", "Skin"];
 export const CITIES = ["All Cities", "Narasaraopet", "Guntur", "Vijayawada"];
-export const ads = [ad1, ad2, ad1, ad2];
+export const ads = [
+    'https://firebasestorage.googleapis.com/v0/b/healthkard-mobile-9599d.appspot.com/o/assets%2Fads%2Fad1.png?alt=media&token=312c5404-bcb0-457c-baa2-ccc0400a8cc6',
+    'https://firebasestorage.googleapis.com/v0/b/healthkard-mobile-9599d.appspot.com/o/assets%2Fads%2Fad2.png?alt=media&token=312c5404-bcb0-457c-baa2-ccc0400a8cc6',
+    'https://firebasestorage.googleapis.com/v0/b/healthkard-mobile-9599d.appspot.com/o/assets%2Fads%2Fad1.png?alt=media&token=312c5404-bcb0-457c-baa2-ccc0400a8cc6',
+    'https://firebasestorage.googleapis.com/v0/b/healthkard-mobile-9599d.appspot.com/o/assets%2Fads%2Fad2.png?alt=media&token=312c5404-bcb0-457c-baa2-ccc0400a8cc6'
+];
 
+export const banner = 'https://firebasestorage.googleapis.com/v0/b/healthkard-mobile-9599d.appspot.com/o/assets%2Fads%2Fbanner.png?alt=media&token=f309ee49-2a33-49e7-80a0-859f74b98372'

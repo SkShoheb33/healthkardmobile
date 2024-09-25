@@ -87,3 +87,7 @@ export const fullYear = {
     Nov: 'November',
     Dec: 'December',
 }
+
+
+export const agentHomeImage1 = 'https://firebasestorage.googleapis.com/v0/b/healthkard-mobile-9599d.appspot.com/o/assets%2Flogin%20page%2FagentHome.png?alt=media&token=d39b1bb5-316a-401a-8e7f-b82fe7987aae';
+export const userImagePlaceholder = 'https://firebasestorage.googleapis.com/v0/b/healthkard-mobile-9599d.appspot.com/o/assets%2Fuser-placeholder.png?alt=media&token=c4f6118d-c05c-4061-9dc0-06b6250d15d5';

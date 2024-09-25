@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { ScrollView, View, TextInput, Text } from 'react-native'
 import Heading from '@components/Heading'
 import Button from '@components/Button'
@@ -7,8 +7,15 @@ import { faImage, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { pickFile } from 'src/helpers/fileupload'
 import { styles } from 'src/styles/style'
+import UploadedFile from '@components/UploadedFile'
 
 function MediaDetails({ hospital, setHospital }) {
+  const [loadings, setLoadings] = useState({
+    logoURL: false,
+    hospitalImageURL: false,
+    doctorImageURL: false,
+    achivements: false
+  });
 
   const onChangeHandler = (key, value) => {
     let achievements = [];
@@ -26,8 +33,15 @@ function MediaDetails({ hospital, setHospital }) {
   }
 
   const upload = async (key) => {
-    const url = await pickFile();
-    onChangeHandler(key, url);
+    setLoadings(prev => ({ ...prev, [key]: true }));
+    try {
+      const url = await pickFile();
+      onChangeHandler(key, url);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoadings(prev => ({ ...prev, [key]: false }));
+    }
   };
 
   return (
@@ -45,24 +59,15 @@ function MediaDetails({ hospital, setHospital }) {
             style={ { color: 'black', padding: 8, textAlignVertical: 'top' } }
           />
         </View>
-        { hospital?.mediaDetails?.logoURL?.fileName ?
-          <View style={ { ...styles.blueBorder, } } className='px-2 py-1 rounded-md border my-2 flex-row justify-between'>
-            <Text style={ { ...styles.blueText } }>{ hospital?.mediaDetails?.logoURL?.fileName }</Text>
-            <TouchableOpacity><Text><FontAwesomeIcon icon={ faXmark } /> </Text></TouchableOpacity>
-          </View>
-          : <Button label='Upload logo' color='blue' onPress={ () => upload('logoURL') } /> }
-        { hospital?.mediaDetails?.hospitalImageURL?.fileName ?
-          <View style={ { ...styles.blueBorder, } } className='px-2 py-1 rounded-md border my-2 flex-row justify-between'>
-            <Text style={ { ...styles.blueText } }>{ hospital?.mediaDetails?.hospitalImageURL?.fileName }</Text>
-            <TouchableOpacity><Text><FontAwesomeIcon icon={ faXmark } /> </Text></TouchableOpacity>
-          </View>
-          : <Button label='Upload hospital image' color='blue' onPress={ () => upload('hospitalImageURL') } /> }
-        { hospital?.mediaDetails?.doctorImageURL?.fileName ?
-          <View style={ { ...styles.blueBorder, } } className='px-2 py-1 rounded-md border my-2 flex-row justify-between'>
-            <Text style={ { ...styles.blueText } }>{ hospital?.mediaDetails?.doctorImageURL?.fileName }</Text>
-            <TouchableOpacity><Text><FontAwesomeIcon icon={ faXmark } /> </Text></TouchableOpacity>
-          </View>
-          : <Button label='Upload Doctor image' color='blue' onPress={ () => upload('doctorImageURL') } /> }
+        { hospital?.mediaDetails?.logoURL ?
+          <UploadedFile url={ hospital?.mediaDetails?.logoURL } onDelete={ () => onChangeHandler('logoURL', null) } />
+          : <Button label='Upload logo' color='blue' onPress={ () => upload('logoURL') } loading={ loadings.logoURL } /> }
+        { hospital?.mediaDetails?.hospitalImageURL ?
+          <UploadedFile url={ hospital?.mediaDetails?.hospitalImageURL } onDelete={ () => onChangeHandler('hospitalImageURL', null) } />
+          : <Button label='Upload hospital image' color='blue' onPress={ () => upload('hospitalImageURL') } loading={ loadings.hospitalImageURL } /> }
+        { hospital?.mediaDetails?.doctorImageURL ?
+          <UploadedFile url={ hospital?.mediaDetails?.doctorImageURL } onDelete={ () => onChangeHandler('doctorImageURL', null) } />
+          : <Button label='Upload Doctor image' color='blue' onPress={ () => upload('doctorImageURL') } loading={ loadings.doctorImageURL } /> }
 
 
         <Heading label='Add some more images (Optional)' size='text-xl font-semibold' />

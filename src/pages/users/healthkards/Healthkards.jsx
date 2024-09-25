@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { Image, Pressable, Text, TextInput, View } from 'react-native';
-import Ad1 from 'src/assets/PNG/AD1.png';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faAdd, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { useNavigation } from '@react-navigation/native';
@@ -8,6 +7,8 @@ import httpService from 'src/httpService';
 import HealthkardList from './components/HealthkardList';
 import Navbar from '@components/Navbar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { banner } from './components/constants';
+import ShimmerContainer from '@components/ShimmerContainer';
 const ITEMS_PER_PAGE = 10;
 
 function Healthkards() {
@@ -20,13 +21,13 @@ function Healthkards() {
     const [loading, setLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
     const navigation = useNavigation();
+    const [bannerLoading, setBannerLoading] = useState(false);
 
     const fetchKards = useCallback(async () => {
         if (!hasMore || loading) return;
         setLoading(true);
         try {
             const userNumber = await AsyncStorage.getItem('userNumber');
-            console.log({ userNumber });
             const result = await httpService.get('users', `?number=${'91' + userNumber}&page=${userData.currentPage + 1}&limit=${ITEMS_PER_PAGE}`);
             setUserData(prevData => ({
                 users: [...prevData.users, ...result.users],
@@ -51,19 +52,21 @@ function Healthkards() {
             <Navbar />
 
             <View style={ { flex: 1 } } className='p-2 bg-white'>
-                <View>
+                <ShimmerContainer isVisible={ bannerLoading } style={ { width: '100%', height: 140 } }>
                     <Image
-                        source={ Ad1 }
-                        className='mx-auto'
+                        source={ { uri: banner } }
+                        className='mx-auto w-full h-full'
+                        resizeMode='contain'
+                        onLoad={ () => setBannerLoading(true) }
                     />
-                </View>
+                </ShimmerContainer>
 
                 <View className='border my-4 rounded-md flex flex-row items-center'>
                     <View className='p-2'>
                         <FontAwesomeIcon icon={ faSearch } />
                     </View>
                     <TextInput
-                        className='p-2'
+                        className='p-2 text-black'
                         placeholder='Search your healthkard'
                     />
                 </View>

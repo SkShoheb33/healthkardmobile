@@ -11,6 +11,7 @@ import Button from '@components/Button';
 import Heading from '@components/Heading';
 import { formatDate } from 'src/helpers/formatData';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import DatePicker from './DatePicker';
 
 function Healthkard({ route }) {
     const navigation = useNavigation();
@@ -46,7 +47,7 @@ function Healthkard({ route }) {
         );
     };
 
-    const handleChangePhoneNumber = () => {
+    const handleEditHealthkard = () => {
         setModalVisible(true);
     };
 
@@ -78,7 +79,7 @@ function Healthkard({ route }) {
 
     useFocusEffect(
         React.useCallback(() => {
-            if (!isAgent) {
+            if (isAgent) {
                 const onBackPress = () => {
                     navigation.navigate('Home');
                     return true;
@@ -119,7 +120,7 @@ function Healthkard({ route }) {
                             </Text>
                             <Text className='my-1 text-black'>
                                 <Text style={ styles.blueText } className='font-semibold'>Gender & DOB : </Text>
-                                <Text>{ kard.gender === 'm' ? 'Male' : kard.gender === 'f' ? 'Female' : kard.gender }</Text>
+                                <Text className='text-capitalize'>{ kard.gender === 'male' || kard.gender === 'm' ? 'Male' : kard.gender === 'female' || kard.gender === 'f' ? 'Female' : kard.gender }</Text>
                                 <Text>, { formatDate(kard.dob) }</Text>
                             </Text>
                             { kard.email &&
@@ -141,12 +142,6 @@ function Healthkard({ route }) {
                                 <Text style={ styles.blueText } className='font-semibold'>Address : </Text>
                                 { kard.address }, { kard.city }, { kard.pincode }
                             </Text>
-                            <Text className='my-1 text-black'>
-                                <Text style={ styles.blueText } className='font-semibold'>Last Plan : </Text>
-                                { kard.payments && kard.payments.length > 0
-                                    ? (kard.payments.filter(payment => payment.paymentStatus === true).pop()?.plan || 'No valid plan')
-                                    : 'No plan' }
-                            </Text>
                             <View className='flex flex-row w-full items-center justify-between'>
                                 <Text className='my-1 text-black'>
                                     <Text style={ styles.blueText } className='font-semibold'>Validity Till : </Text>
@@ -157,8 +152,8 @@ function Healthkard({ route }) {
                                 </Pressable> }
                             </View>
                             { !isAgent && <View className='flex flex-row justify-between mt-4'>
-                                <Pressable onPress={ handleChangePhoneNumber } style={ styles.blue } className='p-2 rounded-md px-4'>
-                                    <Text className='text-white'>Change Phone Number</Text>
+                                <Pressable onPress={ handleEditHealthkard } style={ styles.blue } className='p-2 rounded-md px-4'>
+                                    <Text className='text-white'>Edit HealthKard</Text>
                                 </Pressable>
                                 <Pressable onPress={ askConfirmation } style={ [styles.bgRed] } className='p-2 rounded-md px-4'>
                                     <Text className='text-white'>Delete</Text>
@@ -180,12 +175,7 @@ function Healthkard({ route }) {
                     visible={ modalVisible }
                     onRequestClose={ () => setModalVisible(false) }
                 >
-                    <TouchableOpacity
-                        style={ modalStyles.overlay }
-                        className='flex flex-1 justify-end'
-                        activeOpacity={ 1 }
-                        onPressOut={ () => setModalVisible(false) }
-                    >
+                    <View style={ modalStyles.overlay } className='flex flex-1 justify-end'>
                         <View className='justify-center items-center rounded-t-xl p-4 bg-white'>
                             <Heading label="Change Phone Number" size="text-xl" />
 
@@ -222,11 +212,112 @@ function Healthkard({ route }) {
                                 color='red'
                             />
                         </View>
-                    </TouchableOpacity>
+                    </View>
                 </Modal>
             }
+            { !isAgent && <EditHealthCardModal
+                visible={ modalVisible }
+                onClose={ () => setModalVisible(false) }
+                kard={ kard }
+                onSave={ (updatedData) => {
+                    setKard(updatedData);
+                    setModalVisible(false);
+                } }
+            /> }
         </View>
     )
+}
+
+function EditHealthCardModal({ visible, onClose, kard, onSave }) {
+    const [formData, setFormData] = useState({
+        dob: kard.dob ? new Date(kard.dob) : null,
+        number: kard.number || '',
+        email: kard.email || '',
+        address: kard.address || '',
+    });
+
+    useEffect(() => {
+        setFormData({
+            dob: kard.dob ? new Date(kard.dob) : null,
+            number: kard.number || '',
+            email: kard.email || '',
+            address: kard.address || '',
+        });
+    }, [kard]);
+
+    const handleChange = (field, value) => {
+        setFormData(prevData => ({
+            ...prevData,
+            [field]: value,
+        }));
+    };
+
+    const handleSave = async () => {
+        if (formData.dob && formData.number && formData.email && formData.address) {
+            try {
+                const result = await httpService.put('users', kard.healthId, formData);
+                onSave(result);
+            } catch (error) {
+                console.log(error);
+            }
+        } else {
+            Alert.alert("Error", "Please fill all fields before saving.");
+        }
+    };
+
+    return (
+        <Modal
+            animationType="slide"
+            transparent={ true }
+            visible={ visible }
+            onRequestClose={ onClose }
+        >
+            <View style={ modalStyles.overlay } className='flex flex-1 justify-end'>
+                <View className='justify-center items-center rounded-t-xl p-4 bg-white'>
+                    <Heading label="Edit HealthKard" size="text-xl" />
+                    <DatePicker
+                        placeHolder="Date of Birth"
+                        value={ formData.dob }
+                        onChange={ (date) => handleChange('dob', date) }
+                        width='w-full'
+                    />
+
+                    <Input
+                        placeholder="Phone Number"
+                        value={ formData.number }
+                        property='number'
+                        inputMode='numeric'
+                        onChange={ handleChange }
+                        keyboardType="phone-pad"
+                    />
+                    <Input
+                        placeholder="Email ID"
+                        value={ formData.email }
+                        property='email'
+                        onChange={ handleChange }
+                        keyboardType="email-address"
+                    />
+                    <Input
+                        placeholder="Address"
+                        value={ formData.address }
+                        property='address'
+                        onChange={ handleChange }
+                        multiline
+                    />
+                    <Button
+                        label="Save Changes"
+                        onPress={ handleSave }
+                        color='blue'
+                    />
+                    <Button
+                        label="Cancel"
+                        onPress={ onClose }
+                        color='red'
+                    />
+                </View>
+            </View>
+        </Modal>
+    );
 }
 
 const modalStyles = StyleSheet.create({

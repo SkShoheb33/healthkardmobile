@@ -12,6 +12,7 @@ import { faHome, faHospital, faIdCard, faUser } from '@fortawesome/free-solid-sv
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import UserRenewal from 'src/pages/agents/home/UserRenewal/UserRenewal';
 import Payment from '@components/Payment';
+import HospitalUploaded from 'src/pages/agents/home/HospitalRegistrationForms/HospitalUploaded';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -77,6 +78,7 @@ export const AgentHomeNavigations = () => {
             <Stack.Screen name="Healthkard" component={ Healthkard } />
             <Stack.Screen name="HospitalRegister" component={ HospitalRegister } />
             <Stack.Screen name="AgentHospitalRegistration" component={ AgentHospitalRegistration } />
+            <Stack.Screen name="HospitalUploaded" component={ HospitalUploaded } />
             <Stack.Screen name="Pay" component={ Payment } />
         </Stack.Navigator>
     );

@@ -16,13 +16,17 @@ function HospitalRegister() {
     const [hospitalLegalName, setHospitalLegalName] = useState('');
     const [actualOtp, setActualOtp] = useState('');
     const [enteredOtp, setEnteredOtp] = useState('');
+    const [sendingOtp, setSendingOtp] = useState(false);
 
     const handleSendOTP = async () => {
+        setSendingOtp(true);
         if (!email || !hospitalLegalName) {
+            setSendingOtp(false);
             alert('Please enter both email and hospital legal name');
             return;
         } else {
             if (!validateEmail(email)) {
+                setSendingOtp(false);
                 alert('Please enter a valid email');
                 return;
             }
@@ -33,6 +37,8 @@ function HospitalRegister() {
             setActualOtp(response.otpCode);
         } catch (error) {
             console.log(error);
+        } finally {
+            setSendingOtp(false);
         }
     }
 
@@ -51,7 +57,7 @@ function HospitalRegister() {
                 <Heading label='Hospital Registration' size='text-xl' />
                 <Input placeholder='Enter hospital name' onChange={ (property, value) => setHospitalLegalName(value) } />
                 <Input placeholder='Enter email' onChange={ (property, value) => setEmail(value) } />
-                <Button label='SEND OTP' color='blue' onPress={ handleSendOTP } />
+                <Button label='SEND OTP' color='blue' onPress={ handleSendOTP } loading={ sendingOtp } />
             </View> }
 
             { isOtp && <View style={ { flex: 1 } } className='w-10/12 justify-center mx-auto'>
@@ -60,7 +66,6 @@ function HospitalRegister() {
                 <Input placeholder='Enter Otp' onChange={ (property, value) => setEnteredOtp(value) } />
                 <Button label='Start Registration' color='blue' onPress={ handleVerifyOTP } />
             </View> }
-
         </View>
     )
 }

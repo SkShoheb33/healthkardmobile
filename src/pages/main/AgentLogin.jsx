@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { View, Image, KeyboardAvoidingView, Alert } from 'react-native';
-import login2 from 'src/assets/mobile/login2.png';
-import login3 from 'src/assets/mobile/login3.png';
-import loginlogo from 'src/assets/mobile/loginlogo.png';
+import { ImageLogin2, ImageLogin3, ImageLoginLogo } from './constants';
 import Input from 'src/components/Input';
 import Button from 'src/components/Button';
 import { useNavigation } from '@react-navigation/native';
@@ -38,14 +36,16 @@ function AgentLogin() {
     return (
         <View style={ { flex: 1 } } className='relative'>
             <Image
-                source={ login2 }
-                className='absolute top-0 left-0'
+                source={ { uri: ImageLogin2 } }
+                style={ { height: 210, width: 140 } }
+                className=' top-0 left-0'
+                resizeMode='cover'
             />
-
-            <View className='absolute top-40 items-center justify-center w-full'>
+            <View className='absolute top-40 left-0 w-full items-center justify-center'>
                 <Image
-                    source={ loginlogo }
-                    className=''
+                    source={ { uri: ImageLoginLogo } }
+                    style={ { height: 120, width: '80%' } }
+                    resizeMode='contain'
                 />
             </View>
 
@@ -80,8 +80,10 @@ function AgentLogin() {
             </KeyboardAvoidingView>
 
             <Image
-                source={ login3 }
-                className='absolute bottom-0 left-0 w-full'
+                source={ { uri: ImageLogin3 } }
+                style={ { height: '60%', width: '100%' } }
+                className='absolute bottom-0 left-0'
+                resizeMode='cover'
             />
         </View>
     );

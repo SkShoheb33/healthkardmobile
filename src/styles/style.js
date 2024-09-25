@@ -37,6 +37,7 @@ export const colors = {
     secondary: '#BD3B3B',
     tertiary: '#FF0000',
     quaternary: '#303486',
+    danger: '#BD3B3B',
     quinary: '#000',
     senary: '#ccc',
     septenary: '#000000',

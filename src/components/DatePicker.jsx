@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
@@ -6,6 +6,10 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 const DatePicker = ({ placeHolder = 'Date', width, onChange, value }) => {
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     const [selectedDate, setSelectedDate] = useState(value);
+
+    useEffect(() => {
+        setSelectedDate(value);
+    }, [value]);
 
     const showDatePicker = () => {
         setDatePickerVisibility(true);
@@ -18,7 +22,7 @@ const DatePicker = ({ placeHolder = 'Date', width, onChange, value }) => {
     const handleConfirm = (date) => {
         setSelectedDate(date);
         hideDatePicker();
-        onChange(date.toISOString());
+        onChange(date);
     };
 
     return (
@@ -35,6 +39,7 @@ const DatePicker = ({ placeHolder = 'Date', width, onChange, value }) => {
                 mode="date"
                 onConfirm={ handleConfirm }
                 onCancel={ hideDatePicker }
+                date={ selectedDate || new Date() }
             />
         </View>
     );

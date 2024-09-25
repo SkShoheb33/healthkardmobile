@@ -24,6 +24,9 @@ function Hospitals() {
     const ITEMS_PER_PAGE = 10;
 
     const fetchHospitals = useCallback(async (page = 1, refresh = false) => {
+        if (searchTerm !== '') {
+            return;
+        }
         setLoadingStatus(true);
         try {
             const url = `hospitals?page=${page}&limit=${ITEMS_PER_PAGE}${userService ? `&service=${userService}` : ''}${location !== 'All cities' ? `&city=${location}` : ''}${searchTerm ? `&search=${searchTerm}` : ''}`;
@@ -42,6 +45,10 @@ function Hospitals() {
     }, [location, searchTerm, userService]);
 
     const onSearch = useCallback((hospitalName) => {
+        setHospitalData(prevData => ({
+            ...prevData,
+            hospitals: prevData.hospitals.filter(hospital => hospital?.hospitalDetails?.hospitalLegalName.toLowerCase().includes(hospitalName.toLowerCase())),
+        }));
         setSearchTerm(hospitalName);
     }, []);
 

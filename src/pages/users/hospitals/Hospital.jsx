@@ -70,7 +70,7 @@ function Hospital({ route }) {
                                     <Service key={ index } service={ service } />
                                 )) }
                             </View>
-                            <Heading size='text-xl' label='Meet our chief doctor' />
+                            <Heading size='text-xl' label='Meet Our Chief Doctor' />
                             <ScrollView horizontal>
                                 { hospital.doctorList.map((doctor, index) => (
                                     <Doctor

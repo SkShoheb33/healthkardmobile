@@ -56,7 +56,7 @@ const Healthkard = ({ kard }) => {
             </ShimmerContainer>
             <View className='mx-2'>
                 <Text style={ styles.greenText } className='font-semibold my-1'>{ kard.healthId }</Text>
-                <Text className='my-1'>{ kard.name }</Text>
+                <Text className='my-1 text-black'>{ kard.name }</Text>
                 <Text style={ styles.blueText } className='my-1'>
                     Validity till : { (new Date(kard.expireDate)).toLocaleDateString() }
                 </Text>

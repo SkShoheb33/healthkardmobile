@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Linking } from 'react-native';
+
 import Navbar from '@components/Navbar';
 import Dropdown from '@components/DropDown';
 import Button from '@components/Button';
@@ -21,11 +22,20 @@ function HelpAndFeedback() {
         console.log('Feedback:', feedback);
     };
 
+    const handleWhatsApp = () => {
+        try {
+            Linking.openURL('whatsapp://send?phone=917842722245').catch(() => {
+                Linking.openURL('https://wa.me/917842722245');
+            });
+        } catch (error) {
+            console.error('Failed to open WhatsApp:', error);
+        }
+    };
+
     return (
         <View style={ { flex: 1 } } className='bg-white'>
             <Navbar />
             <View style={ styles.container }>
-
                 <Text style={ styles.title }>Help and Feedback</Text>
                 <View style={ styles.form }>
                     <Dropdown
@@ -44,6 +54,11 @@ function HelpAndFeedback() {
                         placeholder="Enter your feedback here"
                     />
                     <Button label="Send Feedback" onPress={ handleSend } />
+                    <Button
+                        label="Contact on WhatsApp"
+                        onPress={ handleWhatsApp }
+                        style={ styles.whatsappButton }
+                    />
                 </View>
             </View>
         </View>
@@ -73,10 +88,15 @@ const styles = StyleSheet.create({
     input: {
         borderWidth: 1,
         borderColor: '#ccc',
+        color: '#000',
         borderRadius: 4,
         padding: 8,
         marginBottom: 16,
         textAlignVertical: 'top',
+    },
+    whatsappButton: {
+        backgroundColor: '#25D366',
+        marginTop: 16,
     },
 });
 
