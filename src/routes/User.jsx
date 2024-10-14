@@ -8,14 +8,14 @@ import Hospitals from 'src/pages/users/hospitals/Hospitals';
 import Hospital from 'src/pages/users/hospitals/Hospital';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
-import { faHome, faHospital, faIdCard, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faFolder, faHome, faHospital, faIdCard, faUser } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import Renewal from 'src/pages/users/healthkards/components/Renewal';
 import TermsAndCondition from 'src/pages/users/profile/components/TermsAndConditions';
 import Payment from '@components/Payment';
 import { UserSharedDataProvider } from 'src/context/UserSharedDataContext';
 import HelpAndFeedback from 'src/pages/users/profile/components/HelpAndFeedback';
-
+import Records from 'src/pages/users/records/Records';
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -37,6 +37,11 @@ const HealthkardsOptions = {
 const ProfileOptions = {
     tabBarLabel: 'Profile',
     tabBarIcon: () => <FontAwesomeIcon icon={ faUser } size={ 24 } />,
+};
+
+const RecordsOptions = {
+    tabBarLabel: 'Records',
+    tabBarIcon: () => <FontAwesomeIcon icon={ faFolder } size={ 24 } />,
 };
 
 const tabOptions = {
@@ -61,6 +66,7 @@ export const User = () => {
                 <Tab.Screen name="Home" component={ Home } options={ HomeOptions } />
                 <Tab.Screen name="HospitalsNavigation" component={ HospitalsNavigation } options={ HospitalsOptions } />
                 <Tab.Screen name="HealthkardsNavigation" component={ HealthkardsNavigation } options={ HealthkardsOptions } />
+                <Tab.Screen name="RecordsNavigation" component={ RecordsNavigation } options={ RecordsOptions } />
                 <Tab.Screen name="ProfileNavigation" component={ ProfileNavigation } options={ ProfileOptions } />
             </Tab.Navigator>
         </UserSharedDataProvider>
@@ -95,6 +101,14 @@ export const ProfileNavigation = () => {
             <Stack.Screen name="RenewalHistory" component={ RenewalHistory } />
             <Stack.Screen name="Feedback" component={ HelpAndFeedback } />
             <Stack.Screen name="TermsAndCondition" component={ TermsAndCondition } />
+        </Stack.Navigator>
+    )
+}
+
+export const RecordsNavigation = () => {
+    return (
+        <Stack.Navigator screenOptions={ { headerShown: false } } initialRouteName="Records">
+            <Stack.Screen name="Records" component={ Records } />
         </Stack.Navigator>
     )
 }

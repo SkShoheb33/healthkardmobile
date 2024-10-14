@@ -68,7 +68,7 @@ function Home() {
                     <RefreshControl refreshing={ refreshing } onRefresh={ onRefresh } />
                 }
             >
-                <Heading label="!! Welcome to Healthkard" size='text-xl mx-2' />
+                <Heading label="Welcome to Healthkard !!" size='text-xl mx-2' />
                 <ShimmerContainer
                     isVisible={ bannerLoading }
                     style={ { width: screenWidth, height: 140, alignSelf: 'center' } }

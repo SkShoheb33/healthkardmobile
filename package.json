@@ -1,6 +1,6 @@
 {
   "name": "healthkard",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -49,6 +49,7 @@
     "react-native-svg": "^15.5.0",
     "react-native-uuid": "^2.0.2",
     "react-native-vector-icons": "^10.1.0",
+    "react-native-version": "^4.0.0",
     "react-native-video": "^6.5.0",
     "sha256": "^0.2.0"
   },

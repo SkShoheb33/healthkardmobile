@@ -3,8 +3,9 @@ import { useState } from "react"
 import { View, Text, Image } from "react-native"
 import { formatDate } from "src/helpers/formatData";
 import { styles } from "src/styles/style"
+import ProfileStatus from "./ProfileStatus";
 function Header({ healthId, image, name, validity, healthCoins }) {
-    if (!healthId) return null;
+    if (!healthId) return <ProfileStatus />;
     const [imageLoading, setImageLoading] = useState(false);
     return (
         <View className='flex-row items-center w-full mx-auto px-4 py-2 border bg-white border-gray-300 rounded-md shadow-2xl my-4 '>

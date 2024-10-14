@@ -18,7 +18,7 @@ async function requestStoragePermission() {
     }
 }
 
-export const pickFile = async () => {
+export const pickFile = async (location = 'hospitals') => {
     const permissionGranted = await requestStoragePermission();
     if (!permissionGranted) {
         console.error('Permission not granted');
@@ -31,7 +31,7 @@ export const pickFile = async () => {
         });
 
         const filePath = await resolveFilePath(res[0].uri);
-        return upload(filePath, res[0].name);
+        return upload(filePath, res[0].name, location);
     } catch (err) {
         if (DocumentPicker.isCancel(err)) {
             console.log('User cancelled the picker');
@@ -57,7 +57,7 @@ const resolveFilePath = async (uri) => {
     }
     return uri;
 };
-const upload = async (filePath, fileName) => {
+const upload = async (filePath, fileName, location = 'hospitals') => {
     if (filePath) {
         try {
             const fileExists = await RNFS.exists(filePath);
@@ -66,7 +66,7 @@ const upload = async (filePath, fileName) => {
                 return;
             }
 
-            const fileRef = storage().ref(`hospitals/${fileName}$${Date.now()}$${fileName.split('.').pop()}`);
+            const fileRef = storage().ref(`${location}/${fileName}$${Date.now()}$${fileName.split('.').pop()}`);
 
             await fileRef.putFile(filePath);
             console.log(fileName);
@@ -87,7 +87,7 @@ export const getFileNameFromURL = (url) => {
     const fileName = fileNameWithParams.split('?')[0];
     const decodedFileName = decodeURIComponent(fileName);
     const [, originalName, time, extension] = decodedFileName.split('$');
-    return `${originalName}.${extension}`;
+    return originalName;
 };
 
 export const deleteFile = async (fileURL) => {
