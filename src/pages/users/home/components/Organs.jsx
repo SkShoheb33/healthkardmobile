@@ -28,9 +28,9 @@ function Organs({ images }) {
               style={ { width: 50, height: 50, borderRadius: 1000 } }
               isVisible={ imageLoading }
             >
-              <Image source={ { uri: image.image } } style={ { width: 50, height: 50 } } onLoad={ () => setImagesLoading(true) } className='my-1'></Image>
+              <Image source={ { uri: image?.image } } style={ { width: 50, height: 50 } } onLoad={ () => setImagesLoading(true) } className='my-1'></Image>
             </ShimmerContainer>
-            <Text className='text-black'>{ image.name }</Text>
+            <Text className='text-black'>{ image?.name }</Text>
           </TouchableOpacity>
         );
       }) }

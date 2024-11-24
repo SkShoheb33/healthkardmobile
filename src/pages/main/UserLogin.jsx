@@ -24,7 +24,9 @@ function UserLogin() {
       if (response.message === 'Verified') {
         await AsyncStorage.setItem('userName', response.name);
         await AsyncStorage.setItem('userId', response.id.toString());
+        console.log({ number })
         await AsyncStorage.setItem('userNumber', number);
+        await AsyncStorage.setItem('useremail', response.email);
         navigation.replace('user');
       } else if (response.message === 'Password incorrect') {
         Alert.alert('Error', 'Please enter the correct password');
@@ -32,7 +34,6 @@ function UserLogin() {
         Alert.alert('Error', 'Data not found with this number');
       }
     } catch (error) {
-      console.log(error);
       Alert.alert('Error', 'Data not found with this number');
     } finally {
       setLoggingIn(false);

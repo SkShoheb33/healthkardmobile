@@ -70,7 +70,7 @@ function UserRenewal() {
 
     return (
         <View className='flex-1 bg-white'>
-            <Navbar color='blue' />
+            <Navbar />
             <View className='flex-1 p-4'>
                 { showPlans ?
                     <View className='flex-1 p-4'>

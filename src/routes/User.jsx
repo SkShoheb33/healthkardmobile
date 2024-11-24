@@ -16,6 +16,7 @@ import Payment from '@components/Payment';
 import { UserSharedDataProvider } from 'src/context/UserSharedDataContext';
 import HelpAndFeedback from 'src/pages/users/profile/components/HelpAndFeedback';
 import Records from 'src/pages/users/records/Records';
+
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -101,6 +102,7 @@ export const ProfileNavigation = () => {
             <Stack.Screen name="RenewalHistory" component={ RenewalHistory } />
             <Stack.Screen name="Feedback" component={ HelpAndFeedback } />
             <Stack.Screen name="TermsAndCondition" component={ TermsAndCondition } />
+            <Stack.Screen name="Pay" component={ Payment } />
         </Stack.Navigator>
     )
 }

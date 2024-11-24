@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Alert, Pressable, Text, View } from 'react-native'
 import { CURRENCY } from 'src/pages/strings'
 import Dropdown from './DropDown';
@@ -11,6 +11,7 @@ import { useNavigation } from '@react-navigation/native';
 import httpService from 'src/httpService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Loading from './Loading';
+import { plans } from 'src/constants';
 
 function Payment({ route }) {
     const { plan, healthId, userData } = route.params || {};
@@ -35,29 +36,6 @@ function Payment({ route }) {
         { name: '6 months', value: '6 months' },
         { name: '1 year', value: '1 year' }
     ]
-
-    const plans = {
-        '1 month': {
-            price: 129,
-            discount: 30,
-            validity: 28
-        },
-        '3 months': {
-            price: 390,
-            discount: 93,
-            validity: 84
-        },
-        '6 months': {
-            price: 599,
-            discount: 100,
-            validity: 168
-        },
-        '1 year': {
-            price: 1199,
-            discount: 300,
-            validity: 336
-        },
-    }
 
     const onPlanChange = (plan) => {
         setCurrentPlan(plan);

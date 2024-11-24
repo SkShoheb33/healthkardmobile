@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, ScrollView, TouchableOpacity, Text } from 'react-native';
+import { View, ScrollView, TouchableOpacity } from 'react-native';
 import Heading from '@components/Heading';
 import Navbar from '@components/Navbar';
 import { faChevronRight, faCalendar, faScroll, faComments, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
@@ -19,13 +19,12 @@ function Profile() {
     const [isLoading, setLoadingStatus] = useState(false);
     const [loggingOut, setLoggingOut] = useState(false);
     const navigation = useNavigation();
+    const [userNumber, setUserNumber] = useState('');
 
     const handleLogout = async () => {
         try {
             setLoggingOut(true);
-            await AsyncStorage.removeItem('userName');
-            await AsyncStorage.removeItem('userId');
-            await AsyncStorage.removeItem('userNumber');
+            await AsyncStorage.clear();
             navigation.reset({
                 index: 0,
                 routes: [{ name: 'First' }],
@@ -42,6 +41,7 @@ function Profile() {
             setLoadingStatus(true);
             try {
                 const userNumber = await AsyncStorage.getItem('userNumber');
+                setUserNumber(userNumber)
                 if (!userNumber) {
                     console.error('User number not found in AsyncStorage');
                     return;
@@ -96,6 +96,7 @@ function Profile() {
                         image={ profile.image }
                         name={ profile.name }
                         validity={ profile.expireDate }
+                        number={ userNumber }
                     />
                 ) : <ShimmerContainer isVisible={ !isLoading && profile } style={ { width: '90%', height: 120, alignSelf: 'center' } } >
                 </ShimmerContainer> }

@@ -9,7 +9,7 @@ function Button({ color, label, onPress, style = 'w-full p-4', transparent = fal
     <TouchableOpacity
       onPress={ !disabled && !loading ? onPress : null }
       style={ !transparent && (color === 'blue' ? styles.blue : color === 'red' ? styles.bgRed : styles.green) }
-      className={ `font-semibold ${style} rounded items-center my-2 h-14 ${iconPosition === 'right' ? 'flex-row-reverse' : 'flex-row'} justify-center ${(disabled || loading) && 'opacity-60'}` }
+      className={ `font-semibold rounded items-center my-2 h-14 ${style} ${iconPosition === 'right' ? 'flex-row-reverse' : 'flex-row'} justify-center ${(disabled || loading) && 'opacity-60'}` }
     >
       { loading ? (
         <Spinner type="ThreeBounce" size={ 30 } color="#fff" />

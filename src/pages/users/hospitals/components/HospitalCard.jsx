@@ -22,7 +22,7 @@ function HospitalCard({ hospital, horizontal = false, }) {
                 isVisible={ imageLoaded }>
 
                 <Image
-                    source={ { uri: hospital?.mediaDetails?.hospitalImageURL } }
+                    source={ { uri: hospital?.mediaDetails?.hospitalImageURL || "https://via.placeholder.com/150" } }
                     className='w-full h-full'
                     onLoad={ () => setImageLoaded(true) }
                 />
