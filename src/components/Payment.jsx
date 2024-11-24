@@ -96,15 +96,24 @@ function Payment({ route }) {
                         </View>
                         <View className='flex-row w-full justify-between my-1'>
                             <Text className='text-black'>Plan price</Text>
-                            <Text className='text-black'>{ CURRENCY + ' ' + plans[currentPlan]?.price }</Text>
+                            <Text className='text-black'>{ CURRENCY + ' ' + plans[currentPlan]?.price + plans[currentPlan]?.discount }</Text>
                         </View>
                         <View className='flex-row w-full justify-between my-1'>
                             <Text className='text-black'>Discount</Text>
                             <Text className='text-black'> - { CURRENCY + ' ' + plans[currentPlan]?.discount }</Text>
                         </View>
+                        <View className='flex-row w-full justify-between my-1'>
+                            <Text className='text-black'>State GST</Text>
+                            <Text className='text-black'> + { CURRENCY + ' ' + plans[currentPlan]?.stateGST }</Text>
+                        </View>
+                        <View className='flex-row w-full justify-between my-1'>
+                            <Text className='text-black'>Central GST</Text>
+                            <Text className='text-black'> + { CURRENCY + ' ' + plans[currentPlan]?.centralGST }</Text>
+                        </View>
+
                         <View className='flex-row w-full justify-between border-t border-gray-400 pt-2'>
                             <Text className='text-black'>Total</Text>
-                            <Text className='text-black'> { CURRENCY + ' ' + (plans[currentPlan]?.price - plans[currentPlan]?.discount) }</Text>
+                            <Text className='text-black'> { CURRENCY + ' ' + (plans[currentPlan]?.price + plans[currentPlan]?.stateGST + plans[currentPlan]?.centralGST) }</Text>
                         </View>
                     </View>
                     <Text className='text-black text-sm'>{ '**Inclusive of all taxes' }</Text>
